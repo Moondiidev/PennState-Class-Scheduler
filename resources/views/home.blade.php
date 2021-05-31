@@ -20,6 +20,7 @@
                 <p class="text-gray-700">
                     You are logged in!
                 </p>
+                <span id="reactButton"></span>
             </div>
         </section>
     </div>
