@@ -18,7 +18,7 @@
 
             <div class="w-full p-6">
                 <p class="text-gray-700">
-                    You are logged in!
+                    <a href="{{route('courses')}}">View Courses</a>
                 </p>
                 <span id="reactButton"></span>
             </div>
