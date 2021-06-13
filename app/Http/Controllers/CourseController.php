@@ -13,9 +13,10 @@ class CourseController extends Controller
      */
     public function index()
     {
+        $pageName = "Courses";
         $courses = Course::all();
 
-        return view('courses', compact('courses'));
+        return view('courses', compact('courses', 'pageName'));
     }
 
     /**
