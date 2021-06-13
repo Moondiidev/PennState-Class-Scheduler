@@ -24,4 +24,6 @@ Auth::routes();
 
 Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/courses', [\App\Http\Controllers\CourseController::class, 'index'])->name('courses');
+Route::get('/mark-completed', [\App\Http\Controllers\CourseController::class, 'completedForm'])->name('completedForm');
+Route::post('/mark-completed', [\App\Http\Controllers\CourseController::class, 'markAsCompleted'])->name('markAsCompleted');
 

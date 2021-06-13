@@ -45,9 +45,9 @@ class User extends Authenticatable
      * Relationships
      */
 
-    public function courses()
+    public function completedCourses()
     {
-        return $this->belongsToMany(Course::class)->as('completed')->withPivot('grade')->withTimestamps();
+        return $this->belongsToMany(Course::class)->withPivot('grade')->withTimestamps();
     }
 
 }
