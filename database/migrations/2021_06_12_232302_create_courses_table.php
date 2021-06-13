@@ -15,9 +15,14 @@ class CreateCoursesTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->text('name')->unique();
-            $table->text('description')->nullable();
-            $table->foreignId('course_id')->references('id')->on('courses')->onDelete('cascade');
+            $table->text('title')->unique();
+            $table->text('abbreviation')->unique();
+            $table->integer('credits')->default(3);
+            $table->text('description');
+            $table->text('type');
+            $table->json('prerequisites')->nullable();
+            $table->json('concurrents')->nullable();
+            $table->foreignId('semester_id')->references('id')->on('semesters')->onDelete('cascade');
             $table->timestamps();
         });
     }

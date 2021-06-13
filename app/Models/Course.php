@@ -9,7 +9,12 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["name", "description"];
+    protected $fillable = ["name", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
+
+    protected $casts = [
+        'prerequisites' => 'array',
+        'concurrents' => 'array',
+    ];
 
 
     /**
