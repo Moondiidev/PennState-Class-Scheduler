@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
+use Faker\Provider\Text;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker;
 
 class CourseSeeder extends Seeder
 {
@@ -24,14 +24,12 @@ class CourseSeeder extends Seeder
                 'type' => $course['type'],
                 'description' => $course['description'],
                 'credits' => $course['credits'],
-                'semester_id' => rand(1, 3),
             ]);
         }
 
 
-        // prerequisites and concurrents
+        // prerequisites
         Course::where("abbreviation", "CHEM 111")->first()->update(["prerequisites" => [Course::where("abbreviation", "CHEM 110")->first()->id]]);
-        Course::where("abbreviation", "CHEM 111")->first()->update(["concurrents" => [Course::where("abbreviation", "CHEM 110")->first()->id]]);
         Course::where("abbreviation", "CMPEN 351")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPEN 270")->first()->id]]);
         Course::where("abbreviation", "CMPEN 441")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 360")->first()->id]]);
         Course::where("abbreviation", "CMPEN 461")->first()->update(["prerequisites" => [
@@ -79,13 +77,30 @@ class CourseSeeder extends Seeder
         Course::where("abbreviation", "SWENG 481")->first()->update(["prerequisites" => [Course::where("abbreviation", "SWENG 480")->first()->id]]);
 
 
+
+        // concurrents
+        Course::where("abbreviation", "CHEM 111")->first()->update(["concurrents" => [Course::where("abbreviation", "CHEM 110")->first()->id]]);
+        Course::where("abbreviation", "CMPEN 270")->first()->update(["concurrents" => [Course::where("abbreviation", "PHYS 212")->first()->id]]);
+        Course::where("abbreviation", "CMPSC 360")->first()->update(["concurrents" => [Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "PHYS 211")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 140")->first()->id]]);
+        Course::where("abbreviation", "PHYS 212")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 141")->first()->id]]);
+        Course::where("abbreviation", "SWENG 411")->first()->update(["concurrents" => [Course::where("abbreviation", "SWENG 311")->first()->id]]);
+        Course::where("abbreviation", "EE 211")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 250")->first()->id]]);
+
+
+        // semesters (random)
+        foreach(Course::all() as $course) {
+            $semester = Text::randomElements([1, 2, 3], rand(1, 3));
+            $course->semesters()->attach($semester);
+        }
+
+
     }
 
     private function getCourses()
     {
         return
             [
-
                 ["title" => "Rhetoric and Composition",
                  "abbreviation" => "ENGL 15",
                  'type' => "ENGL",
@@ -360,7 +375,7 @@ class CourseSeeder extends Seeder
                  "description" => "Capstone group design projects in software engineering.",
                  "credits" => 3
                 ],
-                
+
             ];
     }
 }

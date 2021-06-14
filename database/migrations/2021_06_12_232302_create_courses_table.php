@@ -22,7 +22,6 @@ class CreateCoursesTable extends Migration
             $table->text('type');
             $table->json('prerequisites')->nullable();
             $table->json('concurrents')->nullable();
-            $table->foreignId('semester_id')->references('id')->on('semesters')->onDelete('cascade');
             $table->timestamps();
         });
     }
