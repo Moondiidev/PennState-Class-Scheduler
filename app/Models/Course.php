@@ -32,9 +32,9 @@ class Course extends Model
      * Relationships
      */
 
-    public function semester()
+    public function semesters()
     {
-        return $this->belongsTo(Semester::class);
+        return $this->belongsToMany(Semester::class);
     }
 
     public function users()

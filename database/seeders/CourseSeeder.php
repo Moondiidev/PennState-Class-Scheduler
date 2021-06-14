@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
+use Faker\Provider\Text;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker;
 
 class CourseSeeder extends Seeder
 {
@@ -24,7 +24,6 @@ class CourseSeeder extends Seeder
                 'type' => $course['type'],
                 'description' => $course['description'],
                 'credits' => $course['credits'],
-                'semester_id' => rand(1, 3),
             ]);
         }
 
@@ -79,13 +78,18 @@ class CourseSeeder extends Seeder
         Course::where("abbreviation", "SWENG 481")->first()->update(["prerequisites" => [Course::where("abbreviation", "SWENG 480")->first()->id]]);
 
 
+        foreach(Course::all() as $course) {
+            $semester = Text::randomElements([1, 2, 3], rand(1, 3));
+            $course->semesters()->attach($semester);
+        }
+
+
     }
 
     private function getCourses()
     {
         return
             [
-
                 ["title" => "Rhetoric and Composition",
                  "abbreviation" => "ENGL 15",
                  'type' => "ENGL",
@@ -360,7 +364,7 @@ class CourseSeeder extends Seeder
                  "description" => "Capstone group design projects in software engineering.",
                  "credits" => 3
                 ],
-                
+
             ];
     }
 }
