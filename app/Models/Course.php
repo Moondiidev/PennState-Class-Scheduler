@@ -9,8 +9,19 @@ class Course extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = ["name", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
 
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'prerequisites' => 'array',
         'concurrents' => 'array',
@@ -24,6 +35,11 @@ class Course extends Model
     public function semester()
     {
         return $this->belongsTo(Semester::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
     }
 
 }

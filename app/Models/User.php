@@ -40,4 +40,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Relationships
+     */
+
+    public function completedCourses()
+    {
+        return $this->belongsToMany(Course::class)->withPivot('grade')->withTimestamps();
+    }
+
 }
