@@ -20,14 +20,13 @@
         @endif
 
 
-        <form action="{{route('courses.update', $course)}}" method="post" class="w-full max-w-3xl" autocomplete="off">
+        <form action="{{route('courses.store')}}" method="post" class="w-full max-w-3xl" autocomplete="off">
             @csrf
-            @method('PUT')
 
             @include('courses.partials.course-form')
 
             <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">
-                Update
+                Create
             </button>
 
         </form>
@@ -35,4 +34,3 @@
     </div>
 
 @endsection
-

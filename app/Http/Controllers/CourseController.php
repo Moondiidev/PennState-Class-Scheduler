@@ -16,18 +16,23 @@ class CourseController extends Controller
     {
         $pageName = "Courses";
         $courses = Course::all();
+        $headerButtonAction = route('courses.create');
+        $headerButtonText = "Create New Course";
 
-        return view('courses.index', compact('courses', 'pageName'));
+        return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        $pageName = "Create New Course ";
+        $course = null;
+        $courses = Course::all();
+
+        return view('courses.create', compact('course', 'courses', 'pageName'));
     }
 
     /**
@@ -35,11 +40,13 @@ class CourseController extends Controller
      *
      * @param  StoreUpdateCourseRequest  $request
      *
-     * @return \Illuminate\Http\Response
      */
     public function store(StoreUpdateCourseRequest $request)
     {
-        //
+        $course = Course::create($request->all());
+        $course->semesters()->sync($request->input('semester'));
+
+        return back()->with('status', 'Course Successfully Created!');
     }
 
     /**
@@ -76,6 +83,7 @@ class CourseController extends Controller
     {
         $course->update($request->all());
         $course->semesters()->sync($request->input('semester'));
+
         return back()->with('status', 'Course Updated Successfully Updated!');
     }
 

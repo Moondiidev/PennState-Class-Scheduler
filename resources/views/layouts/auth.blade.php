@@ -13,7 +13,18 @@
             <section class="flex flex-col break-words bg-white sm:border-1 sm:rounded-md sm:shadow-sm sm:shadow-lg">
 
                 <header class="font-semibold bg-gray-200 text-gray-700 py-5 px-6 sm:py-6 sm:px-8 sm:rounded-t-md">
-                    {{$pageName}}
+                    <div class="flex justify-between">
+                        <span>
+                            {{$pageName}}
+                        </span>
+
+                        @if ( isset($headerButtonAction) )
+                            <span>
+                                <a href="{{$headerButtonAction}}" class="floar-right bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">{{$headerButtonText}}</a>
+                            </span>
+                        @endif
+
+                    </div>
                 </header>
                 <div class="w-full p-6">
 
