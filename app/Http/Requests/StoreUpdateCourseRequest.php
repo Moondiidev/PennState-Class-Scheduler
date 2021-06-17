@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Course;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class StoreUpdateCourseRequest extends FormRequest
@@ -37,11 +38,13 @@ class StoreUpdateCourseRequest extends FormRequest
                 'max:10',
                 Rule::unique('courses')->ignore($this->course),
             ],
+            'type' => 'required',
             'description' => 'required|max:400',
             'credits' => [
                 'required',
                 Rule::in(['1', '2', '3', '4']),
             ],
+            'semester' => 'required',
             'semester.*' => [
                 'required',
                 Rule::in(['1', '2', '3']),
@@ -55,6 +58,42 @@ class StoreUpdateCourseRequest extends FormRequest
                 Rule::in($this->getCourseIDs()),
             ],
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'type' => $this->getType($this->input('abbreviation'))
+        ]);
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'type.required' => 'The type field is created from the abbreviation field, which was not completed',
+        ];
+    }
+
+    /**
+     * Create the type from the given abbreviation
+     *
+     * @param $abbreviation
+     *
+     * @return string|null
+     */
+    private function getType($abbreviation)
+    {
+        return $abbreviation ? Str::before($abbreviation, ' ') : null;
     }
 
     /**

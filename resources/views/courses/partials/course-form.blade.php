@@ -3,13 +3,13 @@
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-title">
             Title
         </label>
-        <input name="title" value="{{$course->title}}" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-title" type="text" placeholder="Database Philosophy">
+        <input name="title" value="{{$course->title ?? old('title')}}" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-title" type="text" placeholder="Database Philosophy">
     </div>
     <div class="w-full md:w-1/5 px-3">
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-abbreviation">
             Abbreviation
         </label>
-        <input name="abbreviation" value="{{$course->abbreviation}}" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-abbreviation" type="text" placeholder="CMPEN 556">
+        <input name="abbreviation" value="{{$course->abbreviation ?? old('abbreviation')}}" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-abbreviation" type="text" placeholder="CMPEN 556">
     </div>
     <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0">
         <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-credits">
@@ -69,6 +69,6 @@
             Description
         </label>
 
-        <textarea name="description" rows="4" cols="20" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-description">{{$course->description}}</textarea>
+        <textarea name="description" rows="4" cols="20" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-description">{{$course->description ?? old('description')}}</textarea>
     </div>
 </div>

@@ -29,7 +29,7 @@ class CourseController extends Controller
     public function create()
     {
         $pageName = "Create New Course ";
-        $course = null;
+        $course = new Course();
         $courses = Course::all();
 
         return view('courses.create', compact('course', 'courses', 'pageName'));
@@ -46,7 +46,7 @@ class CourseController extends Controller
         $course = Course::create($request->all());
         $course->semesters()->sync($request->input('semester'));
 
-        return back()->with('status', 'Course Successfully Created!');
+        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Created!');
     }
 
     /**
