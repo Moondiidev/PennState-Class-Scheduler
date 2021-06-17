@@ -69,11 +69,12 @@ class CourseController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Course $course)
     {
-        //
+        dd($request->all());
+        $course->update($request->all());
+        return back()->with('status', 'Course Updated Successfully Updated!');
     }
 
     /**
