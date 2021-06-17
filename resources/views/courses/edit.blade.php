@@ -3,6 +3,23 @@
 @section('mainContent')
 
     <div>
+
+        @if ($errors->any())
+            <div role="alert" class="w-full max-w-3xl mb-8">
+                <div class="bg-red-400 text-white font-bold rounded-t px-4 py-2">
+                    Errors Found!
+                </div>
+                <div class="border border-t-0 border-red-300 rounded-b bg-red-200 px-4 py-3 text-red-700">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li class="m-2 list-disc">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
+
         <form action="{{route('courses.update', $course)}}" method="post" class="w-full max-w-3xl" autocomplete="off">
             @csrf
             @method('PUT')
@@ -42,7 +59,7 @@
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-semester">
                         Semester
                     </label>
-                    <select name="semester" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-semester">
+                    <select name="semester[]" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-semester">
                         <option @if($course->semesters->contains(1)) selected @endif value="1">Fall</option>
                         <option @if($course->semesters->contains(2)) selected @endif value="2">Spring</option>
                         <option @if($course->semesters->contains(3)) selected @endif value="3">Summer</option>
@@ -52,7 +69,7 @@
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-prerequisites">
                         Prerequisites
                     </label>
-                    <select name="prerequisites" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-prerequisites">
+                    <select name="prerequisites[]" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-prerequisites">
                         <option></option>
                         @foreach($courses as $course_p)
                             <option @if(in_array($course_p->id, $course->prerequisites ?? [])) selected @endif value="{{$course_p->id}}">{{$course_p->abbreviation}}</option>
@@ -63,7 +80,7 @@
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-concurrents">
                         Concurrents
                     </label>
-                    <select name="concurrents" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-concurrents">
+                    <select name="concurrents[]" multiple class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-concurrents">
                         <option></option>
                         @foreach($courses as $course_c)
                             <option @if(in_array($course_c->id, $course->concurrents ?? [])) selected @endif value="{{$course_c->id}}">{{$course_c->abbreviation}}</option>

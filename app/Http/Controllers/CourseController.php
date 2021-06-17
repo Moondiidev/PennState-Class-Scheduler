@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUpdateCourseRequest;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
@@ -32,10 +33,11 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreUpdateCourseRequest  $request
+     *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUpdateCourseRequest $request)
     {
         //
     }
@@ -70,10 +72,10 @@ class CourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Course  $course
      */
-    public function update(Request $request, Course $course)
+    public function update(StoreUpdateCourseRequest $request, Course $course)
     {
-        dd($request->all());
         $course->update($request->all());
+        $course->semesters()->sync($request->input('semester'));
         return back()->with('status', 'Course Updated Successfully Updated!');
     }
 
