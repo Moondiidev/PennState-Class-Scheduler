@@ -16,7 +16,7 @@ class CourseController extends Controller
         $pageName = "Courses";
         $courses = Course::all();
 
-        return view('courses', compact('courses', 'pageName'));
+        return view('courses.index', compact('courses', 'pageName'));
     }
 
     /**
@@ -55,11 +55,13 @@ class CourseController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
      */
     public function edit(Course $course)
     {
-        //
+        $pageName = "Edit " . $course->title;
+        $courses = Course::all();
+
+        return view('courses.edit', compact('course', 'courses', 'pageName'));
     }
 
     /**
