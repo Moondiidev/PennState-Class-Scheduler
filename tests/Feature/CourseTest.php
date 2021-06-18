@@ -78,6 +78,38 @@ class CourseTest extends TestCase
         $response->assertForbidden();
     }
 
+    /**  @test */
+    public function guest_can_not_visit_edit()
+    {
+        $response = $this->get(route('courses.edit', Course::all()->first()->id));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    /**  @test */
+    public function dev_auth_user_can_visit_create()
+    {
+        $response = $this->actingAs($this->devUser)->get(route('courses.create', Course::all()->first()->id));
+
+        $response->assertSuccessful();
+    }
+
+    /**  @test */
+    public function non_dev_auth_user_can_not_visit_create()
+    {
+        $response = $this->actingAs($this->regularUser)->get(route('courses.create', Course::all()->first()->id));
+
+        $response->assertForbidden();
+    }
+
+    /**  @test */
+    public function guest_can_not_visit_create()
+    {
+        $response = $this->get(route('courses.create', Course::all()->first()->id));
+
+        $response->assertRedirect(route('login'));
+    }
+
 
 
 
