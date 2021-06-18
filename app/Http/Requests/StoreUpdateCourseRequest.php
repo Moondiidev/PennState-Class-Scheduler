@@ -67,6 +67,18 @@ class StoreUpdateCourseRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        if ($this->missing('prerequisites')) {
+            $this->merge([
+                'prerequisites' => null
+            ]);
+        }
+
+        if ($this->missing('concurrents')) {
+            $this->merge([
+                'concurrents' => null
+            ]);
+        }
+
         $this->merge([
             'type' => $this->getType($this->input('abbreviation'))
         ]);
@@ -85,7 +97,7 @@ class StoreUpdateCourseRequest extends FormRequest
     }
 
     /**
-     * Create the type from the given abbreviation
+     * Create the type property from the given abbreviation
      *
      * @param $abbreviation
      *
