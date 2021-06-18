@@ -56,11 +56,20 @@ class User extends Authenticatable
 
 
     /**
-     * Used for Authorization of Certain Actions
+     * Determine if user is DevUser
+     *
+     */
+    public static function isDevUser($user)
+    {
+        return in_array($user->email, User::getDevUsers());
+    }
+
+    /**
+     * Return array of DevUser emails
      *
      * @return string[]
      */
-    public static function getDevUsers()
+    private static function getDevUsers()
     {
         return [
             "ava@psu.edu",

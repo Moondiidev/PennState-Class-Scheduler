@@ -39,20 +39,46 @@ class CourseTest extends TestCase
     }
 
     /**  @test */
-    public function can_visit_index()
+    public function auth_user_can_visit_index()
     {
-        $response = $this->get(route('courses.index'));
+        $response = $this->actingAs($this->regularUser)->get(route('courses.index'));
 
-        $response->assertStatus(200);
+        $response->assertSuccessful();
     }
 
     /**  @test */
-    public function sees_correct_courses_on_index()
+    public function auth_user_sees_correct_courses_on_index()
     {
-        $response = $this->get(route('courses.index'));
+        $response = $this->actingAs($this->regularUser)->get(route('courses.index'));
 
         $response->assertSee(['Test Course One', 'Test Course Two', 'Test Course Three']);
     }
+
+    /**  @test */
+    public function guest_can_not_visit_index()
+    {
+        $response = $this->get(route('courses.index'));
+
+        $response->assertRedirect(route('login'));
+    }
+
+    /**  @test */
+    public function dev_auth_user_can_visit_edit()
+    {
+        $response = $this->actingAs($this->devUser)->get(route('courses.edit', Course::all()->first()->id));
+
+        $response->assertSuccessful();
+    }
+
+    /**  @test */
+    public function non_dev_auth_user_can_not_visit_edit()
+    {
+        $response = $this->actingAs($this->regularUser)->get(route('courses.edit', Course::all()->first()->id));
+
+        $response->assertForbidden();
+    }
+
+
 
 
 }

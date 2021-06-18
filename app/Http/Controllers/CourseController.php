@@ -9,6 +9,16 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
     /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('dev.users.only')->except(['index', 'completedForm', 'markAsCompleted']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      */
@@ -119,7 +129,6 @@ class CourseController extends Controller
      */
     public function markAsCompleted(Request $request)
     {
-
         auth()->user()->completedCourses()->sync($request->input('completed'));
 
         return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');

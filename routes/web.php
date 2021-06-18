@@ -19,11 +19,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Auth::routes();
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('courses', \App\Http\Controllers\CourseController::class);
-Route::get('/mark-completed', [\App\Http\Controllers\CourseController::class, 'completedForm'])->name('completedForm');
-Route::post('/mark-completed', [\App\Http\Controllers\CourseController::class, 'markAsCompleted'])->name('markAsCompleted');
+    Route::resource('courses', \App\Http\Controllers\CourseController::class);
+
+    Route::get('/mark-completed',
+        [\App\Http\Controllers\CourseController::class, 'completedForm'])->name('completedForm');
+    Route::post('/mark-completed',
+        [\App\Http\Controllers\CourseController::class, 'markAsCompleted'])->name('markAsCompleted');
+});
 
