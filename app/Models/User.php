@@ -50,4 +50,22 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class)->withPivot('grade')->withTimestamps();
     }
 
+    /**
+     * Helpers
+     */
+
+
+    /**
+     * Used for Authorization of Certain Actions
+     *
+     * @return string[]
+     */
+    public static function getDevUsers()
+    {
+        return [
+            "ava@psu.edu",
+            "kelly@psu.edu"
+        ];
+    }
+
 }

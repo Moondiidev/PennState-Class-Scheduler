@@ -42,4 +42,14 @@ class Course extends Model
         return $this->belongsToMany(User::class);
     }
 
+    /**
+     * Get all course IDs
+     *
+     * @return array
+     */
+    public static function getCourseIDs()
+    {
+        return Course::all()->pluck('id')->toArray();
+    }
+
 }

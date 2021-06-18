@@ -30,7 +30,7 @@
                 <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">
                     Update
                 </button>
-                
+
                 <div>
                     <form method="POST" action="{{route('courses.destroy', $course->id)}}">
                         @csrf

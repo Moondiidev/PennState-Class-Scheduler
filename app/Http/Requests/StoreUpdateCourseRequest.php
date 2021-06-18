@@ -51,11 +51,11 @@ class StoreUpdateCourseRequest extends FormRequest
             ],
             'prerequisites.*' => [
                 'nullable',
-                Rule::in($this->getCourseIDs()),
+                Rule::in(Course::getCourseIDs()),
             ],
             'concurrents.*' => [
                 'nullable',
-                Rule::in($this->getCourseIDs()),
+                Rule::in(Course::getCourseIDs()),
             ],
         ];
     }
@@ -106,15 +106,5 @@ class StoreUpdateCourseRequest extends FormRequest
     private function getType($abbreviation)
     {
         return $abbreviation ? Str::before($abbreviation, ' ') : null;
-    }
-
-    /**
-     * Get all course IDs
-     *
-     * @return array
-     */
-    private function getCourseIDs()
-    {
-        return Course::all()->pluck('id')->toArray();
     }
 }
