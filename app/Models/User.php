@@ -72,8 +72,8 @@ class User extends Authenticatable
     private static function getDevUsers()
     {
         return [
-            "ava@psu.edu",
-            "kelly@psu.edu"
+            "ava@psu.edu", // for automated testing
+            "kelly@psu.edu", // for running on local
         ];
     }
 
