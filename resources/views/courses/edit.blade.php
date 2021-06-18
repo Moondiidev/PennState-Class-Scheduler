@@ -26,11 +26,22 @@
 
             @include('courses.partials.course-form')
 
-            <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">
-                Update
-            </button>
+            <div class="flex justify-between">
+                <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">
+                    Update
+                </button>
+                
+                <div>
+                    <form method="POST" action="{{route('courses.destroy', $course->id)}}">
+                        @csrf
+                        @method('delete')
 
+                        <input type="submit" value="Delete Course" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-10">
+                    </form>
+                </div>
+            </div>
         </form>
+
 
     </div>
 
