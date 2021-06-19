@@ -14,7 +14,7 @@ class Course extends Model
      *
      * @var array
      */
-    protected $fillable = ["name", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
+    protected $fillable = ["title", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
 
 
     /**
@@ -40,6 +40,16 @@ class Course extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    /**
+     * Get all course IDs
+     *
+     * @return array
+     */
+    public static function getCourseIDs()
+    {
+        return Course::all()->pluck('id')->toArray();
     }
 
 }

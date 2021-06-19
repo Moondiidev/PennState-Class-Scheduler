@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUpdateCourseRequest;
 use App\Models\Course;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    /**
+     * Instantiate a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('dev.users.only')->except(['index', 'completedForm', 'markAsCompleted']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,29 +26,37 @@ class CourseController extends Controller
     {
         $pageName = "Courses";
         $courses = Course::all();
+        $headerButtonAction = route('courses.create');
+        $headerButtonText = "Create New Course";
 
-        return view('courses', compact('courses', 'pageName'));
+        return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
+        $pageName = "Create New Course ";
+        $course = new Course();
+        $courses = Course::all();
+
+        return view('courses.create', compact('course', 'courses', 'pageName'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  StoreUpdateCourseRequest  $request
+     *
      */
-    public function store(Request $request)
+    public function store(StoreUpdateCourseRequest $request)
     {
-        //
+        $course = Course::create($request->all());
+        $course->semesters()->sync($request->input('semester'));
+
+        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Created!');
     }
 
     /**
@@ -55,11 +74,13 @@ class CourseController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
      */
     public function edit(Course $course)
     {
-        //
+        $pageName = "Edit " . $course->title;
+        $courses = Course::all();
+
+        return view('courses.edit', compact('course', 'courses', 'pageName'));
     }
 
     /**
@@ -67,22 +88,26 @@ class CourseController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(StoreUpdateCourseRequest $request, Course $course)
     {
-        //
+        $course->update($request->all());
+        $course->semesters()->sync($request->input('semester'));
+
+        return back()->with('status', 'Course Updated Successfully Updated!');
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
+     *
      */
     public function destroy(Course $course)
     {
-        //
+        $course->delete();
+
+        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Deleted!');
     }
 
     /**
@@ -104,7 +129,6 @@ class CourseController extends Controller
      */
     public function markAsCompleted(Request $request)
     {
-
         auth()->user()->completedCourses()->sync($request->input('completed'));
 
         return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');

@@ -6,7 +6,11 @@
     @foreach($courses as $course)
 
         <div class="leading-relaxed p-4 rounded bg-gray-50">
-            <h4><strong>Title</strong>: {{$course->title}} - {{$course->abbreviation}} </h4>
+            <h4><strong>Title</strong>:
+                <a class="underline font-medium hover:no-underline" href="{{route('courses.edit', $course->id)}}">
+                    {{$course->title}} - {{$course->abbreviation}}
+                </a>
+            </h4>
             <p><strong>Description</strong>: <br> {{$course->description}}</p>
             <p><strong>Credits</strong>: {{$course->credits}}</p>
             <p><strong>Semester(s)</strong>:

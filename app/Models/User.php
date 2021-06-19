@@ -50,4 +50,31 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class)->withPivot('grade')->withTimestamps();
     }
 
+    /**
+     * Helpers
+     */
+
+
+    /**
+     * Determine if user is DevUser
+     *
+     */
+    public static function isDevUser($user)
+    {
+        return in_array($user->email, User::getDevUsers());
+    }
+
+    /**
+     * Return array of DevUser emails
+     *
+     * @return string[]
+     */
+    private static function getDevUsers()
+    {
+        return [
+            "ava@psu.edu", // for automated testing
+            "kelly@psu.edu", // for running on local
+        ];
+    }
+
 }

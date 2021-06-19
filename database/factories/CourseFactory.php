@@ -21,7 +21,15 @@ class CourseFactory extends Factory
      */
     public function definition()
     {
-        //
+        return [
+            "title" => $this->faker->text(100),
+            "description" => $this->faker->sentence(20, true),
+            "credits" => $this->faker->randomElement([1, 2, 3]),
+            "type" => $this->faker->text(8),
+            "abbreviation" => $this->faker->text(5),
+//            "prerequisites" => $this->faker->optional(0.3)->randomElements(Course::getCourseIDs()),
+//            "concurrents" => $this->faker->optional(0.1)->randomElements(Course::getCourseIDs()),
+        ];
     }
 
 }
