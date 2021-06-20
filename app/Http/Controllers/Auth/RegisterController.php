@@ -51,9 +51,10 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users', 'ends_with:@psu.edu'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        ],
+            ['email.ends_with' => 'In order to register for the site your :attribute must end in "@psu.edu"',]);
     }
 
     /**

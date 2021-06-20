@@ -4,12 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Course;
 use App\Models\User;
-use Database\Seeders\CourseSeeder;
 use Database\Seeders\SemesterSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use function GuzzleHttp\Psr7\str;
 
 class CourseTest extends TestCase
 {
