@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'name' => 'Kelly Tester',
             'email' => 'kelly@psu.edu',
             'password' => Hash::make('scheduleMe9'),
-            'emailed_verified_at' => now(),
+            'email_verified_at' => now(),
         ]);
     }
 }
