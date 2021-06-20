@@ -370,16 +370,6 @@ class CourseTest extends TestCase
                                                  "description" => "Some random description", "credits" => 2,]);
     }
 
-
-
-
-
-
-
-
-
-
-
     /**  @test */
     public function dev_auth_user_can_update_a_course()
     {
@@ -624,6 +614,45 @@ class CourseTest extends TestCase
         $this->assertDatabaseMissing('courses', ["id" => $this->courseOne->id, "title" => "Test Course",
                                                  "abbreviation" => "Test 442",
                                                  "description" => "Some random description", "credits" => 2,]);
+    }
+
+    /**  @test */
+    public function dev_auth_user_can_delete_a_course()
+    {
+
+        $response = $this->actingAs($this->devUser)
+                         ->delete(route('courses.destroy', [$this->courseOne->id]));
+
+        $response->assertRedirect(route('courses.index'));
+        $this->assertDatabaseMissing('courses', ["id" => $this->courseOne->id]);
+        $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
+        $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
+    }
+
+
+    /**  @test */
+    public function regular_auth_user_can_not_delete_a_course()
+    {
+
+        $response = $this->actingAs($this->regularUser)
+                         ->delete(route('courses.destroy', [$this->courseOne->id]));
+
+        $response->assertForbidden();
+        $this->assertDatabaseHas('courses', ["id" => $this->courseOne->id]);
+        $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
+        $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
+    }
+
+    /**  @test */
+    public function guest_can_not_delete_a_course()
+    {
+
+        $response = $this->delete(route('courses.destroy', [$this->courseOne->id]));
+
+        $response->assertRedirect(route('login'));
+        $this->assertDatabaseHas('courses', ["id" => $this->courseOne->id]);
+        $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
+        $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
     }
 
 
