@@ -80,7 +80,12 @@ class CourseController extends Controller
         $pageName = "Edit " . $course->title;
         $courses = Course::all();
 
-        return view('courses.edit', compact('course', 'courses', 'pageName'));
+        $headerButtonAction = route('courses.destroy', $course->id);
+        $headerButtonText = "Delete Course";
+        $headerButtonColor = 'red';
+
+        return view('courses.edit', compact('course', 'courses', 'pageName',
+            'headerButtonAction', 'headerButtonText', 'headerButtonColor'));
     }
 
     /**
