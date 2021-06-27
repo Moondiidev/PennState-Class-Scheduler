@@ -110,6 +110,9 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
+        Course::removeDeletedCourseFromPrerequisites($course->id);
+        Course::removeDeletedCourseFromConcurrents($course->id);
+
         $course->delete();
 
         return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Deleted!');

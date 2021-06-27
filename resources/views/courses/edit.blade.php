@@ -35,6 +35,15 @@
             </div>
         </form>
 
+            <div>
+                <form method="POST" action="{{route('courses.destroy', $course->id)}}">
+                    @csrf
+                    @method('delete')
+
+                    <input type="submit" value="Delete Course" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-10">
+                </form>
+            </div>
+
     </div>
 
 @endsection
