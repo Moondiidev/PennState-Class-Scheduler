@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateCourseRequest;
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -26,10 +27,15 @@ class CourseController extends Controller
     {
         $pageName = "Courses";
         $courses = Course::all();
-        $headerButtonAction = route('courses.create');
-        $headerButtonText = "Create New Course";
 
-        return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+        if ( User::isDevUser(auth()->user()) ) {
+            $headerButtonAction = route('courses.create');
+            $headerButtonText   = "Create New Course";
+
+            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+        }
+
+        return view('courses.index', compact('courses', 'pageName'));
     }
 
     /**
@@ -63,11 +69,22 @@ class CourseController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Course  $course
-     * @return \Illuminate\Http\Response
      */
     public function show(Course $course)
     {
-        //
+        $pageName = $course->title;
+        $courses = Course::all();
+
+        if ( User::isDevUser(auth()->user()) ) {
+
+            $headerButtonAction = route('courses.edit', $course->id);
+            $headerButtonText = "Edit Course";
+
+            return view('courses.show', compact('course', 'courses', 'pageName',
+                'headerButtonAction', 'headerButtonText'));
+        }
+
+        return view('courses.show', compact('course', 'courses', 'pageName'));
     }
 
     /**
@@ -80,12 +97,7 @@ class CourseController extends Controller
         $pageName = "Edit " . $course->title;
         $courses = Course::all();
 
-        $headerButtonAction = route('courses.destroy', $course->id);
-        $headerButtonText = "Delete Course";
-        $headerButtonColor = 'red';
-
-        return view('courses.edit', compact('course', 'courses', 'pageName',
-            'headerButtonAction', 'headerButtonText', 'headerButtonColor'));
+        return view('courses.edit', compact('course', 'courses', 'pageName'));
     }
 
     /**

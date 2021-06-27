@@ -19,7 +19,6 @@
             </div>
         @endif
 
-
         <form action="{{route('courses.update', $course)}}" method="post" class="w-full max-w-3xl" autocomplete="off">
             @csrf
             @method('PUT')
@@ -27,7 +26,7 @@
             @include('courses.partials.course-form')
 
             <div class="flex justify-between">
-                <button type="submit" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">
+                <button type="submit" class="w-full sm:w-1/4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded mt-10">
                     Update
                 </button>
 
@@ -35,14 +34,14 @@
             </div>
         </form>
 
-            <div>
-                <form method="POST" action="{{route('courses.destroy', $course->id)}}">
-                    @csrf
-                    @method('delete')
+        <div class="sm:float-right sm:-mt-20">
+            <form method="POST" action="{{route('courses.destroy', $course->id)}}">
+                @csrf
+                @method('delete')
 
-                    <input type="submit" value="Delete Course" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-10">
-                </form>
-            </div>
+                <input type="submit" value="Delete Course" class="w-full bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-4 rounded mt-10">
+            </form>
+        </div>
 
     </div>
 
