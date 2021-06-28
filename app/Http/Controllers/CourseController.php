@@ -111,7 +111,7 @@ class CourseController extends Controller
         $course->update($request->all());
         $course->semesters()->sync($request->input('semester'));
 
-        return back()->with('status', 'Course Updated Successfully Updated!');
+        return back()->with('status', 'Course Successfully Updated!');
     }
 
     /**
