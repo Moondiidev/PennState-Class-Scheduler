@@ -43,13 +43,33 @@ class Course extends Model
     }
 
     /**
-     * Get all course IDs
-     *
-     * @return array
+     * Helpers
      */
     public static function getCourseIDs()
     {
         return Course::all()->pluck('id')->toArray();
+    }
+
+    public static function removeDeletedCourseFromPrerequisites($course_id)
+    {
+        Course::whereJsonContains('prerequisites', $course_id)->each(function ($item) use ($course_id) {
+
+            $newPrerequisites = array_values(array_diff($item->prerequisites, [$course_id]));
+
+            $item->update(['prerequisites' => (count($newPrerequisites) > 0) ? $newPrerequisites : null]);
+
+        });
+    }
+
+    public static function removeDeletedCourseFromConcurrents($course_id)
+    {
+        Course::whereJsonContains('concurrents', $course_id)->each(function ($item) use ($course_id) {
+
+            $newConcurrents = array_values(array_diff($item->concurrents, [$course_id]));
+
+            $item->update(['concurrents' => (count($newConcurrents) > 0) ? $newConcurrents : null]);
+
+        });
     }
 
 }

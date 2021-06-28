@@ -56,7 +56,6 @@ class CourseSeeder extends Seeder
         Course::where("abbreviation", "MATH 250")->first()->update(["prerequisites" => [Course::where("abbreviation", "MATH 141")->first()->id]]);
         Course::where("abbreviation", "MGMT 301")->first()->update(["prerequisites" => [
             Course::where("abbreviation", "ENGL 15")->first()->id,
-            Course::where("abbreviation", "ECON 102")->first()->id,
             Course::where("abbreviation", "MATH 22")->first()->id,
             Course::where("abbreviation", "ECON 102")->first()->id,],
         ]);

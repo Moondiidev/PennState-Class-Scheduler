@@ -33,7 +33,7 @@ class CourseTest extends TestCase
         $this->courseTwo->semesters()->attach([2]);
         $this->courseThree = Course::factory()->create(
             ['title' => 'Test Course Three', 'abbreviation' => 'Test 432', 'type' => 'Test']);
-        $this->courseTwo->semesters()->attach([2, 3]);
+        $this->courseThree->semesters()->attach([2, 3]);
     }
 
     /**  @test */
@@ -613,7 +613,7 @@ class CourseTest extends TestCase
                                                  "description" => "Some random description", "credits" => 2,]);
     }
 
-    /**  @test */
+    /** @TODO JSON Contains feature is not supported by the SQLite databases, so need to test differently  */
     public function dev_auth_user_can_delete_a_course()
     {
 
@@ -624,6 +624,24 @@ class CourseTest extends TestCase
         $this->assertDatabaseMissing('courses', ["id" => $this->courseOne->id]);
         $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
         $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
+    }
+
+    /** @TODO JSON Contains feature is not supported by the SQLite databases, so need to test differently */
+    public function when_dev_auth_user_deletes_a_course_it_is_removed_as_a_prerequisite_from_other_courses()
+    {
+
+        $this->courseTwo->update(['prerequisites' => [$this->courseOne->id]]);
+
+        $response = $this->actingAs($this->devUser)
+                         ->delete(route('courses.destroy', [$this->courseOne->id]));
+
+        dd($response);
+
+        $response->assertRedirect(route('courses.index'));
+        $this->assertDatabaseMissing('courses', ["id" => $this->courseOne->id]);
+        $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
+        $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
+        $this->assertDatabaseHas('courses', ['id' => $this->courseTwo->id, 'prerequisites' => null]);
     }
 
 

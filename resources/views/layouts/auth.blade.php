@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="sm:container sm:mx-auto sm:mt-10">
+    <main class="sm:max-w-4xl sm:mx-auto sm:mt-10">
         <div class="w-full sm:px-6">
 
             @if (session('status'))
@@ -20,7 +20,10 @@
 
                         @if ( isset($headerButtonAction) )
                             <span>
-                                <a href="{{$headerButtonAction}}" class="floar-right bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-10">{{$headerButtonText}}</a>
+                                <a href="{{$headerButtonAction}}"
+                                   class="bg-{{$headerButtonColor ?? 'gray'}}-500 hover:bg-{{$headerButtonColor ?? 'gray'}}-700 text-white font-bold py-2 px-4 rounded mt-10">
+                                    {{$headerButtonText}}
+                                </a>
                             </span>
                         @endif
 
