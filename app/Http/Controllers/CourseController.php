@@ -132,7 +132,6 @@ class CourseController extends Controller
 
     /**
      * Show the mark course as completed form
-     *
      */
     public function completedForm()
     {
@@ -145,7 +144,6 @@ class CourseController extends Controller
 
     /**
      * Mark submitted classes as completed for auth user
-     *
      */
     public function markAsCompleted(Request $request)
     {
@@ -153,6 +151,26 @@ class CourseController extends Controller
 
         return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
     }
+
+    /**
+     * Display class recommendations page
+     */
+    public function recommendations()
+    {
+        $pageName = "Get Course Recommendations";
+
+
+        return view('recommendations', compact('pageName'));
+    }
+
+    /**
+     * Mark submitted classes as completed for auth user
+     */
+    public function recommendationResults(Request $request)
+    {
+        //
+    }
+
 
 
 }

@@ -13,7 +13,7 @@
         </li>
 
         <li class="mb-6">
-            <a class="underline hover:no-underline hover:text-blue-700" href="{{route('completedForm')}}">Get Recommended Courses</a>
+            <a class="underline hover:no-underline hover:text-blue-700" href="{{route('recommendations')}}">Get Recommended Courses</a>
         </li>
     </ul>
 </div>

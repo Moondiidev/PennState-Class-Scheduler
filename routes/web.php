@@ -44,5 +44,11 @@ Route::middleware(['verified', 'auth'])->group(function () {
         [\App\Http\Controllers\CourseController::class, 'completedForm'])->name('completedForm');
     Route::post('/mark-completed',
         [\App\Http\Controllers\CourseController::class, 'markAsCompleted'])->name('markAsCompleted');
+
+    Route::get('/recommendations',
+        [\App\Http\Controllers\CourseController::class, 'recommendations'])->name('recommendations');
+
+    Route::post('/recommendations',
+        [\App\Http\Controllers\CourseController::class, 'recommendationResults'])->name('recommendationResults');
 });
 
