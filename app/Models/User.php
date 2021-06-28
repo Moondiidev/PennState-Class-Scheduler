@@ -59,9 +59,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * Determine if user is DevUser
      *
      */
-    public static function isDevUser($user)
+    public function isDevUser()
     {
-        return in_array($user->email, User::getDevUsers());
+        return in_array($this->email, User::getDevUsers());
     }
 
     /**

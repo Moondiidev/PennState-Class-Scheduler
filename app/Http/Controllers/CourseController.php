@@ -28,7 +28,7 @@ class CourseController extends Controller
         $pageName = "Courses";
         $courses = Course::all();
 
-        if ( User::isDevUser(auth()->user()) ) {
+        if ( auth()->user()->isDevUser()  ) {
             $headerButtonAction = route('courses.create');
             $headerButtonText   = "Create New Course";
 
@@ -75,7 +75,7 @@ class CourseController extends Controller
         $pageName = $course->title;
         $courses = Course::all();
 
-        if ( User::isDevUser(auth()->user()) ) {
+        if ( auth()->user()->isDevUser() ) {
 
             $headerButtonAction = route('courses.edit', $course->id);
             $headerButtonText = "Edit Course";
@@ -164,7 +164,7 @@ class CourseController extends Controller
     }
 
     /**
-     * Mark submitted classes as completed for auth user
+     * Calculate and Display recommended course results
      */
     public function recommendationResults(Request $request)
     {

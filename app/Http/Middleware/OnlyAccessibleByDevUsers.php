@@ -17,7 +17,7 @@ class OnlyAccessibleByDevUsers
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! User::isDevUser($request->user())) {
+        if (! $request->user()->isDevUser()) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Not authorized.'],403);
             }
