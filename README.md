@@ -16,6 +16,7 @@ SWENG 411 group project repository
 - One of the key advantages of using the Laravel is the tremendous how-to videos on the Framework that can be found at Laracasts.com. Many of these tutorials, videos, etc. are completely free, including [this one](https://laracasts.com/series/laravel-8-from-scratch/episodes/17), which walks you through setting up your database connection in the app. The DB portion starts at about the 2:00 mark in the video but it may be worth watching the first two minutes if you haven't use `.env` (environment files) before as they are used in many frameworks nowadays.  
 - I recommend using the default mysql connection setup shown in the video as opposed to sqlite or postgres 
 - Now that the app is connected to a database, you can run the default [migration files](https://laravel.com/docs/8.x/migrations) with the `php artisan migrate` command
+- After running the migration you can populate the database with the course content, users, semesters, etc. by running `php artisan db:seed`
 
 ### Add the `.env` file and Generate the local app key
 - In order for the app to function properly it needs to have a `.env` (environment) file (more info on environment files can be [found here](https://dev.to/jakewitcher/using-env-files-for-environment-variables-in-python-applications-55a1)). You will also need to generate an application key to secure the app. This will ensure that any items (like cookies) that should be encypted are encrypted. For further reading see [this blog post](https://tighten.co/blog/app-key-and-you/). 
