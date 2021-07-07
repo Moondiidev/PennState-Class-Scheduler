@@ -25,7 +25,7 @@
 
             @include('courses.partials.course-form')
 
-            <div class="flex justify-between">
+            <div>
                 <button type="submit" class="w-full sm:w-1/4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded mt-10">
                     Update
                 </button>

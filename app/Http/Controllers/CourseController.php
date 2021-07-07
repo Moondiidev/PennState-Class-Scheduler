@@ -28,7 +28,7 @@ class CourseController extends Controller
         $pageName = "Courses";
         $courses = Course::all();
 
-        if ( User::isDevUser(auth()->user()) ) {
+        if ( auth()->user()->isDevUser()  ) {
             $headerButtonAction = route('courses.create');
             $headerButtonText   = "Create New Course";
 
@@ -75,7 +75,7 @@ class CourseController extends Controller
         $pageName = $course->title;
         $courses = Course::all();
 
-        if ( User::isDevUser(auth()->user()) ) {
+        if ( auth()->user()->isDevUser() ) {
 
             $headerButtonAction = route('courses.edit', $course->id);
             $headerButtonText = "Edit Course";
@@ -111,7 +111,7 @@ class CourseController extends Controller
         $course->update($request->all());
         $course->semesters()->sync($request->input('semester'));
 
-        return back()->with('status', 'Course Updated Successfully Updated!');
+        return back()->with('status', 'Course Successfully Updated!');
     }
 
     /**
@@ -132,7 +132,6 @@ class CourseController extends Controller
 
     /**
      * Show the mark course as completed form
-     *
      */
     public function completedForm()
     {
@@ -145,7 +144,6 @@ class CourseController extends Controller
 
     /**
      * Mark submitted classes as completed for auth user
-     *
      */
     public function markAsCompleted(Request $request)
     {
@@ -153,6 +151,26 @@ class CourseController extends Controller
 
         return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
     }
+
+    /**
+     * Display class recommendations page
+     */
+    public function recommendations()
+    {
+        $pageName = "Get Course Recommendations";
+
+
+        return view('recommendations', compact('pageName'));
+    }
+
+    /**
+     * Calculate and Display recommended course results
+     */
+    public function recommendationResults(Request $request)
+    {
+        //
+    }
+
 
 
 }
