@@ -25,17 +25,22 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $pageName = "Courses";
-        $courses = Course::all();
+//        $pageName = "Courses";
+//        $courses = Course::all();
+//
+//        if ( auth()->user()->isDevUser()  ) {
+//            $headerButtonAction = route('courses.create');
+//            $headerButtonText   = "Create New Course";
+//
+//            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+//        }
+//
+//        return view('courses.index', compact('courses', 'pageName'));
 
-        if ( auth()->user()->isDevUser()  ) {
-            $headerButtonAction = route('courses.create');
-            $headerButtonText   = "Create New Course";
+        return response()->json([
+            'courses' => Course::all(),
+        ]);
 
-            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
-        }
-
-        return view('courses.index', compact('courses', 'pageName'));
     }
 
     /**
@@ -44,11 +49,16 @@ class CourseController extends Controller
      */
     public function create()
     {
-        $pageName = "Create New Course ";
-        $course = new Course();
-        $courses = Course::all();
+//        $pageName = "Create New Course ";
+//        $course = new Course();
+//        $courses = Course::all();
+//
+//        return view('courses.create', compact('course', 'courses', 'pageName'));
 
-        return view('courses.create', compact('course', 'courses', 'pageName'));
+        return response()->json([
+            'courses' => Course::all(),
+        ]);
+
     }
 
     /**
@@ -62,7 +72,14 @@ class CourseController extends Controller
         $course = Course::create($request->all());
         $course->semesters()->sync($request->input('semester'));
 
-        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Created!');
+//        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Created!');
+
+        return response()->json([
+            'message' =>  $course->title . ' Successfully Created!',
+            'course' =>  $course,
+            'courses' => Course::all(),
+        ]);
+
     }
 
     /**
@@ -72,19 +89,24 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        $pageName = $course->title;
-        $courses = Course::all();
+//        $pageName = $course->title;
+//        $courses = Course::all();
+//
+//        if ( auth()->user()->isDevUser() ) {
+//
+//            $headerButtonAction = route('courses.edit', $course->id);
+//            $headerButtonText = "Edit Course";
+//
+//            return view('courses.show', compact('course', 'courses', 'pageName',
+//                'headerButtonAction', 'headerButtonText'));
+//        }
+//
+//        return view('courses.show', compact('course', 'courses', 'pageName'));
 
-        if ( auth()->user()->isDevUser() ) {
-
-            $headerButtonAction = route('courses.edit', $course->id);
-            $headerButtonText = "Edit Course";
-
-            return view('courses.show', compact('course', 'courses', 'pageName',
-                'headerButtonAction', 'headerButtonText'));
-        }
-
-        return view('courses.show', compact('course', 'courses', 'pageName'));
+        return response()->json([
+            'course' =>  $course,
+            'courses' => Course::all(),
+        ]);
     }
 
     /**
@@ -94,10 +116,15 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        $pageName = "Edit " . $course->title;
-        $courses = Course::all();
+//        $pageName = "Edit " . $course->title;
+//        $courses = Course::all();
+//
+//        return view('courses.edit', compact('course', 'courses', 'pageName'));
 
-        return view('courses.edit', compact('course', 'courses', 'pageName'));
+        return response()->json([
+            'course' =>  $course,
+            'courses' => Course::all(),
+        ]);
     }
 
     /**
@@ -111,7 +138,13 @@ class CourseController extends Controller
         $course->update($request->all());
         $course->semesters()->sync($request->input('semester'));
 
-        return back()->with('status', 'Course Successfully Updated!');
+//        return back()->with('status', 'Course Successfully Updated!');
+
+        return response()->json([
+            'message' =>  $course->title . ' Successfully Updated!',
+            'course' =>  $course,
+            'courses' => Course::all(),
+        ]);
     }
 
     /**
@@ -127,7 +160,15 @@ class CourseController extends Controller
 
         $course->delete();
 
-        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Deleted!');
+//        return redirect()->route('courses.index')->with('status', $course->title . ' Successfully Deleted!');
+
+        return response()->json([
+            'message' =>  $course->title . ' Successfully Deleted',
+            'course' =>  $course,
+            'courses' => Course::all(),
+        ]);
+
+
     }
 
     /**
@@ -135,11 +176,17 @@ class CourseController extends Controller
      */
     public function completedForm()
     {
-        $pageName = "Mark Completed Courses";
-        $courses = Course::all();
-        $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
+//        $pageName = "Mark Completed Courses";
+//        $courses = Course::all();
+//        $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
+//
+//        return view('mark-completed', compact('courses', 'pageName', 'currentCompletedCourses'));
 
-        return view('mark-completed', compact('courses', 'pageName', 'currentCompletedCourses'));
+        return response()->json([
+            'currentCompletedCourses' =>  auth()->user()->completedCourses(),
+            'courses' => Course::all()
+        ]);
+
     }
 
     /**
@@ -149,7 +196,13 @@ class CourseController extends Controller
     {
         auth()->user()->completedCourses()->sync($request->input('completed'));
 
-        return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
+//        return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
+
+        return response()->json([
+            'message' =>  'Completed Courses Successfully Marked!',
+            'currentCompletedCourses' =>  auth()->user()->completedCourses(),
+            'courses' => Course::all(),
+        ]);
     }
 
     /**
@@ -157,10 +210,16 @@ class CourseController extends Controller
      */
     public function recommendations()
     {
-        $pageName = "Get Course Recommendations";
+//        $pageName = "Get Course Recommendations";
+//
+//
+//        return view('recommendations', compact('pageName'));
+
+        return response()->json([
+            'message' =>  'Working on it...',
+        ]);
 
 
-        return view('recommendations', compact('pageName'));
     }
 
     /**
@@ -168,7 +227,9 @@ class CourseController extends Controller
      */
     public function recommendationResults(Request $request)
     {
-        //
+        return response()->json([
+            'message' =>  'Working on it...',
+        ]);
     }
 
 
