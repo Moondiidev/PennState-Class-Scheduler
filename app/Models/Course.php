@@ -14,7 +14,8 @@ class Course extends Model
      *
      * @var array
      */
-    protected $fillable = ["title", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
+    protected $fillable = ["title", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents',
+                            'prerequisites_for_count', 'semester_specific'];
 
 
     /**

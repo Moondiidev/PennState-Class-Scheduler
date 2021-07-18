@@ -16,7 +16,7 @@ class CourseSeeder extends Seeder
      */
     public function run()
     {
-        foreach ($this->getCourses() as $course) {
+        foreach ($this->getCourseDetails() as $course) {
 
             DB::table('courses')->insert([
                 'title' => $course['title'],
@@ -29,74 +29,76 @@ class CourseSeeder extends Seeder
 
 
         // prerequisites
-        Course::where("abbreviation", "CHEM 111")->first()->update(["prerequisites" => [Course::where("abbreviation", "CHEM 110")->first()->id]]);
-        Course::where("abbreviation", "CMPEN 351")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPEN 270")->first()->id]]);
-        Course::where("abbreviation", "CMPEN 441")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 360")->first()->id]]);
+        Course::where("abbreviation", "CHEM 111")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CHEM 110")->first()->id]]);
+        Course::where("abbreviation", "CMPEN 351")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPEN 270")->first()->id]]);
+        Course::where("abbreviation", "CMPEN 441")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 360")->first()->id]]);
         Course::where("abbreviation", "CMPEN 461")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "CMPEN 270")->first()->id,
-            Course::where("abbreviation", "CMPSC 121")->first()->id],
+            (string) Course::where("abbreviation", "CMPEN 270")->first()->id,
+            (string) Course::where("abbreviation", "CMPSC 121")->first()->id],
         ]);
-        Course::where("abbreviation", "CMPSC 122")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 121")->first()->id]]);
-        Course::where("abbreviation", "CMPSC 360")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "CMPSC 122")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 121")->first()->id]]);
+        Course::where("abbreviation", "CMPSC 360")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 122")->first()->id]]);
         Course::where("abbreviation", "CMPSC 461")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "SWENG 311")->first()->id,
-            Course::where("abbreviation", "CMPSC 360")->first()->id],
+            (string) Course::where("abbreviation", "SWENG 311")->first()->id,
+            (string) Course::where("abbreviation", "CMPSC 360")->first()->id],
         ]);
         Course::where("abbreviation", "CMPSC 465")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "CMPSC 122")->first()->id,
-            Course::where("abbreviation", "CMPSC 360")->first()->id],
+            (string) Course::where("abbreviation", "CMPSC 122")->first()->id,
+            (string) Course::where("abbreviation", "CMPSC 360")->first()->id],
         ]);
-        Course::where("abbreviation", "ENGL 202C")->first()->update(["prerequisites" => [Course::where("abbreviation", "ENGL 15")->first()->id]]);
-        Course::where("abbreviation", "MATH 26")->first()->update(["prerequisites" => [Course::where("abbreviation", "MATH 22")->first()->id]]);
+        Course::where("abbreviation", "ENGL 202C")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "ENGL 15")->first()->id]]);
+        Course::where("abbreviation", "MATH 26")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 22")->first()->id]]);
         Course::where("abbreviation", "MATH 141")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "MATH 22")->first()->id,
-            Course::where("abbreviation", "MATH 26")->first()->id],
+            (string) Course::where("abbreviation", "MATH 22")->first()->id,
+            (string) Course::where("abbreviation", "MATH 26")->first()->id],
         ]);
-        Course::where("abbreviation", "MATH 220")->first()->update(["prerequisites" => [Course::where("abbreviation", "MATH 140")->first()->id]]);
-        Course::where("abbreviation", "MATH 250")->first()->update(["prerequisites" => [Course::where("abbreviation", "MATH 141")->first()->id]]);
+        Course::where("abbreviation", "MATH 220")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 140")->first()->id]]);
+        Course::where("abbreviation", "MATH 250")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 141")->first()->id]]);
         Course::where("abbreviation", "MGMT 301")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "ENGL 15")->first()->id,
-            Course::where("abbreviation", "MATH 22")->first()->id,
-            Course::where("abbreviation", "ECON 102")->first()->id,],
+            (string) Course::where("abbreviation", "ENGL 15")->first()->id,
+            (string) Course::where("abbreviation", "MATH 22")->first()->id,
+            (string) Course::where("abbreviation", "ECON 102")->first()->id,],
         ]);
         Course::where("abbreviation", "PHYS 212")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "MATH 140")->first()->id,
-            Course::where("abbreviation", "PHYS 211")->first()->id],
+            (string) Course::where("abbreviation", "MATH 140")->first()->id,
+            (string) Course::where("abbreviation", "PHYS 211")->first()->id],
         ]);
-        Course::where("abbreviation", "STAT 318")->first()->update(["prerequisites" => [Course::where("abbreviation", "MATH 141")->first()->id]]);
-        Course::where("abbreviation", "SWENG 311")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 122")->first()->id]]);
-        Course::where("abbreviation", "SWENG 411")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPSC 122")->first()->id]]);
-        Course::where("abbreviation", "SWENG 421")->first()->update(["prerequisites" => [Course::where("abbreviation", "SWENG 411")->first()->id]]);
+        Course::where("abbreviation", "STAT 318")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 141")->first()->id]]);
+        Course::where("abbreviation", "SWENG 311")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "SWENG 411")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "SWENG 421")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "SWENG 411")->first()->id]]);
         Course::where("abbreviation", "SWENG 431")->first()->update(["prerequisites" => [
-            Course::where("abbreviation", "SWENG 411")->first()->id,
-            Course::where("abbreviation", "STAT 318")->first()->id],
+            (string) Course::where("abbreviation", "SWENG 411")->first()->id,
+            (string) Course::where("abbreviation", "STAT 318")->first()->id],
         ]);
-        Course::where("abbreviation", "SWENG 452")->first()->update(["prerequisites" => [Course::where("abbreviation", "CMPEN 441")->first()->id]]);
-        Course::where("abbreviation", "SWENG 480")->first()->update(["prerequisites" => [Course::where("abbreviation", "SWENG 431")->first()->id]]);
-        Course::where("abbreviation", "SWENG 481")->first()->update(["prerequisites" => [Course::where("abbreviation", "SWENG 480")->first()->id]]);
+        Course::where("abbreviation", "SWENG 452")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPEN 441")->first()->id]]);
+        Course::where("abbreviation", "SWENG 480")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "SWENG 431")->first()->id]]);
+        Course::where("abbreviation", "SWENG 481")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "SWENG 480")->first()->id]]);
 
 
 
         // concurrents
-        Course::where("abbreviation", "CHEM 111")->first()->update(["concurrents" => [Course::where("abbreviation", "CHEM 110")->first()->id]]);
-        Course::where("abbreviation", "CMPEN 270")->first()->update(["concurrents" => [Course::where("abbreviation", "PHYS 212")->first()->id]]);
-        Course::where("abbreviation", "CMPSC 360")->first()->update(["concurrents" => [Course::where("abbreviation", "CMPSC 122")->first()->id]]);
-        Course::where("abbreviation", "PHYS 211")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 140")->first()->id]]);
-        Course::where("abbreviation", "PHYS 212")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 141")->first()->id]]);
-        Course::where("abbreviation", "SWENG 411")->first()->update(["concurrents" => [Course::where("abbreviation", "SWENG 311")->first()->id]]);
-        Course::where("abbreviation", "EE 211")->first()->update(["concurrents" => [Course::where("abbreviation", "MATH 250")->first()->id]]);
+        Course::where("abbreviation", "CHEM 111")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "CHEM 110")->first()->id]]);
+        Course::where("abbreviation", "CMPEN 270")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "PHYS 212")->first()->id]]);
+        Course::where("abbreviation", "CMPSC 360")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "PHYS 211")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "MATH 140")->first()->id]]);
+        Course::where("abbreviation", "PHYS 212")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "MATH 141")->first()->id]]);
+        Course::where("abbreviation", "SWENG 411")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "SWENG 311")->first()->id]]);
+        Course::where("abbreviation", "EE 211")->first()->update(["concurrents" => [ (string) Course::where("abbreviation", "MATH 250")->first()->id]]);
 
 
-        // semesters (random)
         foreach(Course::all() as $course) {
+            // semesters (random)
             $semester = Text::randomElements([1, 2, 3], rand(1, 3));
             $course->semesters()->attach($semester);
-        }
 
+            // fill prerequisites_for_count field
+            $course->update(['prerequisites_for_count' => Course::whereJsonContains('prerequisites', (string) $course->id )->count()]);
+        }
 
     }
 
-    private function getCourses()
+    private function getCourseDetails()
     {
         return
             [
