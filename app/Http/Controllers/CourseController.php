@@ -168,8 +168,23 @@ class CourseController extends Controller
      */
     public function recommendationResults(Request $request)
     {
-        //
+        // courses in the selected semester that the user has not already completed
+        $availableCourses = Course::getCoursesBySemester($request->input('semester'));
+
+        $eligibleCourses = $availableCourses->filter(function ($value) {
+            return $value->prerequisites == null ||
+                   ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray() );
+        })->sortByDesc('prerequisites_for_count')->take($request->input('number_of_courses'));
+        //dd($eligibleCourses);
+
+        foreach ($eligibleCourses as $course)  {
+            echo $course->abbreviation . " - " . $course->title . " (" .$course->credits . " credits) <br>";
+        }
+
+
     }
+
+
 
 
 

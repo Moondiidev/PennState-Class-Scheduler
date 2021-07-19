@@ -51,6 +51,11 @@ class Course extends Model
         return Course::all()->pluck('id')->toArray();
     }
 
+    public static function getCoursesBySemester($semester)
+    {
+        return Course::has('semesters', '=', $semester)->get();
+    }
+
     public static function removeDeletedCourseFromPrerequisites($course_id)
     {
         Course::whereJsonContains('prerequisites', $course_id)->each(function ($item) use ($course_id) {

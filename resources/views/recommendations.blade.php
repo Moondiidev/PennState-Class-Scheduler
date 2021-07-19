@@ -4,7 +4,7 @@
 
     <div>
 
-        <form action="{{route('markAsCompleted')}}" method="post">
+        <form action="{{route('recommendationResults')}}" method="post">
         @csrf
 
             <div class="flex flex-wrap -mx-3 mb-3">
@@ -26,9 +26,9 @@
 
                 <div class="w-full md:w-1/5 px-3 mb-3 md:mb-0">
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-credits">
-                        Desired Credits
+                        # of Courses
                     </label>
-                    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-credits" type="number" placeholder="12">
+                    <input name="number_of_courses" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-credits" type="number" placeholder="5">
                 </div>
             </div>
 

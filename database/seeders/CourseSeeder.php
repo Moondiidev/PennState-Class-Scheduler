@@ -331,15 +331,6 @@ class CourseSeeder extends Seeder
                  "credits" => 3
                 ],
 
-                ["title" => "Software Engineering",
-                 "abbreviation" => "SWENG 411",
-                 'type' => "SWENG",
-                 "description" => "Software engineering principles including lifecycle, dependability,
-                 process modeling, project management, requires specification, design analysis, implementation,
-                 testing, and maintenance.",
-                 "credits" => 3
-                ],
-
                 ["title" => "Software Architecture",
                  "abbreviation" => "SWENG 421",
                  'type' => "SWENG",
