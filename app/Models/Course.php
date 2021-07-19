@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Course extends Model
 {
@@ -53,7 +54,9 @@ class Course extends Model
 
     public static function getCoursesBySemester($semester)
     {
-        return Course::has('semesters', '=', $semester)->get();
+        return Course::whereHas('semesters', function (Builder $query) use ($semester) {
+            $query->where('semester_id', 'like', $semester);
+        })->get();
     }
 
     public static function removeDeletedCourseFromPrerequisites($course_id)

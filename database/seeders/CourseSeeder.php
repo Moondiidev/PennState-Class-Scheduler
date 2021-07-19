@@ -94,6 +94,10 @@ class CourseSeeder extends Seeder
 
             // fill prerequisites_for_count field
             $course->update(['prerequisites_for_count' => Course::whereJsonContains('prerequisites', (string) $course->id )->count()]);
+
+            if (rand(0,99) % 7 == 0) {
+                $course->update(['semester_specific' => 1]);
+            }
         }
 
     }
