@@ -95,7 +95,7 @@ class CourseSeeder extends Seeder
         foreach(Course::all() as $course) {
             // semesters (random)
             $semester = Text::randomElements([1, 2, 3], rand(1, 3));
-            $course->semesters()->attach($semester);
+            $course->semesters()->attach([1, 2, 3]);
 
             // fill prerequisites_for_count field
             $course->update(['prerequisites_for_count' => Course::whereJsonContains('prerequisites', (string) $course->id )->count()]);
@@ -137,21 +137,6 @@ class CourseSeeder extends Seeder
                  "credits" => 3,
                 ],
 
-                ["title" => "Introductory Microeconomic Analysis and Policy",
-                 "abbreviation" => "ECON 102",
-                 'type' => "ECON",
-                 "description" => "Methods of economic analysis and their use; price determination;
-                 theory of the firm; distribution.",
-                 "credits" => 3,
-                ],
-
-                ["title" => "Introductory Macroeconomic Analysis and Policy",
-                 "abbreviation" => "ECON 104",
-                 'type' => "ECON",
-                 "description" => "National income measurement; aggregate economic models; money and income;
-                 policy problems.",
-                 "credits" => 3,
-                ],
                 ["title" => "Electrical Circuits and Power Distribution",
                  "abbreviation" => "EE 211",
                  'type' => "EE",
@@ -375,6 +360,21 @@ class CourseSeeder extends Seeder
                  'type' => "SWENG",
                  "description" => "Capstone group design projects in software engineering.",
                  "credits" => 3
+                ],
+                ["title" => "Introductory Microeconomic Analysis and Policy",
+                 "abbreviation" => "ECON 102",
+                 'type' => "ECON",
+                 "description" => "Methods of economic analysis and their use; price determination;
+                 theory of the firm; distribution.",
+                 "credits" => 3,
+                ],
+
+                ["title" => "Introductory Macroeconomic Analysis and Policy",
+                 "abbreviation" => "ECON 104",
+                 'type' => "ECON",
+                 "description" => "National income measurement; aggregate economic models; money and income;
+                 policy problems.",
+                 "credits" => 3,
                 ],
 
             ];

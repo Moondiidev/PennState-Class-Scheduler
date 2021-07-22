@@ -173,6 +173,7 @@ class CourseController extends Controller
         $pageName = "Course Recommendations";
 
         $semester = $request->input('semester');
+        $requestedNumberOfCourses = $request->input('number_of_courses');
 
         // courses in the selected semester that the user has not already completed
         $availableCourses = Course::getCoursesBySemester($semester)->diff($request->user()->completedCourses);
@@ -184,12 +185,16 @@ class CourseController extends Controller
         // find and add any available concurrent courses based on suggested courses above
         $suggestedCourses =
             $this->addCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
-                                 ->take($request->input('number_of_courses'));
+                 ->take($requestedNumberOfCourses);
 
-        $concurrentWarnings = $this->getConcurrentWarnings($suggestedCourses, $semester);
+        $warnings = $this->getConcurrentWarnings($suggestedCourses, $semester);
+
+        if ($requestedNumberOfCourses > $suggestedCourses->count()) {
+           $this->lessThanExpectedCoursesWarning($warnings);
+        }
 
         return view('recommendations.show',
-            compact('pageName', 'suggestedCourses', 'concurrentWarnings'));
+            compact('pageName', 'suggestedCourses', 'warnings'));
 
     }
 
@@ -252,6 +257,12 @@ class CourseController extends Controller
         }
 
         return $warnings;
+    }
+
+    private function lessThanExpectedCoursesWarning(& $warnings)
+    {
+        return array_push($warnings, "We could not find enough available courses to meet
+            the number of courses you requested due to limitation of course offerings and prerequisites.");
     }
 
 
