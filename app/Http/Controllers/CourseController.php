@@ -32,7 +32,8 @@ class CourseController extends Controller
             $headerButtonAction = route('courses.create');
             $headerButtonText   = "Create New Course";
 
-            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+            return view('courses.index',
+                compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
         }
 
         return view('courses.index', compact('courses', 'pageName'));
@@ -139,7 +140,8 @@ class CourseController extends Controller
         $courses = Course::all();
         $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
 
-        return view('mark-completed', compact('courses', 'pageName', 'currentCompletedCourses'));
+        return view('mark-completed',
+            compact('courses', 'pageName', 'currentCompletedCourses'));
     }
 
     /**
@@ -168,24 +170,89 @@ class CourseController extends Controller
      */
     public function recommendationResults(Request $request)
     {
-        // courses in the selected semester that the user has not already completed
-        $availableCourses = Course::getCoursesBySemester($request->input('semester'))->diff($request->user()->completedCourses);
-
-        // find courses to suggest
-        $suggestedCourses = $availableCourses->filter(function ($value) {
-            return $value->prerequisites == null ||
-                   ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray() );
-        })->sortByDesc('semester_specific')->sortByDesc('prerequisites_for_count')->take($request->input('number_of_courses'));
-
-
         $pageName = "Course Recommendations";
 
-        return view('recommendations.show', compact('pageName', 'suggestedCourses'));
+        $semester = $request->input('semester');
+
+        // courses in the selected semester that the user has not already completed
+        $availableCourses = Course::getCoursesBySemester($semester)->diff($request->user()->completedCourses);
+
+        // find courses to suggest
+        $this->getSuggestedCourses($availableCourses);
+        $suggestedCourses = $this->getSuggestedCourses($availableCourses);
+
+        // find and add any available concurrent courses based on suggested courses above
+        $suggestedCourses =
+            $this->addCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+                                 ->take($request->input('number_of_courses'));
+
+        $concurrentWarnings = $this->getConcurrentWarnings($suggestedCourses, $semester);
+
+        return view('recommendations.show',
+            compact('pageName', 'suggestedCourses', 'concurrentWarnings'));
 
     }
 
 
+    private function getSuggestedCourses($availableCourses)
+    {
+        return $availableCourses->filter(function ($value) {
 
+            return ($value->prerequisites == null && $value->concurrents == null)
+                   ||
+                   (
+                       ( $value->prerequisites && ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                       &&
+                       ( $value->concurrents && ! array_diff( $value->concurrents, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                   )
+                   ||
+                   (
+                       ( ! $value->prerequisites )
+                       &&
+                       ( $value->concurrents && ! array_diff( $value->concurrents, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                   )
+                   ||
+                   (
+                       ( $value->prerequisites && ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                       &&
+                       ( ! $value->concurrents )
+                   );
+
+        })->sortByDesc('semester_specific')->sortByDesc('prerequisites_for_count');
+    }
+
+    private function addCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+    {
+        // insert concurrent course directly after the course it is concurrent with
+        foreach ($this->findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester) as $course) {
+            $index = $suggestedCourses->search(Course::find($course->concurrents[0]));
+            $suggestedCourses->splice($index, 0, [$course]);
+        }
+
+        return $suggestedCourses;
+    }
+
+    private function findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+    {
+        return Course::getCoursesWithConcurrents($semester)->filter(function ($course)  use ($suggestedCourses) {
+            return  ! array_diff( $course->concurrents, $suggestedCourses->pluck('id')->toArray());
+        });
+    }
+
+    private function getConcurrentWarnings($suggestedCourses, $semester)
+    {
+        $includedConcurrentCourses = $suggestedCourses
+            ->intersect($this->findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester));
+
+        $warnings = [];
+
+        foreach ($includedConcurrentCourses as $key => $course) {
+            $warnings[$key] = $course->abbreviation . " can only be taken as a concurrent if you also take " .
+                              Course::find($course->concurrents[0])->abbreviation . "!";
+        }
+
+        return $warnings;
+    }
 
 
 }

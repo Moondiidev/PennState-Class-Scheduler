@@ -38,6 +38,10 @@ class CourseSeeder extends Seeder
         ]);
         Course::where("abbreviation", "CMPSC 122")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 121")->first()->id]]);
         Course::where("abbreviation", "CMPSC 360")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "CMPSC 122")->first()->id]]);
+        Course::where("abbreviation", "CMPSC 431W")->first()->update(["prerequisites" => [
+            (string) Course::where("abbreviation", "ENGL 202C")->first()->id,
+            (string) Course::where("abbreviation", "SWENG 311")->first()->id],
+        ]);
         Course::where("abbreviation", "CMPSC 461")->first()->update(["prerequisites" => [
             (string) Course::where("abbreviation", "SWENG 311")->first()->id,
             (string) Course::where("abbreviation", "CMPSC 360")->first()->id],
@@ -48,10 +52,11 @@ class CourseSeeder extends Seeder
         ]);
         Course::where("abbreviation", "ENGL 202C")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "ENGL 15")->first()->id]]);
         Course::where("abbreviation", "MATH 26")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 22")->first()->id]]);
-        Course::where("abbreviation", "MATH 141")->first()->update(["prerequisites" => [
+        Course::where("abbreviation", "MATH 140")->first()->update(["prerequisites" => [
             (string) Course::where("abbreviation", "MATH 22")->first()->id,
             (string) Course::where("abbreviation", "MATH 26")->first()->id],
         ]);
+        Course::where("abbreviation", "MATH 141")->first()->update(["prerequisites" => [(string) Course::where("abbreviation", "MATH 140")->first()->id,]]);
         Course::where("abbreviation", "MATH 220")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 140")->first()->id]]);
         Course::where("abbreviation", "MATH 250")->first()->update(["prerequisites" => [ (string) Course::where("abbreviation", "MATH 141")->first()->id]]);
         Course::where("abbreviation", "MGMT 301")->first()->update(["prerequisites" => [
@@ -225,7 +230,7 @@ class CourseSeeder extends Seeder
                 ],
 
                 ["title" => "Database Management Systems",
-                 "abbreviation" => "CMPSC  431W",
+                 "abbreviation" => "CMPSC 431W",
                  'type' => "CMPSC",
                  "description" => "Fundamental concepts of programming language design, specifications,
                 and implementation; programming language paradigms and features; program verification.",

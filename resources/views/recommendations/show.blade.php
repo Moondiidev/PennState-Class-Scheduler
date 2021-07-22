@@ -4,6 +4,22 @@
 
     <div>
 
+        @if($concurrentWarnings)
+
+            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Holy smokes!</strong>
+
+                @foreach($concurrentWarnings as $warning)
+
+                    <span class="block sm:inline">{{$warning}}</span>
+
+                @endforeach
+
+            </div>
+
+        @endif
+
+
         @if($suggestedCourses->isEmpty())
 
             <p>Sorry, we couldn't find any courses that fit your criteria...</p>

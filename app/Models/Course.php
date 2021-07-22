@@ -59,6 +59,13 @@ class Course extends Model
         })->get();
     }
 
+    public static function getCoursesWithConcurrents($semester)
+    {
+        return Course::whereNotNull('concurrents')->whereHas('semesters', function (Builder $query) use ($semester) {
+            $query->where('semester_id', 'like', $semester);
+        })->get();
+    }
+
     public static function removeDeletedCourseFromPrerequisites($course_id)
     {
         Course::whereJsonContains('prerequisites', $course_id)->each(function ($item) use ($course_id) {
