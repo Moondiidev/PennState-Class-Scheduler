@@ -1943,7 +1943,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function AppController() {
+function AppController(props) {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
   model.sortCourses();
   var courses = model.getAllCourses();
@@ -1987,7 +1987,11 @@ function AppController() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppController);
 
 if (document.getElementById("myTest")) {
-  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, null)), document.getElementById("myTest"));
+  // find element by id
+  var element = document.getElementById('courses'); // create new props object with element's data-attributes
+
+  var props = Object.assign({}, element.dataset);
+  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, props)), document.getElementById("myTest"));
 }
 
 /***/ }),
