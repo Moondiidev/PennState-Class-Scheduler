@@ -59,7 +59,7 @@ if (document.getElementById("myTest")) {
     const element = document.getElementById('courses')
 
     // create new props object with element's data-attributes
-    const props = Object.assign({}, element.dataset)
+    const props = Object.assign({}, element.dataset.props)
 
     ReactDOM.render(
         <React.StrictMode>

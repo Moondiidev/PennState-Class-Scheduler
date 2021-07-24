@@ -1990,7 +1990,7 @@ if (document.getElementById("myTest")) {
   // find element by id
   var element = document.getElementById('courses'); // create new props object with element's data-attributes
 
-  var props = Object.assign({}, element.dataset);
+  var props = Object.assign({}, element.dataset.props);
   react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, props)), document.getElementById("myTest"));
 }
 
