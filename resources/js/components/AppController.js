@@ -6,7 +6,8 @@ import ReactDOM from "react-dom";
 import CourseMap from "./CourseMap";
 import CourseList from "./CourseList";
 
-function AppController() {
+function AppController(props) {
+
     const model = new CourseModel();
 
     model.sortCourses();
@@ -53,9 +54,16 @@ function AppController() {
 export default AppController;
 
 if (document.getElementById("myTest")) {
+
+    // find element by id
+    const element = document.getElementById('courses')
+
+    // create new props object with element's data-attributes
+    const props = Object.assign({}, element.dataset)
+
     ReactDOM.render(
         <React.StrictMode>
-            <AppController />
+            <AppController{...props} />
         </React.StrictMode>,
         document.getElementById("myTest")
     );
