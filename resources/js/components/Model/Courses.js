@@ -7,23 +7,25 @@ function model() {
     let useServer = false;
     let courseLevelAscending = true;
 
+    let courseTypes = [];
+
     // let courses = [];
 
-    // const loadCourses = () => {
+    const loadCourses = () => {
 
-    //     if (useServer) {
+        // if (useServer) {
 
-    //         axios.get({
-    //             method: 'get',
-    //             url: '/courses',
-    //         }).then((response) => {
-    //             console.log("response from courses: ", response);
+        //     return axios.get({
+        //         method: 'get',
+        //         url: '/courses',
+        //     }).then((response) => {
+        //         console.log("response from courses: ", response);
 
-    //         })
-    //     } else {
-    //         courses = require("./data/markTest.json");
-    //     }
-    // }
+        //     })
+        // } else {
+        //     courses = require("./data/markTest.json");
+        // }
+    }
 
     const getCourseById = (id) => {
         for (let index = 0; index < courses.length; index++) {
@@ -38,8 +40,8 @@ function model() {
             let courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
             let courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
 
-            console.log("abr A", courseLevelA[0], a.abbreviation)
-            console.log("abr B", courseLevelB[0], b.abbreviation)
+            // console.log("abr A", courseLevelA[0], a.abbreviation)
+            // console.log("abr B", courseLevelB[0], b.abbreviation)
 
             if (courseLevelAscending) {
                 return d3.ascending(courseLevelA, courseLevelB)
@@ -51,7 +53,27 @@ function model() {
         });
     };
 
+    const getCourseTypes = () => {
+        let types = {};
+        courses.forEach((course) => {
+            if(!types[course.type] ) {
+                types[course.type] = 0;
+            }
+            types[course.type]++;
+        })
+
+        console.log("courseTypes counts: ", types);
+
+        courseTypes = [];
+        for (let type in types) {
+            courseTypes.push[type];
+        }
+
+        return courseTypes;
+    }
+
     const getAllCourses = () => {
+        loadCourses();
         return courses;
     };
 
@@ -87,6 +109,7 @@ function model() {
         getCourseNodes,
         getCourseLinks,
         sortCourses,
+        getCourseTypes,
     };
 }
 

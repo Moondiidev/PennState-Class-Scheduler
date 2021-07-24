@@ -1924,6 +1924,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var _CourseMap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CourseMap */ "./resources/js/components/CourseMap.js");
 /* harmony import */ var _CourseList__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CourseList */ "./resources/js/components/CourseList.js");
+/* harmony import */ var _CourseInspector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./CourseInspector */ "./resources/js/components/CourseInspector.js");
+/* harmony import */ var _CourseControls__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CourseControls */ "./resources/js/components/CourseControls.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1943,10 +1945,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function AppController(props) {
+
+
+function AppController() {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
   model.sortCourses();
   var courses = model.getAllCourses();
+  var courseTypes = model.getCourseTypes();
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -1954,6 +1959,7 @@ function AppController(props) {
       setSelectedCourse = _useState2[1];
 
   console.log("courses: ", courses);
+  console.log("courseTypes: ", courseTypes);
 
   var selectCourse = function selectCourse(id) {
     console.log("set selectedCourse", id);
@@ -1969,8 +1975,14 @@ function AppController(props) {
     }
   };
 
+  var setFilter = function setFilter(params) {
+    console.log("params: ", params);
+  };
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "mark-test-style"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "course-view-top"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseMap__WEBPACK_IMPORTED_MODULE_4__.default, {
     courses: courses,
     selectedCourse: selectedCourse,
@@ -1981,17 +1993,24 @@ function AppController(props) {
     courses: courses,
     selectedCourse: selectedCourse,
     selectCourse: selectCourse
-  }));
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "course-view-bottom"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseInspector__WEBPACK_IMPORTED_MODULE_6__.default, {
+    selectedCourse: selectedCourse,
+    model: model
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseControls__WEBPACK_IMPORTED_MODULE_7__.default, {
+    courseTypes: courseTypes
+  })));
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppController);
 
 if (document.getElementById("myTest")) {
   // find element by id
-  var element = document.getElementById('courses'); // create new props object with element's data-attributes
+  var element = document.getElementById("courses"); // create new props object with element's data-attributes
 
   var props = Object.assign({}, element.dataset.props);
-  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, props)), document.getElementById("myTest"));
+  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, null)), document.getElementById("myTest"));
 }
 
 /***/ }),
@@ -2193,6 +2212,125 @@ if (document.getElementById('reactButton')) {
 
 /***/ }),
 
+/***/ "./resources/js/components/CourseControls.js":
+/*!***************************************************!*\
+  !*** ./resources/js/components/CourseControls.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+function CourseControls(props) {
+  console.log("init courseList");
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "right"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "CONTROLS"));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseControls);
+
+/***/ }),
+
+/***/ "./resources/js/components/CourseInspector.js":
+/*!****************************************************!*\
+  !*** ./resources/js/components/CourseInspector.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+function CourseInspector(props) {
+  console.log("init courseList");
+
+  var prereqItems = function prereqItems(props) {
+    console.log("show prereqs");
+
+    if (props.selectedCourse && Array.isArray(props.selectedCourse.prerequisites) && props.selectedCourse.prerequisites.length > 0) {
+      return props.selectedCourse.prerequisites.map(function (courseId) {
+        var course = props.model.getCourseById(courseId);
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          key: courseId,
+          className: "related-course-row text-gray-700"
+        }, course.abbreviation);
+      });
+    } else {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "related-course-row text-gray-700"
+      }, "None");
+    }
+  };
+
+  var concurrentItems = function concurrentItems(props) {
+    console.log("show concurrents");
+
+    if (props.selectedCourse && Array.isArray(props.selectedCourse.concurrents) && props.selectedCourse.prerequisites.length > 0) {
+      return props.selectedCourse.concurrents.map(function (courseId) {
+        var course = props.model.getCourseById(courseId);
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          key: courseId,
+          className: "related-course-row text-gray-700"
+        }, course.abbreviation);
+      });
+    } else {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "related-course-row text-gray-700"
+      }, "None");
+    }
+  };
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "left"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "inspector-selected-course"
+  }, props.selectedCourse ? props.selectedCourse.abbreviation : "Select Course"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-selected-area grid grid-cols-2 gap-4"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-row grid grid-cols2 gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Title:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-value text-gray-700"
+  }, props.selectedCourse ? props.selectedCourse.title : "")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-row grid grid-cols2 gap-2"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Description:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-value text-gray-700"
+  }, props.selectedCourse ? props.selectedCourse.description : ""))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "related-course-wrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Prerequisites:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "inspector-related-course"
+  }, prereqItems(props))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "related-course-wrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Concurrent Courses:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "inspector-related-course"
+  }, concurrentItems(props))))));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseInspector);
+
+/***/ }),
+
 /***/ "./resources/js/components/CourseList.js":
 /*!***********************************************!*\
   !*** ./resources/js/components/CourseList.js ***!
@@ -2211,7 +2349,7 @@ function CourseList(props) {
   console.log("init courseList");
 
   var selectCourse = function selectCourse(id) {
-    console.log('course item clicked: ', id);
+    console.log("course item clicked: ", id);
     props.selectCourse(id);
   };
 
@@ -2223,18 +2361,20 @@ function CourseList(props) {
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
       key: course.id,
-      className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-row selected" : "course-list-row",
+      className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-row selected-row" : "course-list-row",
       onClick: function onClick() {
         return selectCourse(course.id);
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      className: "course-list-label"
-    }, course.abbreviation));
+      className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-id selected" : "course-list-id"
+    }, course.abbreviation), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-title selected" : "course-list-title"
+    }, course.title));
   });
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-    id: "center-right"
+    className: "right"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-    id: "course-list-header"
+    className: "font-semibold bg-gray-200 text-gray-700 py-5 px-6 sm:py-6 sm:px-8 sm:rounded-t-md"
   }, "Degree Courses"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     id: "course-list"
   }, courseItems));
@@ -2355,7 +2495,7 @@ function CourseMap(props) {
     initMap();
   }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-    id: "center-left"
+    className: "left"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", {
     id: "course-map"
   }));
@@ -2426,19 +2566,20 @@ var courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/co
 
 function model() {
   var useServer = false;
-  var courseLevelAscending = true; // let courses = [];
-  // const loadCourses = () => {
-  //     if (useServer) {
-  //         axios.get({
-  //             method: 'get',
-  //             url: '/courses',
-  //         }).then((response) => {
-  //             console.log("response from courses: ", response);
-  //         })
-  //     } else {
-  //         courses = require("./data/markTest.json");
-  //     }
-  // }
+  var courseLevelAscending = true;
+  var courseTypes = []; // let courses = [];
+
+  var loadCourses = function loadCourses() {// if (useServer) {
+    //     return axios.get({
+    //         method: 'get',
+    //         url: '/courses',
+    //     }).then((response) => {
+    //         console.log("response from courses: ", response);
+    //     })
+    // } else {
+    //     courses = require("./data/markTest.json");
+    // }
+  };
 
   var getCourseById = function getCourseById(id) {
     for (var index = 0; index < courses.length; index++) {
@@ -2451,9 +2592,8 @@ function model() {
   var sortCourses = function sortCourses() {
     courses.sort(function (a, b) {
       var courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
-      var courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
-      console.log("abr A", courseLevelA[0], a.abbreviation);
-      console.log("abr B", courseLevelB[0], b.abbreviation);
+      var courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]); // console.log("abr A", courseLevelA[0], a.abbreviation)
+      // console.log("abr B", courseLevelB[0], b.abbreviation)
 
       if (courseLevelAscending) {
         return d3__WEBPACK_IMPORTED_MODULE_1__.ascending(courseLevelA, courseLevelB);
@@ -2464,7 +2604,27 @@ function model() {
     });
   };
 
+  var getCourseTypes = function getCourseTypes() {
+    var types = {};
+    courses.forEach(function (course) {
+      if (!types[course.type]) {
+        types[course.type] = 0;
+      }
+
+      types[course.type]++;
+    });
+    console.log("courseTypes counts: ", types);
+    courseTypes = [];
+
+    for (var type in types) {
+      courseTypes.push[type];
+    }
+
+    return courseTypes;
+  };
+
   var getAllCourses = function getAllCourses() {
+    loadCourses();
     return courses;
   };
 
@@ -2496,7 +2656,8 @@ function model() {
     getAllCourses: getAllCourses,
     getCourseNodes: getCourseNodes,
     getCourseLinks: getCourseLinks,
-    sortCourses: sortCourses
+    sortCourses: sortCourses,
+    getCourseTypes: getCourseTypes
   };
 }
 

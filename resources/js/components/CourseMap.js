@@ -122,7 +122,7 @@ function CourseMap(props) {
     }, [])
 
     return (
-        <div id="center-left">
+        <div className="left">
             <svg id="course-map"></svg>
         </div>
     )
