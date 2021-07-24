@@ -1943,10 +1943,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function AppController(props) {
+
+function AppController() {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
-  model.sortCourses();
-  var courses = model.getAllCourses();
+  model.sortCourses(); // const courses = model.getAllCourses();
+
+  var courses = model.loadCourses();
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -1987,11 +1989,7 @@ function AppController(props) {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppController);
 
 if (document.getElementById("myTest")) {
-  // find element by id
-  var element = document.getElementById('courses'); // create new props object with element's data-attributes
-
-  var props = Object.assign({}, element.dataset.props);
-  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, props)), document.getElementById("myTest"));
+  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, null)), document.getElementById("myTest"));
 }
 
 /***/ }),
@@ -2422,23 +2420,30 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
-
 function model() {
-  var useServer = false;
-  var courseLevelAscending = true; // let courses = [];
-  // const loadCourses = () => {
-  //     if (useServer) {
-  //         axios.get({
-  //             method: 'get',
-  //             url: '/courses',
-  //         }).then((response) => {
-  //             console.log("response from courses: ", response);
-  //         })
-  //     } else {
-  //         courses = require("./data/markTest.json");
-  //     }
-  // }
+  var _this = this;
+
+  var useServer = true;
+  var courseLevelAscending = true;
+  var courses = [];
+
+  var loadCourses = function loadCourses() {
+    if (useServer) {
+      console.log("using server for course data");
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: 'https://pennstate-class-scheduler.test/api/courses'
+      }).then(function (response) {
+        console.log("response from courses: ", response.data);
+        return response.data;
+      })["catch"](function (error) {
+        console.log(error.toJSON());
+      });
+    }
+
+    _this.courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
+    return _this.courses;
+  };
 
   var getCourseById = function getCourseById(id) {
     for (var index = 0; index < courses.length; index++) {
@@ -2491,7 +2496,7 @@ function model() {
   };
 
   return {
-    // loadCourses,
+    loadCourses: loadCourses,
     getCourseById: getCourseById,
     getAllCourses: getAllCourses,
     getCourseNodes: getCourseNodes,

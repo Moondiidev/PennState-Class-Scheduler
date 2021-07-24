@@ -5,14 +5,16 @@ import ReactDOM from "react-dom";
 
 import CourseMap from "./CourseMap";
 import CourseList from "./CourseList";
+import Courses from "./Model/Courses";
 
-function AppController(props) {
+function AppController() {
 
     const model = new CourseModel();
 
     model.sortCourses();
 
-    const courses = model.getAllCourses();
+    // const courses = model.getAllCourses();
+    const courses = model.loadCourses();
 
     const [selectedCourse, setSelectedCourse] = useState(null);
 
@@ -54,16 +56,9 @@ function AppController(props) {
 export default AppController;
 
 if (document.getElementById("myTest")) {
-
-    // find element by id
-    const element = document.getElementById('courses')
-
-    // create new props object with element's data-attributes
-    const props = Object.assign({}, element.dataset.props)
-
     ReactDOM.render(
         <React.StrictMode>
-            <AppController{...props} />
+            <AppController />
         </React.StrictMode>,
         document.getElementById("myTest")
     );

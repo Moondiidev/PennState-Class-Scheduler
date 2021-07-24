@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('api/courses', function () {
+    return response()->json([\App\Models\Course::all()], 200);
+});
+
 Route::get('/', function () {
     return view('welcome');
 });
