@@ -25,17 +25,21 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $pageName = "Courses";
-        $courses = Course::all();
+        // $pageName = "Courses";
+        // $courses = Course::all();
 
-        if ( auth()->user()->isDevUser()  ) {
-            $headerButtonAction = route('courses.create');
-            $headerButtonText   = "Create New Course";
+//        if ( auth()->user()->isDevUser()  ) {
+//            $headerButtonAction = route('courses.create');
+//            $headerButtonText   = "Create New Course";
+//
+//            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+//        }
+//
+//        return view('courses.index', compact('courses', 'pageName'));
 
-            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
-        }
-
-        return view('courses.index', compact('courses', 'pageName'));
+        return response()->json([
+            'courses' => Course::all(),
+        ]);
     }
 
     /**
