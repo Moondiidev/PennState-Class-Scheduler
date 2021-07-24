@@ -14,3 +14,5 @@ require('./bootstrap');
 
 require('./components/Example');
 require('./components/Button');
+require('./components/CourseMap');
+require('./components/BarChart');

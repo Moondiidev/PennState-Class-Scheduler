@@ -40,7 +40,7 @@ function CourseMap(props) {
         const nodeG = mapSvg.append("g")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
-        
+
         const node = nodeG.selectAll("circle")
             .data(nodes)
             .join("circle")
@@ -131,6 +131,6 @@ function CourseMap(props) {
 
 export default CourseMap;
 
-if (document.getElementById('reactButton')) {
+if (document.getElementById('courseMap')) {
     ReactDOM.render(<CourseMap />, document.getElementById('courseMap'));
 }

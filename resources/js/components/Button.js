@@ -24,5 +24,5 @@ class Button extends React.Component {
 export default Button;
 
 if (document.getElementById('reactButton')) {
-    ReactDOM.render(<Button />, document.getElementById('reactButton'));
+    ReactDOM.render(<Button/>, document.getElementById('reactButton'));
 }
