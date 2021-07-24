@@ -3,3 +3,70 @@
 @import "tailwindcss/components";
 
 @import "tailwindcss/utilities";
+
+
+.mark-test-style {
+    width: 100%;
+    height: 900px;
+    position: relative;
+    float: left;
+}
+
+
+
+/** OLD STYLES>>> WILL CHANGE **/
+#center-left {
+    position: relative;
+    float: left;
+    width: calc(100% - 200px);
+    height: 100%;
+    /* background: rgb(0, 255, 255); */
+  }
+  
+  #center-right {
+    position: relative;
+    float: left;
+    width: 200px;
+    height: 100%;
+    /* border-left: 1px solid rgb(120, 120, 120); */
+    /* background: rgb(255, 255, 0); */
+  }
+  
+  /** course **/
+  #course-list-header {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 30px;
+    color:rgb(220, 220, 220);
+    background: rgb(120, 120, 120)
+  }
+  
+  #course-list {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: calc(100% - 30px);
+    overflow-y: auto;
+  }
+  
+  .course-list-row {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 30px;
+    color:rgb(220, 220, 220);
+    border-bottom: 1px solid rgb(120, 120, 120);
+    cursor: pointer;
+  }
+  
+  .selected {
+    color: rgb(0, 50, 125);
+  }
+  
+  #course-map {
+    position: relative;
+    float: left;
+    height: 100%;
+    width: 100%;
+  }

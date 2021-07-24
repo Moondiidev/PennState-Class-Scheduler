@@ -4,23 +4,34 @@ import { max } from 'd3-array';
 import { select } from 'd3-selection';
 import ReactDOM from "react-dom";
 
+import CourseModel from "./Model/Courses";
+
 class BarChart extends Component {
     constructor(props){
         super(props)
         this.createBarChart = this.createBarChart.bind(this)
         this.data = [5,10,1,3]
         this.size = [500,500]
+        this.courses = [];
     }
 
     componentDidMount() {
         this.createBarChart()
+        // CourseModel.loadCourses();
     }
 
     componentDidUpdate() {
         this.createBarChart()
     }
 
+    updateChart() {
+
+    }
+
     createBarChart() {
+
+        // console.log("allCourses: ", CourseModel.getAllCourses())
+
         const node = this.node
         const dataMax = max(this.data)
         const yScale = scaleLinear()
@@ -55,6 +66,6 @@ class BarChart extends Component {
 }
 export default BarChart
 
-if (document.getElementById('barChart')) {
-    ReactDOM.render(<BarChart/>, document.getElementById('barChart'));
-}
+// if (document.getElementById('myTest')) {
+//     ReactDOM.render(<BarChart/>, document.getElementById('myTest'));
+// }

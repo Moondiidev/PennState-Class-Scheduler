@@ -1861,6 +1861,8 @@ __webpack_require__(/*! ./components/CourseMap */ "./resources/js/components/Cou
 
 __webpack_require__(/*! ./components/BarChart */ "./resources/js/components/BarChart.js");
 
+__webpack_require__(/*! ./components/AppController */ "./resources/js/components/AppController.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -1905,6 +1907,90 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
+/***/ "./resources/js/components/AppController.js":
+/*!**************************************************!*\
+  !*** ./resources/js/components/AppController.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var _BarChart__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BarChart */ "./resources/js/components/BarChart.js");
+/* harmony import */ var _Model_Courses__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Model/Courses */ "./resources/js/components/Model/Courses.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var _CourseMap__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./CourseMap */ "./resources/js/components/CourseMap.js");
+/* harmony import */ var _CourseList__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CourseList */ "./resources/js/components/CourseList.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]); if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+
+function AppController() {
+  var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
+  var courses = model.getAllCourses();
+
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+      _useState2 = _slicedToArray(_useState, 2),
+      selectedCourse = _useState2[0],
+      setSelectedCourse = _useState2[1];
+
+  console.log("courses: ", courses);
+
+  var selectCourse = function selectCourse(id) {
+    console.log("set selectedCourse", id);
+
+    if (selectedCourse === null) {
+      setSelectedCourse(model.getCourseById(id));
+    } else {
+      if (selectedCourse.id === id) {
+        setSelectedCourse(null);
+      } else {
+        setSelectedCourse(model.getCourseById(id));
+      }
+    }
+  };
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "mark-test-style"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseMap__WEBPACK_IMPORTED_MODULE_4__.default, {
+    courses: courses,
+    selectedCourse: selectedCourse,
+    selectCourse: selectCourse,
+    courseNodes: model.getCourseNodes(),
+    courseLinks: model.getCourseLinks()
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseList__WEBPACK_IMPORTED_MODULE_5__.default, {
+    courses: courses,
+    selectedCourse: selectedCourse,
+    selectCourse: selectCourse
+  }));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppController);
+
+if (document.getElementById("myTest")) {
+  react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, null)), document.getElementById("myTest"));
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/BarChart.js":
 /*!*********************************************!*\
   !*** ./resources/js/components/BarChart.js ***!
@@ -1917,10 +2003,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var d3_scale__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3-scale */ "./node_modules/d3-scale/src/linear.js");
-/* harmony import */ var d3_array__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! d3-array */ "./node_modules/d3-array/src/max.js");
-/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/select.js");
+/* harmony import */ var d3_scale__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! d3-scale */ "./node_modules/d3-scale/src/linear.js");
+/* harmony import */ var d3_array__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! d3-array */ "./node_modules/d3-array/src/max.js");
+/* harmony import */ var d3_selection__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! d3-selection */ "./node_modules/d3-selection/src/select.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var _Model_Courses__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Model/Courses */ "./resources/js/components/Model/Courses.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1949,6 +2036,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
+
 var BarChart = /*#__PURE__*/function (_Component) {
   _inherits(BarChart, _Component);
 
@@ -1963,13 +2051,14 @@ var BarChart = /*#__PURE__*/function (_Component) {
     _this.createBarChart = _this.createBarChart.bind(_assertThisInitialized(_this));
     _this.data = [5, 10, 1, 3];
     _this.size = [500, 500];
+    _this.courses = [];
     return _this;
   }
 
   _createClass(BarChart, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this.createBarChart();
+      this.createBarChart(); // CourseModel.loadCourses();
     }
   }, {
     key: "componentDidUpdate",
@@ -1977,16 +2066,20 @@ var BarChart = /*#__PURE__*/function (_Component) {
       this.createBarChart();
     }
   }, {
+    key: "updateChart",
+    value: function updateChart() {}
+  }, {
     key: "createBarChart",
     value: function createBarChart() {
       var _this2 = this;
 
+      // console.log("allCourses: ", CourseModel.getAllCourses())
       var node = this.node;
-      var dataMax = (0,d3_array__WEBPACK_IMPORTED_MODULE_2__.default)(this.data);
-      var yScale = (0,d3_scale__WEBPACK_IMPORTED_MODULE_3__.default)().domain([0, dataMax]).range([0, this.size[1]]);
-      (0,d3_selection__WEBPACK_IMPORTED_MODULE_4__.default)(node).selectAll('rect').data(this.data).enter().append('rect');
-      (0,d3_selection__WEBPACK_IMPORTED_MODULE_4__.default)(node).selectAll('rect').data(this.data).exit().remove();
-      (0,d3_selection__WEBPACK_IMPORTED_MODULE_4__.default)(node).selectAll('rect').data(this.data).style('fill', '#fe9922').attr('x', function (d, i) {
+      var dataMax = (0,d3_array__WEBPACK_IMPORTED_MODULE_3__.default)(this.data);
+      var yScale = (0,d3_scale__WEBPACK_IMPORTED_MODULE_4__.default)().domain([0, dataMax]).range([0, this.size[1]]);
+      (0,d3_selection__WEBPACK_IMPORTED_MODULE_5__.default)(node).selectAll('rect').data(this.data).enter().append('rect');
+      (0,d3_selection__WEBPACK_IMPORTED_MODULE_5__.default)(node).selectAll('rect').data(this.data).exit().remove();
+      (0,d3_selection__WEBPACK_IMPORTED_MODULE_5__.default)(node).selectAll('rect').data(this.data).style('fill', '#fe9922').attr('x', function (d, i) {
         return i * 25;
       }).attr('y', function (d) {
         return _this2.size[1] - yScale(d);
@@ -2012,11 +2105,9 @@ var BarChart = /*#__PURE__*/function (_Component) {
   return BarChart;
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component);
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BarChart);
-
-if (document.getElementById('barChart')) {
-  react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(BarChart, null), document.getElementById('barChart'));
-}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BarChart); // if (document.getElementById('myTest')) {
+//     ReactDOM.render(<BarChart/>, document.getElementById('myTest'));
+// }
 
 /***/ }),
 
@@ -2097,6 +2188,57 @@ if (document.getElementById('reactButton')) {
 
 /***/ }),
 
+/***/ "./resources/js/components/CourseList.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/CourseList.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+
+function CourseList(props) {
+  console.log("init courseList");
+
+  var selectCourse = function selectCourse(id) {
+    console.log('course item clicked: ', id);
+    props.selectCourse(id);
+  };
+
+  var courseItems = props.courses.map(function (course) {
+    // console.log("course: ", course);
+    if (props.selectedCourse && course.id === props.selectedCourse.id) {
+      console.log("props.selectedCourse: ", props.selectedCourse);
+    }
+
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      key: course.id,
+      className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-row selected" : "course-list-row",
+      onClick: function onClick() {
+        return selectCourse(course.id);
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+      className: "course-list-label"
+    }, course.abbreviation));
+  });
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "center-right"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "course-list-header"
+  }, "Degree Courses"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "course-list"
+  }, courseItems));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseList);
+
+/***/ }),
+
 /***/ "./resources/js/components/CourseMap.js":
 /*!**********************************************!*\
   !*** ./resources/js/components/CourseMap.js ***!
@@ -2135,12 +2277,12 @@ function CourseMap(props) {
     .attr("stroke-opacity", 0.6).selectAll("line").data(links).join("line").attr("stroke-width", function (d) {
       return Math.sqrt(d.value);
     }).attr("stroke", function (d) {
-      return props.selectedCourse && d.id === props.selectedCourse.id ? d3__WEBPACK_IMPORTED_MODULE_1__.rgb(255, 255, 125) : d3__WEBPACK_IMPORTED_MODULE_1__.rgb(120, 120, 120);
+      return props.selectedCourse && d.id === props.selectedCourse.id ? d3__WEBPACK_IMPORTED_MODULE_1__.rgb(0, 50, 125) : d3__WEBPACK_IMPORTED_MODULE_1__.rgb(120, 120, 120);
     });
     var nodeG = mapSvg.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5);
-    var node = nodeG.selectAll("circle").data(nodes).join("circle").attr("r", 10).attr("fill", color).attr("stroke-width", function (d) {
+    var node = nodeG.selectAll("circle").data(nodes).join("circle").attr("r", 10).attr("fill", d3__WEBPACK_IMPORTED_MODULE_1__.rgb(200, 200, 200)).attr("stroke-width", function (d) {
       return props.selectedCourse && d.id === props.selectedCourse.id ? 1 : 0;
-    }).attr("stroke", d3__WEBPACK_IMPORTED_MODULE_1__.rgb(255, 255, 125)).call(drag(simulation)).on('click', function (event, d) {
+    }).attr("stroke", d3__WEBPACK_IMPORTED_MODULE_1__.rgb(0, 50, 125)).call(drag(simulation)).on('click', function (event, d) {
       console.log("d clicked: ", d);
       props.selectCourse(d.id);
     });
@@ -2216,10 +2358,6 @@ function CourseMap(props) {
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseMap);
 
-if (document.getElementById('courseMap')) {
-  ReactDOM.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(CourseMap, null), document.getElementById('courseMap'));
-}
-
 /***/ }),
 
 /***/ "./resources/js/components/Example.js":
@@ -2259,6 +2397,85 @@ function Example() {
 if (document.getElementById('example')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(Example, null), document.getElementById('example'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/Model/Courses.js":
+/*!**************************************************!*\
+  !*** ./resources/js/components/Model/Courses.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+
+var courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
+
+function model() {
+  var useServer = false; // let courses = [];
+  // const loadCourses = () => {
+  //     if (useServer) {
+  //         axios.get({
+  //             method: 'get',
+  //             url: '/courses',
+  //         }).then((response) => {
+  //             console.log("response from courses: ", response);
+  //         })
+  //     } else {
+  //         courses = require("./data/markTest.json");
+  //     }
+  // }
+
+  var getCourseById = function getCourseById(id) {
+    for (var index = 0; index < courses.length; index++) {
+      if (courses[index].id === id) {
+        return courses[index];
+      }
+    }
+  };
+
+  var getAllCourses = function getAllCourses() {
+    return courses;
+  };
+
+  var getCourseNodes = function getCourseNodes() {
+    return courses; // may have to change???
+  };
+
+  var getCourseLinks = function getCourseLinks() {
+    var links = [];
+    courses.forEach(function (course) {
+      if (!course.prerequisites) {
+        course.prerequisites = [];
+      }
+
+      course.prerequisites.forEach(function (preReqId) {
+        var link = {
+          source: preReqId,
+          target: course.id
+        };
+        links.push(link);
+      });
+    });
+    return links;
+  };
+
+  return {
+    // loadCourses,
+    getCourseById: getCourseById,
+    getAllCourses: getAllCourses,
+    getCourseNodes: getCourseNodes,
+    getCourseLinks: getCourseLinks
+  };
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (model);
 
 /***/ }),
 
@@ -83172,6 +83389,17 @@ if (false) {} else {
 }
 
 
+/***/ }),
+
+/***/ "./resources/js/components/Model/data/markTest.json":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/Model/data/markTest.json ***!
+  \**********************************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('[{"id":1,"title":"Rhetoric and Composition","abbreviation":"ENGL 15","credits":3,"description":"Intensive, rhetorically based experience in reading and writing that will\\n                 prepare you both to understand the communications that surround you and to succeed in your\\n                 own communication efforts.","type":"ENGL","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":2,"title":"College Algebra II","abbreviation":"MATH 22","credits":3,"description":"Relations, functions, graphs; polynomial, rational functions, graphs;\\n                 word problems; nonlinear inequalities; inverse functions; exponential, logarithmic functions;\\n                 conic sections; simultaneous equations.","type":"MATH","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":3,"title":"Plane Trigonometry","abbreviation":"MATH 26","credits":3,"description":"Trigonometric functions; solutions of triangles; trigonometric\\n                 equations; identities.","type":"MATH","prerequisites":[2],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":4,"title":"Introductory Microeconomic Analysis and Policy","abbreviation":"ECON 102","credits":3,"description":"Methods of economic analysis and their use; price determination;\\n                 theory of the firm; distribution.","type":"ECON","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":5,"title":"Introductory Macroeconomic Analysis and Policy","abbreviation":"ECON 104","credits":3,"description":"National income measurement; aggregate economic models; money and income;\\n                 policy problems.","type":"ECON","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":6,"title":"Electrical Circuits and Power Distribution","abbreviation":"EE 211","credits":3,"description":"D.C. and A.C. circuits, transformers, single and three-phase distribution systems,\\n                 A.C. motors and generators.","type":"EE","prerequisites":null,"concurrents":[23],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":7,"title":"Chemical Principles I","abbreviation":"CHEM 110","credits":3,"description":"Basic concepts and quantitative relations.","type":"CHEM","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":8,"title":"Experimental Chemistry I","abbreviation":"CHEM 111","credits":1,"description":"Introduction to quantitative experimentation in chemistry.","type":"CHEM","prerequisites":[7],"concurrents":[7],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":9,"title":"Digital Design: Theory and Practice","abbreviation":"CMPEN 270","credits":4,"description":"Introduction to digital systems and their design.","type":"CMPEN","prerequisites":null,"concurrents":[26],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":10,"title":"Microprocessors","abbreviation":"CMPEN 351","credits":3,"description":"Microprocessor architecture; memory system design; assembly language programming;\\n                interrupts; the stacks and subroutines; memory and I/O inter-facing; serial I/O and data communications;\\n                microprocessors applications.","type":"CMPEN","prerequisites":[9],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":11,"title":"Operating Systems","abbreviation":"CMPEN 441","credits":3,"description":"Resource management in computer systems.","type":"CMPEN","prerequisites":[15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":12,"title":"Communication Networks","abbreviation":"CMPEN 461","credits":3,"description":"Data transmission, encoding, link control techniques, network architecture,\\n                 design, protocols, and multiple access.","type":"CMPEN","prerequisites":[9,13],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":13,"title":"Introduction to Programming Techniques","abbreviation":"CMPSC 121","credits":3,"description":"Design and implementation of algorithms. Structured programming. Problem\\n                solving techniques. Introduction to a high-level language, including arrays, procedures, and recursion.","type":"CMPSC","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":14,"title":"Intermediate Programming","abbreviation":"CMPSC 122","credits":3,"description":"Object-oriented programming, recursion, fundamental data structures (including stacks,\\n                queues, linked lists, hash tables, trees, and graphs), the basics of algorithmic analysis, and an\\n                introduction to the principles of language translation.","type":"CMPSC","prerequisites":[13],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":15,"title":"Discrete Mathematics for Computer Science","abbreviation":"CMPSC 360","credits":3,"description":"Discrete mathematics and foundations for modern computer science.","type":"CMPSC","prerequisites":[14],"concurrents":[14],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":16,"title":"Database Management Systems","abbreviation":"CMPSC  431W","credits":3,"description":"Fundamental concepts of programming language design, specifications,\\n                and implementation; programming language paradigms and features; program verification.","type":"CMPSC","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":17,"title":"Programming Language Concepts","abbreviation":"CMPSC 461","credits":3,"description":"Fundamental concepts of programming language design, specifications,\\n                 and implementation; programming language paradigms and features; program verification.","type":"CMPSC","prerequisites":[28,15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":18,"title":"Data Structures and Algorithms","abbreviation":"CMPSC 465","credits":3,"description":"Fundamental concepts of computer science: data structures, analysis of\\n                 algorithms, recursion, trees, sets, graphs, sorting.","type":"CMPSC","prerequisites":[14,15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":19,"title":"Effective Writing: Technical Writing","abbreviation":"ENGL 202C","credits":3,"description":"Writing for students in scientific and technical disciplines.","type":"ENGL","prerequisites":[1],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":20,"title":"Calculus with Analytic Geometry I","abbreviation":"MATH 140","credits":4,"description":"Functions, limits; analytic geometry; derivatives, differentials, applications;\\n                 integrals, applications.","type":"MATH","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":21,"title":"Calculus with Analytic Geometry II","abbreviation":"MATH 141","credits":4,"description":"Derivatives, integrals, applications; sequences and series; analytic geometry;\\n                 polar coordinates.","type":"MATH","prerequisites":[2,3],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":22,"title":"Matrices","abbreviation":"MATH 220","credits":2,"description":"Systems of linear equations; matrix algebra; eigenvalues and eigenvectors;\\n                 linear systems of differential equations.","type":"MATH","prerequisites":[20],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":23,"title":"Ordinary Differential Equations","abbreviation":"MATH 250","credits":3,"description":"First- and second-order equations; special functions; Laplace transform solutions;\\n                 higher order equations.","type":"MATH","prerequisites":[21],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":24,"title":"Basic Management Concepts","abbreviation":"MGMT 301","credits":3,"description":"Study of fundamental principles and processes available to the understanding\\n                 of management.","type":"MGMT","prerequisites":[1,2,4],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":25,"title":"General Physics: Mechanics","abbreviation":"PHYS 211","credits":4,"description":"Calculus-based study of the basic concepts of mechanics: motion, force,\\n                 Newton\'s laws, energy, collisions, and rotation.","type":"PHYS","prerequisites":null,"concurrents":[20],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":26,"title":"General Physics: Electricity and Magnetism","abbreviation":"PHYS 212","credits":4,"description":"Calculus-based study of the basic concepts of electricity and magnetism.","type":"PHYS","prerequisites":[20,25],"concurrents":[21],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":27,"title":"Elementary Probability","abbreviation":"STAT 318","credits":3,"description":"Combinatorial analysis, axioms of probability, conditional probability\\n                 and independence, discrete and continuous random variables, expectation, limit theorems,\\n                 additional topics","type":"STAT","prerequisites":[21],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":28,"title":"Object-Oriented Software Design and Construction","abbreviation":"SWENG 311","credits":3,"description":"Design, documentation, testing, and construction of software using software\\n                 engineering strategies embodied in object-oriented programming languages.","type":"SWENG","prerequisites":[14],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":29,"title":"Software Engineering","abbreviation":"SWENG 411","credits":3,"description":"Software engineering principles including lifecycle, dependability,\\n                 process modeling, project management, requires specification, design analysis, implementation,\\n                 testing, and maintenance.","type":"SWENG","prerequisites":[14],"concurrents":[28],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":30,"title":"Software Engineering","abbreviation":"SWENG 411","credits":3,"description":"Software engineering principles including lifecycle, dependability,\\n                 process modeling, project management, requires specification, design analysis, implementation,\\n                 testing, and maintenance.","type":"SWENG","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":31,"title":"Software Architecture","abbreviation":"SWENG 421","credits":3,"description":"The analysis and design of software systems using canonical design patterns.","type":"SWENG","prerequisites":[29],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":32,"title":"Software Verification, Validation, and Testing","abbreviation":"SWENG 431","credits":3,"description":"ntroduction to methods of software verification, validation, and testing;\\n                  mathematical foundations of testing, reliability models; statistical testing.","type":"SWENG","prerequisites":[29,27],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":33,"title":"Embedded Real Time Systems","abbreviation":"SWENG 452","credits":3,"description":"The design and implementation of real time systems.","type":"SWENG","prerequisites":[11],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":34,"title":"Software Engineering Design","abbreviation":"SWENG 480","credits":3,"description":"Concepts of engineering ethics, economy, and project management, senior\\n                 capstone project selection, and technical communication skills.","type":"SWENG","prerequisites":[32],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":35,"title":"Software Engineering Project","abbreviation":"SWENG 481","credits":3,"description":"Capstone group design projects in software engineering.","type":"SWENG","prerequisites":[34],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"}]');
+
 /***/ })
 
 /******/ 	});
@@ -83235,6 +83463,18 @@ if (false) {} else {
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

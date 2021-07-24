@@ -2,11 +2,12 @@
 
 @section('mainContent')
 
-<div class="text-gray-700 grid grid-cols-2 gap-6">
+<div id="course-view" class="container mx-auto px-4">
     <!-- todo: add main page -->
-    <div id="barChart">
+    <div id="myTest">
 
     </div>
+
 
 </div>
 

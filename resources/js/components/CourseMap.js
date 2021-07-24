@@ -35,7 +35,7 @@ function CourseMap(props) {
             .data(links)
             .join("line")
             .attr("stroke-width", d => Math.sqrt(d.value))
-            .attr("stroke", d => (props.selectedCourse && d.id === props.selectedCourse.id) ? d3.rgb(255, 255, 125) : d3.rgb(120, 120, 120))
+            .attr("stroke", d => (props.selectedCourse && d.id === props.selectedCourse.id) ? d3.rgb(0, 50, 125) : d3.rgb(120, 120, 120))
 
         const nodeG = mapSvg.append("g")
             .attr("stroke", "#fff")
@@ -45,9 +45,9 @@ function CourseMap(props) {
             .data(nodes)
             .join("circle")
             .attr("r", 10)
-            .attr("fill", color)
+            .attr("fill", d3.rgb(200, 200, 200))
             .attr("stroke-width", d => (props.selectedCourse && d.id === props.selectedCourse.id) ? 1 : 0)
-            .attr("stroke", d3.rgb(255, 255, 125))
+            .attr("stroke", d3.rgb(0, 50, 125))
             .call(drag(simulation))
             .on('click', (event, d) => {
                 console.log("d clicked: ", d)
@@ -130,7 +130,3 @@ function CourseMap(props) {
 }
 
 export default CourseMap;
-
-if (document.getElementById('courseMap')) {
-    ReactDOM.render(<CourseMap />, document.getElementById('courseMap'));
-}
