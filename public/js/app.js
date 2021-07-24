@@ -1950,8 +1950,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function AppController() {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
   model.sortCourses();
-  var courses = model.getAllCourses();
   var courseTypes = model.getCourseTypes();
+
+  var courses = model.loadCourses();
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
@@ -2562,23 +2563,29 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
-
 function model() {
-  var useServer = false;
-  var courseLevelAscending = true;
-  var courseTypes = []; // let courses = [];
+  var _this = this;
 
-  var loadCourses = function loadCourses() {// if (useServer) {
-    //     return axios.get({
-    //         method: 'get',
-    //         url: '/courses',
-    //     }).then((response) => {
-    //         console.log("response from courses: ", response);
-    //     })
-    // } else {
-    //     courses = require("./data/markTest.json");
-    // }
+  var useServer = true;
+  var courseLevelAscending = true;
+  var courses = [];
+
+  var loadCourses = function loadCourses() {
+    if (useServer) {
+      console.log("using server for course data");
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: 'https://pennstate-class-scheduler.test/api/courses'
+      }).then(function (response) {
+        console.log("response from courses: ", response.data);
+        return response.data;
+      })["catch"](function (error) {
+        console.log(error.toJSON());
+      });
+    }
+
+    _this.courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
+    return _this.courses;
   };
 
   var getCourseById = function getCourseById(id) {
@@ -2651,7 +2658,7 @@ function model() {
   };
 
   return {
-    // loadCourses,
+    loadCourses: loadCourses,
     getCourseById: getCourseById,
     getAllCourses: getAllCourses,
     getCourseNodes: getCourseNodes,

@@ -13,8 +13,9 @@ function AppController() {
 
     model.sortCourses();
 
-    const courses = model.getAllCourses();
     const courseTypes = model.getCourseTypes();
+    // const courses = model.getAllCourses();
+    const courses = model.loadCourses();
 
     const [selectedCourse, setSelectedCourse] = useState(null);
 
@@ -69,12 +70,6 @@ function AppController() {
 export default AppController;
 
 if (document.getElementById("myTest")) {
-    // find element by id
-    const element = document.getElementById("courses");
-
-    // create new props object with element's data-attributes
-    const props = Object.assign({}, element.dataset.props);
-
     ReactDOM.render(
         <React.StrictMode>
             <AppController />

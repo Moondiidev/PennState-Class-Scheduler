@@ -1,31 +1,37 @@
 import axios from "axios";
 import * as d3 from "d3";
 
-const courses = require("./data/markTest.json");
-
 function model() {
-    let useServer = false;
+
+    let useServer = true;
     let courseLevelAscending = true;
 
     let courseTypes = [];
-
-    // let courses = [];
+    const courses = [];
 
     const loadCourses = () => {
 
-        // if (useServer) {
+        if (useServer) {
 
-        //     return axios.get({
-        //         method: 'get',
-        //         url: '/courses',
-        //     }).then((response) => {
-        //         console.log("response from courses: ", response);
+            console.log("using server for course data");
 
-        //     })
-        // } else {
-        //     courses = require("./data/markTest.json");
-        // }
+            axios( {
+                method: 'get',
+                url: 'https://pennstate-class-scheduler.test/api/courses',
+            }).then((response) => {
+                console.log("response from courses: ", response.data);
+                return response.data;
+
+            }).catch(function (error) {
+                console.log(error.toJSON());
+            });
+        }
+
+         this.courses = require("./data/markTest.json");
+        return this.courses;
+
     }
+
 
     const getCourseById = (id) => {
         for (let index = 0; index < courses.length; index++) {
@@ -103,7 +109,7 @@ function model() {
     };
 
     return {
-        // loadCourses,
+        loadCourses,
         getCourseById,
         getAllCourses,
         getCourseNodes,
