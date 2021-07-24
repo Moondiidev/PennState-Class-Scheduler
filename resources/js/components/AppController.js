@@ -9,9 +9,12 @@ import CourseList from "./CourseList";
 function AppController() {
     const model = new CourseModel();
 
+    model.sortCourses();
+
     const courses = model.getAllCourses();
 
     const [selectedCourse, setSelectedCourse] = useState(null);
+
 
     console.log("courses: ", courses);
 

@@ -1945,6 +1945,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function AppController() {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
+  model.sortCourses();
   var courses = model.getAllCourses();
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
@@ -2413,12 +2414,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
+
 
 
 var courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
 
 function model() {
-  var useServer = false; // let courses = [];
+  var useServer = false;
+  var courseLevelAscending = true; // let courses = [];
   // const loadCourses = () => {
   //     if (useServer) {
   //         axios.get({
@@ -2438,6 +2442,22 @@ function model() {
         return courses[index];
       }
     }
+  };
+
+  var sortCourses = function sortCourses() {
+    courses.sort(function (a, b) {
+      var courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
+      var courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
+      console.log("abr A", courseLevelA[0], a.abbreviation);
+      console.log("abr B", courseLevelB[0], b.abbreviation);
+
+      if (courseLevelAscending) {
+        return d3__WEBPACK_IMPORTED_MODULE_1__.ascending(courseLevelA, courseLevelB);
+      } else {
+        return d3__WEBPACK_IMPORTED_MODULE_1__.descending(courseLevelA, courseLevelB);
+      } // return courseLevelA[0] - courseLevelB[0];
+
+    });
   };
 
   var getAllCourses = function getAllCourses() {
@@ -2471,7 +2491,8 @@ function model() {
     getCourseById: getCourseById,
     getAllCourses: getAllCourses,
     getCourseNodes: getCourseNodes,
-    getCourseLinks: getCourseLinks
+    getCourseLinks: getCourseLinks,
+    sortCourses: sortCourses
   };
 }
 
