@@ -93,7 +93,7 @@
 }
 
 .selected {
-    color: rgb(0, 50, 125);
+    color: rgb(35, 56, 118);
 }
 
 .selected-row {
@@ -149,3 +149,31 @@
     font-size: 14px;
     padding-bottom: 2px;
 }
+
+
+/**** DEGREE STUFF ****/
+
+.map-top {
+    width: 100%;
+    height: 380px;
+    position: relative;
+    float: left;
+}
+
+.map-bottom {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    float: left;
+}
+
+#degree-bar-chart {
+    position: relative;
+    float: left;   
+}
+
+#degree-progress {  
+    position: relative;
+    float: left;
+}
+

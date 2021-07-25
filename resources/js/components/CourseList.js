@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 function CourseList(props) {
-    console.log("init courseList");
+    console.log("init courseList", props);
 
     const selectCourse = (id) => {
         console.log("course item clicked: ", id);

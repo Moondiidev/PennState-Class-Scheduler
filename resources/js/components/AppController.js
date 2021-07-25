@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BarChart from "./BarChart";
 import CourseModel from "./Model/Courses";
 import ReactDOM from "react-dom";
@@ -7,20 +7,42 @@ import CourseMap from "./CourseMap";
 import CourseList from "./CourseList";
 import CourseInspector from "./CourseInspector";
 import CourseControls from "./CourseControls";
+import { mode } from "d3";
+import DegreeProgress from "./DegreeProgress";
 
 function AppController() {
     const model = new CourseModel();
 
-    model.sortCourses();
-
-    const courseTypes = model.getCourseTypes();
-    // const courses = model.getAllCourses();
-    const courses = model.loadCourses();
-
     const [selectedCourse, setSelectedCourse] = useState(null);
+    const [dataLoaded, setDataLoaded] = useState(false);
+    const [courses, setCourses] = useState([]);
+    const [courseTypes, setCourseTypes] = useState([]);
 
-    console.log("courses: ", courses);
-    console.log("courseTypes: ", courseTypes);
+
+
+    // useEffect(() => {
+    //     model.loadCourses(() => {
+    //         model.sortCourses();
+
+    //         let loadedCourses = model.getAllCourses();
+
+    //         console.log("loadedCourses in callback: ", loadedCourses);
+
+    //         setCourses(...loadedCourses);
+    //         setCourseTypes(...model.getCourseTypes());
+
+    //         model.setCourses(courses);
+    //     });
+    // }, []);
+
+    useEffect(() => {
+        model.processCourses();
+        model.sortCourses();
+        setCourses(model.getAllCourses());
+        setCourseTypes(model.getCourseTypes());
+
+    }, []);
+
 
     const selectCourse = (id) => {
         console.log("set selectedCourse", id);
@@ -43,13 +65,21 @@ function AppController() {
     return (
         <div className="mark-test-style">
             <div id="course-view-top">
-                <CourseMap
+                {/* <CourseMap
                     courses={courses}
                     selectedCourse={selectedCourse}
                     selectCourse={selectCourse}
                     courseNodes={model.getCourseNodes()}
                     courseLinks={model.getCourseLinks()}
-                />
+                /> */}
+                <div className="left">
+                    <CourseMap />
+                    <DegreeProgress
+                        courses={courses}
+                        courseBins={model.getCourseBins()}
+                        degreeCompletion={model.getDegreeCompletion()}
+                    />
+                </div>
 
                 <CourseList
                     courses={courses}

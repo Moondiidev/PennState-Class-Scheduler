@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 function CourseInspector(props) {
-    console.log("init courseList");
+    console.log("init CourseInspector", props);
 
     const prereqItems = (props) => {
         console.log("show prereqs");
