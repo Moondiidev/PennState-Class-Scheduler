@@ -10,12 +10,11 @@ function CourseInspector(props) {
             Array.isArray(props.selectedCourse.prerequisites) &&
             props.selectedCourse.prerequisites.length > 0
         ) {
-            return props.selectedCourse.prerequisites.map((courseId) => {
-                let course = props.model.getCourseById(courseId);
+            return props.selectedCourse.prerequisites.map((course) => {
 
                 return (
                     <div
-                        key={courseId}
+                        key={course.id}
                         className="related-course-row text-gray-700"
                     >
                         {course.abbreviation}
@@ -32,14 +31,36 @@ function CourseInspector(props) {
         if (
             props.selectedCourse &&
             Array.isArray(props.selectedCourse.concurrents) &&
-            props.selectedCourse.prerequisites.length > 0
+            props.selectedCourse.concurrents.length > 0
         ) {
-            return props.selectedCourse.concurrents.map((courseId) => {
-                let course = props.model.getCourseById(courseId);
+            return props.selectedCourse.concurrents.map((course) => {
 
                 return (
                     <div
-                        key={courseId}
+                        key={course.id}
+                        className="related-course-row text-gray-700"
+                    >
+                        {course.abbreviation}
+                    </div>
+                );
+            });
+        } else {
+            return <div className="related-course-row text-gray-700">None</div>
+        }
+    };
+
+    const openItems = (props) => {
+        console.log("show concurrents");
+        if (
+            props.selectedCourse &&
+            Array.isArray(props.selectedCourse.childCourses) &&
+            props.selectedCourse.childCourses.length > 0
+        ) {
+            return props.selectedCourse.childCourses.map((course) => {
+
+                return (
+                    <div
+                        key={course.id}
                         className="related-course-row text-gray-700"
                     >
                         {course.abbreviation}
@@ -96,6 +117,14 @@ function CourseInspector(props) {
                         </div>
                         <div id="inspector-related-course">
                             {concurrentItems(props)}
+                        </div>
+                    </div>
+                    <div className="related-course-wrapper">
+                        <div className="inspector-data-label text-gray-500">
+                            Opens Courses:
+                        </div>
+                        <div id="inspector-related-course">
+                            {openItems(props)}
                         </div>
                     </div>
                 </div>

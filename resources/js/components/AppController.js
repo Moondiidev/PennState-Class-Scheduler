@@ -73,7 +73,10 @@ function AppController() {
                     courseLinks={model.getCourseLinks()}
                 /> */}
                 <div className="left">
-                    <CourseMap />
+                    <CourseMap 
+                        selectedCourse={selectedCourse}
+                        selectCourse={selectCourse}
+                    />
                     <DegreeProgress
                         courses={courses}
                         courseBins={model.getCourseBins()}

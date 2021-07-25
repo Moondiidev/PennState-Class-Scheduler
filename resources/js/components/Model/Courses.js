@@ -49,11 +49,37 @@ function model() {
 
     const processCourses = () => {
         courses.forEach((course) => {
+            course.childCourses = [];
             course.inFilter = true;
 
-            course.isCompleted = (Math.random() > 0.5);
-        })
-    }
+            course.isCompleted = Math.random() > 0.5;
+
+            if (!course.prerequisites) {
+                course.prerequisites = [];
+            }
+            course.prerequisites = course.prerequisites.map((courseId) => {
+                let prereq = getCourseById(courseId);
+
+                if (!prereq.childCourses) {
+                    prereq.childCourses = [];
+                }
+
+                prereq.childCourses.push(course);
+
+                return prereq;
+            });
+
+            if (!course.concurrents) {
+                course.concurrents = [];
+            }
+
+            course.concurrents = course.concurrents.map((courseId) => {
+                let concur = getCourseById(courseId);
+
+                return concur;
+            });
+        });
+    };
 
     const sortCourses = () => {
         courses.sort((a, b) => {
@@ -93,8 +119,6 @@ function model() {
     };
 
     const getCourseBins = () => {
-        
-
         let bins = {};
         courses.forEach((course) => {
             if (!bins[course.type]) {
@@ -102,7 +126,7 @@ function model() {
                     type: course.type,
                     completed: 0,
                     incomplete: 0,
-                    total: 0
+                    total: 0,
                 };
             }
 
@@ -112,19 +136,17 @@ function model() {
                 bins[course.type].incomplete++;
             }
             bins[course.type].total++;
-            
-            
         });
 
         console.log("courseTypes counts: ", bins);
 
         let courseBins = [];
         for (let type in bins) {
-            courseBins.push(bins[type])
+            courseBins.push(bins[type]);
         }
 
         return courseBins;
-    }
+    };
 
     const getDegreeCompletion = () => {
         let total = 0;
@@ -137,7 +159,7 @@ function model() {
             }
         });
 
-        let incomplete = total - completed
+        let incomplete = total - completed;
 
         return {
             total: total,
@@ -146,15 +168,15 @@ function model() {
             pie: [
                 {
                     key: "completed",
-                    value: completed
+                    value: completed,
                 },
                 {
                     key: "incomplete",
-                    value: incomplete
-                }
-            ]
-        }
-    }
+                    value: incomplete,
+                },
+            ],
+        };
+    };
 
     const getAllCourses = () => {
         return courses;
@@ -196,7 +218,7 @@ function model() {
         getCourseTypes,
 
         getCourseBins,
-        getDegreeCompletion
+        getDegreeCompletion,
     };
 }
 
