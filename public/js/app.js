@@ -1926,6 +1926,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _CourseList__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CourseList */ "./resources/js/components/CourseList.js");
 /* harmony import */ var _CourseInspector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./CourseInspector */ "./resources/js/components/CourseInspector.js");
 /* harmony import */ var _CourseControls__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CourseControls */ "./resources/js/components/CourseControls.js");
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
+/* harmony import */ var _DegreeProgress__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./DegreeProgress */ "./resources/js/components/DegreeProgress.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1947,20 +1949,38 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
+
+
 function AppController() {
   var model = new _Model_Courses__WEBPACK_IMPORTED_MODULE_2__.default();
-  model.sortCourses();
-  var courseTypes = model.getCourseTypes();
 
-  var courses = model.loadCourses();
+  var _model$loadCourses = model.loadCourses(),
+      courses = _model$loadCourses.courses,
+      isLoading = _model$loadCourses.isLoading;
+
+  console.log(courses); //const [courses, setCourses] = useState([]);
 
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
       _useState2 = _slicedToArray(_useState, 2),
       selectedCourse = _useState2[0],
       setSelectedCourse = _useState2[1];
 
-  console.log("courses: ", courses);
-  console.log("courseTypes: ", courseTypes);
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+      _useState4 = _slicedToArray(_useState3, 2),
+      dataLoaded = _useState4[0],
+      setDataLoaded = _useState4[1];
+
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      courseTypes = _useState6[0],
+      setCourseTypes = _useState6[1];
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    //setCourses(model.getAllCourses());
+    model.processCourses();
+    model.sortCourses();
+    setCourseTypes(model.getCourseTypes());
+  }, []);
 
   var selectCourse = function selectCourse(id) {
     console.log("set selectedCourse", id);
@@ -1980,17 +2000,21 @@ function AppController() {
     console.log("params: ", params);
   };
 
+  if (isLoading) return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, "Loading...");
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "mark-test-style"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     id: "course-view-top"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "left"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseMap__WEBPACK_IMPORTED_MODULE_4__.default, {
-    courses: courses,
     selectedCourse: selectedCourse,
-    selectCourse: selectCourse,
-    courseNodes: model.getCourseNodes(),
-    courseLinks: model.getCourseLinks()
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseList__WEBPACK_IMPORTED_MODULE_5__.default, {
+    selectCourse: selectCourse
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_DegreeProgress__WEBPACK_IMPORTED_MODULE_9__.default, {
+    courses: courses,
+    courseBins: model.getCourseBins(),
+    degreeCompletion: model.getDegreeCompletion()
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_CourseList__WEBPACK_IMPORTED_MODULE_5__.default, {
     courses: courses,
     selectedCourse: selectedCourse,
     selectCourse: selectCourse
@@ -2007,10 +2031,6 @@ function AppController() {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AppController);
 
 if (document.getElementById("myTest")) {
-  // find element by id
-  var element = document.getElementById("courses"); // create new props object with element's data-attributes
-
-  var props = Object.assign({}, element.dataset.props);
   react_dom__WEBPACK_IMPORTED_MODULE_3__.render( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(react__WEBPACK_IMPORTED_MODULE_0__.StrictMode, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(AppController, null)), document.getElementById("myTest"));
 }
 
@@ -2253,16 +2273,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function CourseInspector(props) {
-  console.log("init courseList");
+  console.log("init CourseInspector", props);
 
   var prereqItems = function prereqItems(props) {
     console.log("show prereqs");
 
     if (props.selectedCourse && Array.isArray(props.selectedCourse.prerequisites) && props.selectedCourse.prerequisites.length > 0) {
-      return props.selectedCourse.prerequisites.map(function (courseId) {
-        var course = props.model.getCourseById(courseId);
+      return props.selectedCourse.prerequisites.map(function (course) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-          key: courseId,
+          key: course.id,
           className: "related-course-row text-gray-700"
         }, course.abbreviation);
       });
@@ -2276,11 +2295,27 @@ function CourseInspector(props) {
   var concurrentItems = function concurrentItems(props) {
     console.log("show concurrents");
 
-    if (props.selectedCourse && Array.isArray(props.selectedCourse.concurrents) && props.selectedCourse.prerequisites.length > 0) {
-      return props.selectedCourse.concurrents.map(function (courseId) {
-        var course = props.model.getCourseById(courseId);
+    if (props.selectedCourse && Array.isArray(props.selectedCourse.concurrents) && props.selectedCourse.concurrents.length > 0) {
+      return props.selectedCourse.concurrents.map(function (course) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-          key: courseId,
+          key: course.id,
+          className: "related-course-row text-gray-700"
+        }, course.abbreviation);
+      });
+    } else {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+        className: "related-course-row text-gray-700"
+      }, "None");
+    }
+  };
+
+  var openItems = function openItems(props) {
+    console.log("show concurrents");
+
+    if (props.selectedCourse && Array.isArray(props.selectedCourse.childCourses) && props.selectedCourse.childCourses.length > 0) {
+      return props.selectedCourse.childCourses.map(function (course) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+          key: course.id,
           className: "related-course-row text-gray-700"
         }, course.abbreviation);
       });
@@ -2325,7 +2360,13 @@ function CourseInspector(props) {
     className: "inspector-data-label text-gray-500"
   }, "Concurrent Courses:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     id: "inspector-related-course"
-  }, concurrentItems(props))))));
+  }, concurrentItems(props))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "related-course-wrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Opens Courses:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    id: "inspector-related-course"
+  }, openItems(props))))));
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseInspector);
@@ -2347,7 +2388,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function CourseList(props) {
-  console.log("init courseList");
+  console.log("init courseList", props);
 
   var selectCourse = function selectCourse(id) {
     console.log("course item clicked: ", id);
@@ -2402,90 +2443,95 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function CourseMap(props) {
-  var svgWidth = 100;
-  var svgHeight = 100;
-
-  var updateMap = function updateMap() {
-    var mapSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#course-map");
-    svgWidth = mapSvg.node().getBoundingClientRect().width;
-    svgHeight = mapSvg.node().getBoundingClientRect().height;
-    console.log("map height, widht: ", svgWidth, svgHeight);
-    console.log("course nodes: ", props.courseNodes);
-    console.log("course links: ", props.courseLinks);
-    var links = props.courseLinks;
-    var nodes = props.courseNodes;
-    mapSvg.selectAll("g").remove();
-    mapSvg.attr("viewBox", [-svgWidth / 2, -svgHeight / 2, svgWidth, svgHeight]);
-    var simulation = d3__WEBPACK_IMPORTED_MODULE_1__.forceSimulation(nodes).force("link", d3__WEBPACK_IMPORTED_MODULE_1__.forceLink(links).id(function (d) {
-      return d.id;
-    })).force("charge", d3__WEBPACK_IMPORTED_MODULE_1__.forceManyBody()).force("x", d3__WEBPACK_IMPORTED_MODULE_1__.forceX()).force("y", d3__WEBPACK_IMPORTED_MODULE_1__.forceY());
-    var link = mapSvg.append("g") // .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6).selectAll("line").data(links).join("line").attr("stroke-width", function (d) {
-      return Math.sqrt(d.value);
-    }).attr("stroke", function (d) {
-      return props.selectedCourse && d.id === props.selectedCourse.id ? d3__WEBPACK_IMPORTED_MODULE_1__.rgb(0, 50, 125) : d3__WEBPACK_IMPORTED_MODULE_1__.rgb(120, 120, 120);
-    });
-    var nodeG = mapSvg.append("g").attr("stroke", "#fff").attr("stroke-width", 1.5);
-    var node = nodeG.selectAll("circle").data(nodes).join("circle").attr("r", 10).attr("fill", d3__WEBPACK_IMPORTED_MODULE_1__.rgb(200, 200, 200)).attr("stroke-width", function (d) {
-      return props.selectedCourse && d.id === props.selectedCourse.id ? 1 : 0;
-    }).attr("stroke", d3__WEBPACK_IMPORTED_MODULE_1__.rgb(0, 50, 125)).call(drag(simulation)).on('click', function (event, d) {
-      console.log("d clicked: ", d);
-      props.selectCourse(d.id);
-    });
-    node.append("title").text(function (d) {
-      return d.abbreviation;
-    });
-    simulation.on("tick", function () {
-      link.attr("x1", function (d) {
-        return d.source.x;
-      }).attr("y1", function (d) {
-        return d.source.y;
-      }).attr("x2", function (d) {
-        return d.target.x;
-      }).attr("y2", function (d) {
-        return d.target.y;
-      });
-      node.attr("cx", function (d) {
-        return d.x;
-      }).attr("cy", function (d) {
-        return d.y;
-      });
-    });
-  };
-
-  var drag = function drag(simulation) {
-    function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-
-    function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
-
-    return d3__WEBPACK_IMPORTED_MODULE_1__.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
-  };
-
-  var color = function color(d) {
-    var scale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleOrdinal(d3__WEBPACK_IMPORTED_MODULE_1__.schemeCategory10);
-    return function (d) {
-      return scale(d.group);
-    };
-  };
+  var width = 568;
+  var height = 380;
+  var completedColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(35, 56, 118);
+  var incompleteColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(150, 150, 150);
+  var plotColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(240, 240, 240);
+  var plotLabelColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(80, 80, 80);
+  var completedTextColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(240, 240, 240);
+  var incompleteTextColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(50, 50, 50);
+  var textYOffset = 5;
+  var circleRadius = 35;
 
   var initMap = function initMap() {
+    console.log("init map", props);
+    var mapSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#course-map").attr("height", height).attr("width", width);
+    mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Prerequisites");
+    mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 3 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Concurrent");
+    mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 5 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Open Courses");
+    mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", height / 2 + textYOffset).attr("x", 3 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Select A Course");
+  };
+
+  var updateMap = function updateMap() {
+    var centerX = width / 2;
+    var centerY = height / 2;
     var mapSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#course-map");
-    console.log("map.svg: ", mapSvg.node().clientWidth, mapSvg.node().clientWidth);
-    svgWidth = mapSvg.node().getBoundingClientRect().width;
-    svgHeight = mapSvg.node().getBoundingClientRect().height;
+    mapSvg.selectAll(".map-course").remove();
+
+    if (!props.selectedCourse) {
+      mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", centerY + textYOffset).attr("x", centerX).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Select A Course");
+      return;
+    }
+
+    var selectedCourse = props.selectedCourse;
+
+    if (selectedCourse.prerequisites.length > 0) {
+      var count = selectedCourse.prerequisites.length;
+      var prereqs = mapSvg.selectAll(".map-prereq").data(selectedCourse.prerequisites, function (d) {
+        return d.id;
+      }).enter();
+      prereqs.append("line").attr("id", "map-selected-course-label").classed("map-line", 1).classed("map-course", 1).classed("map-prereq", 1).attr("x1", width / 6).attr("y1", function (d, i) {
+        return (i + 1) * height / (count + 1);
+      }).attr("x2", centerX).attr("y2", centerY).style("stroke", plotLabelColor).style("stroke-width", 1);
+      prereqs.append("circle").attr("id", "map-selected-course-label").classed("map-circle", 1).classed("map-course", 1).classed("map-prereq", 1).attr("cy", function (d, i) {
+        return (i + 1) * height / (count + 1);
+      }).attr("cx", width / 6).attr("r", circleRadius).style("fill", function (d) {
+        return d.isCompleted ? completedColor : incompleteColor;
+      }); // .on('click', (d) => {
+      //     props.selectCourse(d.id);
+      // })
+
+      prereqs.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).classed("map-prereq", 1).attr("y", function (d, i) {
+        return (i + 1) * height / (count + 1) + textYOffset;
+      }).attr("x", width / 6).attr("text-anchor", "middle").style("fill", function (d) {
+        return d.isCompleted ? completedTextColor : incompleteTextColor;
+      }).style("font-size", "11px").text(function (d) {
+        return d.abbreviation;
+      }); // .on('click', (d) => {
+      //     props.selectCourse(d.id);
+      // })
+    }
+
+    if (selectedCourse.childCourses.length > 0) {
+      var _count = selectedCourse.childCourses.length;
+      var children = mapSvg.selectAll(".map-children").data(selectedCourse.childCourses, function (d) {
+        return d.id;
+      }).enter();
+      children.append("line").attr("id", "map-selected-course-label").classed("map-line", 1).classed("map-course", 1).classed("map-children", 1).attr("x1", 5 * width / 6).attr("y1", function (d, i) {
+        return (i + 1) * height / (_count + 1);
+      }).attr("x2", centerX).attr("y2", centerY).style("stroke", plotLabelColor).style("stroke-width", 1);
+      children.append("circle").attr("id", "map-selected-course-label").classed("map-circle", 1).classed("map-course", 1).classed("map-children", 1).attr("cy", function (d, i) {
+        return (i + 1) * height / (_count + 1);
+      }).attr("cx", 5 * width / 6).attr("r", circleRadius).style("fill", function (d) {
+        return d.isCompleted ? completedColor : incompleteColor;
+      }); // .on('click', (d) => {
+      //     props.selectCourse(d.id);
+      // })
+
+      children.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).classed("map-children", 1).attr("y", function (d, i) {
+        return (i + 1) * height / (_count + 1) + textYOffset;
+      }).attr("x", 5 * width / 6).attr("text-anchor", "middle").style("fill", function (d) {
+        return d.isCompleted ? completedTextColor : incompleteTextColor;
+      }).style("font-size", "11px").text(function (d) {
+        return d.abbreviation;
+      }); // .on('click', (d) => {
+      //     props.selectCourse(d.id);
+      // })
+    }
+
+    mapSvg.append("circle").attr("id", "map-selected-course-label").classed("map-circle", 1).classed("map-course", 1).attr("cy", centerY).attr("cx", centerX).attr("r", circleRadius).style("fill", selectedCourse.isCompleted ? completedColor : incompleteColor);
+    mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", centerY + textYOffset).attr("x", centerX).attr("text-anchor", "middle").style("fill", selectedCourse.isCompleted ? completedTextColor : incompleteTextColor).style("font-size", "11px").text(selectedCourse.abbreviation);
   };
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
@@ -2496,13 +2542,164 @@ function CourseMap(props) {
     initMap();
   }, []);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-    className: "left"
+    className: "map-top"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", {
     id: "course-map"
   }));
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CourseMap);
+
+/***/ }),
+
+/***/ "./resources/js/components/DegreeProgress.js":
+/*!***************************************************!*\
+  !*** ./resources/js/components/DegreeProgress.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
+
+
+
+function DegreeProgress(props) {
+  var binDimensions = {
+    height: 100,
+    width: 450,
+    padding: {
+      top: 5,
+      left: 25,
+      right: 10,
+      bottom: 15
+    }
+  };
+  var binYScale = null;
+  var binXScale = null;
+  var binWidth = 0;
+  var binPadding = 5;
+  var completedColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(35, 56, 118);
+  var incompleteColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(150, 150, 150);
+  var plotColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(240, 240, 240);
+  var plotLabelColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(80, 80, 80);
+
+  var initCourseBins = function initCourseBins() {
+    console.log(props);
+    var plotHeight = binDimensions.height - binDimensions.padding.top - binDimensions.padding.bottom;
+    var plotWidth = binDimensions.width - binDimensions.padding.left - binDimensions.padding.right;
+    binXScale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleLinear().domain([0, 11]).range([binDimensions.padding.left + binPadding, binDimensions.width - binDimensions.padding.right - binPadding]);
+    binYScale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleLinear().domain([0, 10]).range([binDimensions.height - binDimensions.padding.bottom, binDimensions.padding.top]);
+    binWidth = binXScale(1) - binXScale(0) - binPadding;
+    var barChartSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#degree-bar-chart").attr("height", binDimensions.height).attr("width", binDimensions.width);
+    barChartSvg.append("rect").attr("x", binDimensions.padding.left).attr("y", binDimensions.padding.top).attr("height", plotHeight).attr("width", plotWidth).style("fill", plotColor); // axis labels
+
+    barChartSvg.append("text").attr("text-anchor", "middle").attr("transform", "translate(" + (binDimensions.padding.left - 5) + "," + (binDimensions.padding.top + (binDimensions.height - binDimensions.padding.top - binDimensions.padding.bottom) / 2) + "), rotate(-90)").style("fill", plotLabelColor).style("font-size", "11px").text("Count");
+    barChartSvg.append("text").attr("text-anchor", "end").attr("x", binDimensions.padding.left).attr("y", binYScale(0) - 2).style("fill", plotLabelColor).style("font-size", "11px").text("0");
+    barChartSvg.append("text").attr("text-anchor", "end").attr("x", binDimensions.padding.left).attr("y", binYScale(10) + 10).style("fill", plotLabelColor).style("font-size", "11px").text("10");
+  };
+
+  var updateCourseBins = function updateCourseBins() {
+    var bins = props.courseBins.sort(function (a, b) {
+      return d3__WEBPACK_IMPORTED_MODULE_1__.descending(a.total, b.total);
+    });
+    binXScale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleLinear().domain([0, 11]).range([binDimensions.padding.left, binDimensions.width - binDimensions.padding.right]);
+    binYScale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleLinear().domain([0, 10]).range([binDimensions.height - binDimensions.padding.bottom, binDimensions.padding.top]);
+    binWidth = binXScale(1) - binXScale(0) - binPadding;
+    var barChartSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#degree-bar-chart");
+    barChartSvg.selectAll(".count-bar").remove();
+    var typeLabels = barChartSvg.selectAll(".type-label").data(bins, function (d) {
+      return d.type;
+    }).enter();
+    typeLabels.append("text").attr("id", function (d) {
+      return "type-label-" + d.type;
+    }).classed("type-label", 1).attr("y", binDimensions.height).attr("x", function (d, i) {
+      return binXScale(i) + binWidth / 2;
+    }).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text(function (d) {
+      return d.type;
+    });
+    var countBar = barChartSvg.selectAll(".count-bar").data(bins, function (d) {
+      return d.type;
+    }).enter();
+    countBar.append("rect").attr("id", function (d) {
+      return "count-bar-completed" + d.type;
+    }).classed("count-bar", 1).attr("y", function (d) {
+      return binYScale(d.completed);
+    }).attr("x", function (d, i) {
+      return binXScale(i) + binPadding / 2;
+    }).attr("height", function (d) {
+      return binYScale(0) - binYScale(d.completed);
+    }).attr("width", binWidth).style("fill", completedColor).append("title").attr("text", function (d) {
+      return d.type + " total: " + d.total + " (complete | incomplete): (" + d.completed + " | " + d.incomplete + ")";
+    });
+    countBar.append("rect").attr("id", function (d) {
+      return "count-bar-incomplete" + d.type;
+    }).classed("count-bar", 1).attr("y", function (d) {
+      return binYScale(d.total);
+    }).attr("x", function (d, i) {
+      return binXScale(i) + binPadding / 2;
+    }).attr("height", function (d) {
+      return binYScale(d.completed) - binYScale(d.total);
+    }).attr("width", binWidth).style("fill", incompleteColor).append("title").attr("text", function (d) {
+      return d.type + " total: " + d.total + " (complete | incomplete): (" + d.completed + " | " + d.incomplete + ")";
+    });
+  };
+
+  var updateDegreeProgress = function updateDegreeProgress() {
+    var svgWidth = 100;
+    var svgHeight = 100;
+    var degreeCompletion = props.degreeCompletion;
+    var percentDone = Math.round(degreeCompletion.completed / degreeCompletion.total * 100);
+    var progressSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#degree-progress");
+    progressSvg.selectAll("g").remove();
+    progressSvg.selectAll("text").remove();
+    var g = progressSvg.append("g").attr("transform", "translate(" + svgWidth / 2 + "," + svgHeight / 2 + ")");
+    var pie = d3__WEBPACK_IMPORTED_MODULE_1__.pie().value(function (d) {
+      console.log("pie values: ", d);
+      return d.value;
+    });
+    var arcs = pie(degreeCompletion.pie);
+    g.selectAll("whatever").data(arcs).enter().append("path").attr("d", d3__WEBPACK_IMPORTED_MODULE_1__.arc().innerRadius(40) // This is the size of the donut hole
+    .outerRadius(50)).attr("fill", function (d) {
+      return d.data.key === "completed" ? completedColor : incompleteColor;
+    }).append("title").text(function (d) {
+      return d.data.key + " " + d.value;
+    });
+    progressSvg.append("text").attr("x", svgWidth / 2).attr("y", svgHeight / 2 + 15).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "35px").text(percentDone + "%");
+  };
+
+  var initDegreeProgress = function initDegreeProgress() {
+    console.log(props);
+    var svgWidth = 100;
+    var svgHeight = 100;
+    var progressSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#degree-progress").attr("height", svgHeight).attr("width", svgWidth);
+  };
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    initCourseBins();
+    initDegreeProgress();
+  }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    console.log("degree progress. ", props);
+    updateCourseBins();
+    updateDegreeProgress();
+  }, [props.courses]);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "map-bottom"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    className: "inspector-data-label text-gray-500"
+  }, "Degree Progress"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", {
+    id: "degree-bar-chart"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("svg", {
+    id: "degree-progress"
+  }));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (DegreeProgress);
 
 /***/ }),
 
@@ -2557,43 +2754,123 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
+/* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]); if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
+ //let courses = require("./data/markTest.json");
 
 function model() {
-  var _this = this;
+  var _loadCourses = loadCourses(),
+      courses = _loadCourses.courses,
+      isLoading = _loadCourses.isLoading;
 
-  var useServer = true;
-  var courseLevelAscending = true;
-  var courses = [];
+  function loadCourses() {
+    var _useState = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null),
+        _useState2 = _slicedToArray(_useState, 2),
+        error = _useState2[0],
+        setError = _useState2[1];
 
-  var loadCourses = function loadCourses() {
-    if (useServer) {
-      console.log("using server for course data");
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: 'https://pennstate-class-scheduler.test/api/courses'
-      }).then(function (response) {
-        console.log("response from courses: ", response.data);
-        return response.data;
-      })["catch"](function (error) {
-        console.log(error.toJSON());
+    var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true),
+        _useState4 = _slicedToArray(_useState3, 2),
+        isLoading = _useState4[0],
+        setIsLoading = _useState4[1];
+
+    var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null),
+        _useState6 = _slicedToArray(_useState5, 2),
+        courses = _useState6[0],
+        setCourses = _useState6[1]; // Note: the empty deps array [] means
+    // this useEffect will run once
+    // similar to componentDidMount()
+
+
+    var isCancelled = react__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+      fetch("/api/courses").then(function (res) {
+        return res.json();
+      }).then(function (result) {
+        //console.log(result);
+        if (!isCancelled.current) {
+          setCourses(result);
+          setIsLoading(false);
+          console.log(result);
+        }
+      }, // Note: it's important to handle errors here
+      // instead of a catch() block so that we don't swallow
+      // exceptions from actual bugs in components.
+      function (error) {
+        setIsLoading(false);
+        setError(error);
       });
+      return function () {
+        isCancelled.current = true;
+      };
+    }, []);
+
+    if (error) {
+      return error.message;
     }
 
-    _this.courses = __webpack_require__(/*! ./data/markTest.json */ "./resources/js/components/Model/data/markTest.json");
-    return _this.courses;
-  };
+    return {
+      courses: courses,
+      isLoading: isLoading
+    };
+  }
+
+  var courseLevelAscending = true;
+  var courseTypes = [];
 
   var getCourseById = function getCourseById(id) {
+    console.log("courses: ", courses);
+
     for (var index = 0; index < courses.length; index++) {
       if (courses[index].id === id) {
         return courses[index];
       }
     }
+  };
+
+  var processCourses = function processCourses() {
+    courses.forEach(function (course) {
+      course.childCourses = [];
+      course.inFilter = true;
+      course.isCompleted = Math.random() > 0.5;
+
+      if (!course.prerequisites) {
+        course.prerequisites = [];
+      }
+
+      course.prerequisites = course.prerequisites.map(function (courseId) {
+        var prereq = getCourseById(courseId);
+
+        if (!prereq.childCourses) {
+          prereq.childCourses = [];
+        }
+
+        prereq.childCourses.push(course);
+        return prereq;
+      });
+
+      if (!course.concurrents) {
+        course.concurrents = [];
+      }
+
+      course.concurrents = course.concurrents.map(function (courseId) {
+        var concur = getCourseById(courseId);
+        return concur;
+      });
+    });
   };
 
   var sortCourses = function sortCourses() {
@@ -2603,9 +2880,9 @@ function model() {
       // console.log("abr B", courseLevelB[0], b.abbreviation)
 
       if (courseLevelAscending) {
-        return d3__WEBPACK_IMPORTED_MODULE_1__.ascending(courseLevelA, courseLevelB);
+        return d3__WEBPACK_IMPORTED_MODULE_0__.ascending(courseLevelA, courseLevelB);
       } else {
-        return d3__WEBPACK_IMPORTED_MODULE_1__.descending(courseLevelA, courseLevelB);
+        return d3__WEBPACK_IMPORTED_MODULE_0__.descending(courseLevelA, courseLevelB);
       } // return courseLevelA[0] - courseLevelB[0];
 
     });
@@ -2624,15 +2901,69 @@ function model() {
     courseTypes = [];
 
     for (var type in types) {
-      courseTypes.push[type];
+      courseTypes.push(type);
     }
 
     return courseTypes;
   };
 
+  var getCourseBins = function getCourseBins() {
+    var bins = {};
+    courses.forEach(function (course) {
+      if (!bins[course.type]) {
+        bins[course.type] = {
+          type: course.type,
+          completed: 0,
+          incomplete: 0,
+          total: 0
+        };
+      }
+
+      if (course.isCompleted) {
+        bins[course.type].completed++;
+      } else {
+        bins[course.type].incomplete++;
+      }
+
+      bins[course.type].total++;
+    });
+    console.log("courseTypes counts: ", bins);
+    var courseBins = [];
+
+    for (var type in bins) {
+      courseBins.push(bins[type]);
+    }
+
+    return courseBins;
+  };
+
+  var getDegreeCompletion = function getDegreeCompletion() {
+    var total = 0;
+    var completed = 0;
+    courses.forEach(function (course) {
+      total += course.credits;
+
+      if (course.isCompleted) {
+        completed += course.credits;
+      }
+    });
+    var incomplete = total - completed;
+    return {
+      total: total,
+      completed: completed,
+      incomplete: incomplete,
+      pie: [{
+        key: "completed",
+        value: completed
+      }, {
+        key: "incomplete",
+        value: incomplete
+      }]
+    };
+  };
+
   var getAllCourses = function getAllCourses() {
-    loadCourses();
-    return courses;
+    if (courses === "Loading...") return courses;
   };
 
   var getCourseNodes = function getCourseNodes() {
@@ -2658,13 +2989,16 @@ function model() {
   };
 
   return {
-    loadCourses: loadCourses,
     getCourseById: getCourseById,
     getAllCourses: getAllCourses,
     getCourseNodes: getCourseNodes,
     getCourseLinks: getCourseLinks,
     sortCourses: sortCourses,
-    getCourseTypes: getCourseTypes
+    processCourses: processCourses,
+    getCourseTypes: getCourseTypes,
+    loadCourses: loadCourses,
+    getCourseBins: getCourseBins,
+    getDegreeCompletion: getDegreeCompletion
   };
 }
 
@@ -83582,17 +83916,6 @@ if (false) {} else {
 }
 
 
-/***/ }),
-
-/***/ "./resources/js/components/Model/data/markTest.json":
-/*!**********************************************************!*\
-  !*** ./resources/js/components/Model/data/markTest.json ***!
-  \**********************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"id":1,"title":"Rhetoric and Composition","abbreviation":"ENGL 15","credits":3,"description":"Intensive, rhetorically based experience in reading and writing that will\\n                 prepare you both to understand the communications that surround you and to succeed in your\\n                 own communication efforts.","type":"ENGL","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":2,"title":"College Algebra II","abbreviation":"MATH 22","credits":3,"description":"Relations, functions, graphs; polynomial, rational functions, graphs;\\n                 word problems; nonlinear inequalities; inverse functions; exponential, logarithmic functions;\\n                 conic sections; simultaneous equations.","type":"MATH","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":3,"title":"Plane Trigonometry","abbreviation":"MATH 26","credits":3,"description":"Trigonometric functions; solutions of triangles; trigonometric\\n                 equations; identities.","type":"MATH","prerequisites":[2],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":4,"title":"Introductory Microeconomic Analysis and Policy","abbreviation":"ECON 102","credits":3,"description":"Methods of economic analysis and their use; price determination;\\n                 theory of the firm; distribution.","type":"ECON","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":5,"title":"Introductory Macroeconomic Analysis and Policy","abbreviation":"ECON 104","credits":3,"description":"National income measurement; aggregate economic models; money and income;\\n                 policy problems.","type":"ECON","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":6,"title":"Electrical Circuits and Power Distribution","abbreviation":"EE 211","credits":3,"description":"D.C. and A.C. circuits, transformers, single and three-phase distribution systems,\\n                 A.C. motors and generators.","type":"EE","prerequisites":null,"concurrents":[23],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":7,"title":"Chemical Principles I","abbreviation":"CHEM 110","credits":3,"description":"Basic concepts and quantitative relations.","type":"CHEM","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":8,"title":"Experimental Chemistry I","abbreviation":"CHEM 111","credits":1,"description":"Introduction to quantitative experimentation in chemistry.","type":"CHEM","prerequisites":[7],"concurrents":[7],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":9,"title":"Digital Design: Theory and Practice","abbreviation":"CMPEN 270","credits":4,"description":"Introduction to digital systems and their design.","type":"CMPEN","prerequisites":null,"concurrents":[26],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":10,"title":"Microprocessors","abbreviation":"CMPEN 351","credits":3,"description":"Microprocessor architecture; memory system design; assembly language programming;\\n                interrupts; the stacks and subroutines; memory and I/O inter-facing; serial I/O and data communications;\\n                microprocessors applications.","type":"CMPEN","prerequisites":[9],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":11,"title":"Operating Systems","abbreviation":"CMPEN 441","credits":3,"description":"Resource management in computer systems.","type":"CMPEN","prerequisites":[15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":12,"title":"Communication Networks","abbreviation":"CMPEN 461","credits":3,"description":"Data transmission, encoding, link control techniques, network architecture,\\n                 design, protocols, and multiple access.","type":"CMPEN","prerequisites":[9,13],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":13,"title":"Introduction to Programming Techniques","abbreviation":"CMPSC 121","credits":3,"description":"Design and implementation of algorithms. Structured programming. Problem\\n                solving techniques. Introduction to a high-level language, including arrays, procedures, and recursion.","type":"CMPSC","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":14,"title":"Intermediate Programming","abbreviation":"CMPSC 122","credits":3,"description":"Object-oriented programming, recursion, fundamental data structures (including stacks,\\n                queues, linked lists, hash tables, trees, and graphs), the basics of algorithmic analysis, and an\\n                introduction to the principles of language translation.","type":"CMPSC","prerequisites":[13],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":15,"title":"Discrete Mathematics for Computer Science","abbreviation":"CMPSC 360","credits":3,"description":"Discrete mathematics and foundations for modern computer science.","type":"CMPSC","prerequisites":[14],"concurrents":[14],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":16,"title":"Database Management Systems","abbreviation":"CMPSC  431W","credits":3,"description":"Fundamental concepts of programming language design, specifications,\\n                and implementation; programming language paradigms and features; program verification.","type":"CMPSC","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":17,"title":"Programming Language Concepts","abbreviation":"CMPSC 461","credits":3,"description":"Fundamental concepts of programming language design, specifications,\\n                 and implementation; programming language paradigms and features; program verification.","type":"CMPSC","prerequisites":[28,15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":18,"title":"Data Structures and Algorithms","abbreviation":"CMPSC 465","credits":3,"description":"Fundamental concepts of computer science: data structures, analysis of\\n                 algorithms, recursion, trees, sets, graphs, sorting.","type":"CMPSC","prerequisites":[14,15],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":19,"title":"Effective Writing: Technical Writing","abbreviation":"ENGL 202C","credits":3,"description":"Writing for students in scientific and technical disciplines.","type":"ENGL","prerequisites":[1],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":20,"title":"Calculus with Analytic Geometry I","abbreviation":"MATH 140","credits":4,"description":"Functions, limits; analytic geometry; derivatives, differentials, applications;\\n                 integrals, applications.","type":"MATH","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":21,"title":"Calculus with Analytic Geometry II","abbreviation":"MATH 141","credits":4,"description":"Derivatives, integrals, applications; sequences and series; analytic geometry;\\n                 polar coordinates.","type":"MATH","prerequisites":[2,3],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":22,"title":"Matrices","abbreviation":"MATH 220","credits":2,"description":"Systems of linear equations; matrix algebra; eigenvalues and eigenvectors;\\n                 linear systems of differential equations.","type":"MATH","prerequisites":[20],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":23,"title":"Ordinary Differential Equations","abbreviation":"MATH 250","credits":3,"description":"First- and second-order equations; special functions; Laplace transform solutions;\\n                 higher order equations.","type":"MATH","prerequisites":[21],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":24,"title":"Basic Management Concepts","abbreviation":"MGMT 301","credits":3,"description":"Study of fundamental principles and processes available to the understanding\\n                 of management.","type":"MGMT","prerequisites":[1,2,4],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":25,"title":"General Physics: Mechanics","abbreviation":"PHYS 211","credits":4,"description":"Calculus-based study of the basic concepts of mechanics: motion, force,\\n                 Newton\'s laws, energy, collisions, and rotation.","type":"PHYS","prerequisites":null,"concurrents":[20],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":26,"title":"General Physics: Electricity and Magnetism","abbreviation":"PHYS 212","credits":4,"description":"Calculus-based study of the basic concepts of electricity and magnetism.","type":"PHYS","prerequisites":[20,25],"concurrents":[21],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":27,"title":"Elementary Probability","abbreviation":"STAT 318","credits":3,"description":"Combinatorial analysis, axioms of probability, conditional probability\\n                 and independence, discrete and continuous random variables, expectation, limit theorems,\\n                 additional topics","type":"STAT","prerequisites":[21],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":28,"title":"Object-Oriented Software Design and Construction","abbreviation":"SWENG 311","credits":3,"description":"Design, documentation, testing, and construction of software using software\\n                 engineering strategies embodied in object-oriented programming languages.","type":"SWENG","prerequisites":[14],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":29,"title":"Software Engineering","abbreviation":"SWENG 411","credits":3,"description":"Software engineering principles including lifecycle, dependability,\\n                 process modeling, project management, requires specification, design analysis, implementation,\\n                 testing, and maintenance.","type":"SWENG","prerequisites":[14],"concurrents":[28],"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":30,"title":"Software Engineering","abbreviation":"SWENG 411","credits":3,"description":"Software engineering principles including lifecycle, dependability,\\n                 process modeling, project management, requires specification, design analysis, implementation,\\n                 testing, and maintenance.","type":"SWENG","prerequisites":null,"concurrents":null,"created_at":null,"updated_at":null},{"id":31,"title":"Software Architecture","abbreviation":"SWENG 421","credits":3,"description":"The analysis and design of software systems using canonical design patterns.","type":"SWENG","prerequisites":[29],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":32,"title":"Software Verification, Validation, and Testing","abbreviation":"SWENG 431","credits":3,"description":"ntroduction to methods of software verification, validation, and testing;\\n                  mathematical foundations of testing, reliability models; statistical testing.","type":"SWENG","prerequisites":[29,27],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":33,"title":"Embedded Real Time Systems","abbreviation":"SWENG 452","credits":3,"description":"The design and implementation of real time systems.","type":"SWENG","prerequisites":[11],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":34,"title":"Software Engineering Design","abbreviation":"SWENG 480","credits":3,"description":"Concepts of engineering ethics, economy, and project management, senior\\n                 capstone project selection, and technical communication skills.","type":"SWENG","prerequisites":[32],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"},{"id":35,"title":"Software Engineering Project","abbreviation":"SWENG 481","credits":3,"description":"Capstone group design projects in software engineering.","type":"SWENG","prerequisites":[34],"concurrents":null,"created_at":null,"updated_at":"2021-07-07T14:04:23.000000Z"}]');
-
 /***/ })
 
 /******/ 	});
@@ -83656,18 +83979,6 @@ module.exports = JSON.parse('[{"id":1,"title":"Rhetoric and Composition","abbrev
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

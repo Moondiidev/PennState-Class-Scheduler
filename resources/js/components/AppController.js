@@ -10,38 +10,29 @@ import CourseControls from "./CourseControls";
 import { mode } from "d3";
 import DegreeProgress from "./DegreeProgress";
 
-function AppController() {
-    const model = new CourseModel();
 
+function AppController() {
+
+    const model = new CourseModel();
+    const { courses, isLoading } = model.loadCourses();
+
+    console.log(courses);
+
+
+    //const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [dataLoaded, setDataLoaded] = useState(false);
-    const [courses, setCourses] = useState([]);
     const [courseTypes, setCourseTypes] = useState([]);
 
 
-
-    // useEffect(() => {
-    //     model.loadCourses(() => {
-    //         model.sortCourses();
-
-    //         let loadedCourses = model.getAllCourses();
-
-    //         console.log("loadedCourses in callback: ", loadedCourses);
-
-    //         setCourses(...loadedCourses);
-    //         setCourseTypes(...model.getCourseTypes());
-
-    //         model.setCourses(courses);
-    //     });
-    // }, []);
-
     useEffect(() => {
+        //setCourses(model.getAllCourses());
         model.processCourses();
         model.sortCourses();
-        setCourses(model.getAllCourses());
         setCourseTypes(model.getCourseTypes());
 
     }, []);
+
 
 
     const selectCourse = (id) => {
@@ -62,6 +53,11 @@ function AppController() {
         console.log("params: ", params);
     };
 
+    if (isLoading)
+        return(
+            <div>Loading...</div>
+        )
+
     return (
         <div className="mark-test-style">
             <div id="course-view-top">
@@ -73,7 +69,7 @@ function AppController() {
                     courseLinks={model.getCourseLinks()}
                 /> */}
                 <div className="left">
-                    <CourseMap 
+                    <CourseMap
                         selectedCourse={selectedCourse}
                         selectCourse={selectCourse}
                     />
@@ -100,6 +96,7 @@ function AppController() {
         </div>
     );
 }
+
 export default AppController;
 
 if (document.getElementById("myTest")) {

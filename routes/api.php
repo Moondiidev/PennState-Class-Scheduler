@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
 
-    Route::get('courses', function () {
-        return response()->json(\App\Models\Course::all(), 200);
+    Route::get('courses', function (Illuminate\Http\Request $request) {
+        return response()->json([\App\Models\Course::all(), 'user' => $request->user()], 200);
     });
 
 

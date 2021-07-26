@@ -1,42 +1,63 @@
-import axios from "axios";
 import * as d3 from "d3";
+import React, { useState, useEffect } from "react";
 
-let courses = require("./data/markTest.json");
+//let courses = require("./data/markTest.json");
+
 
 function model() {
-    let useServer = true;
+
+    let { courses, isLoading } = loadCourses();
+
+    function loadCourses() {
+
+        const [error, setError] = useState(null);
+        const [isLoading, setIsLoading] = useState(true);
+        const [courses, setCourses] = useState(null);
+
+        // Note: the empty deps array [] means
+        // this useEffect will run once
+        // similar to componentDidMount()
+        const isCancelled = React.useRef(false);
+        useEffect(() => {
+            fetch("/api/courses")
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        //console.log(result);
+                        if (! isCancelled.current) {
+                            setCourses(result);
+                            setIsLoading(false);
+                            console.log(result);
+                        }
+                    },
+                    // Note: it's important to handle errors here
+                    // instead of a catch() block so that we don't swallow
+                    // exceptions from actual bugs in components.
+                    (error) => {
+                        setIsLoading(false);
+                        setError(error);
+                    }
+
+                )
+
+            return () => {
+                isCancelled.current = true;
+            };
+
+        }, [])
+
+        if (error) {
+            return error.message;
+        }
+
+        return {courses, isLoading };
+    }
+
+
+
     let courseLevelAscending = true;
 
     let courseTypes = [];
-
-    function loadCourses(callback) {
-        if (useServer) {
-            console.log("using server for course data");
-
-            axios({
-                method: "get",
-                url: "/api/courses",
-            })
-                .then((response) => {
-                    console.log("response from courses: ", response.data);
-                    // return response.data;
-
-                    courses = response.data.map((course) => {
-                        course.isCompleted = false;
-                        course.inFilter = true;
-                        return course;
-                    });
-
-                    callback(courses);
-                })
-                .catch(function (error) {
-                    console.log(error.toJSON());
-                });
-        }
-
-        //  this.courses = require("./data/markTest.json");
-        // return this.courses;
-    }
 
     const getCourseById = (id) => {
         console.log("courses: ", courses);
@@ -179,6 +200,8 @@ function model() {
     };
 
     const getAllCourses = () => {
+        if (courses === "Loading...")
+
         return courses;
     };
 
@@ -207,8 +230,8 @@ function model() {
         return links;
     };
 
+
     return {
-        loadCourses,
         getCourseById,
         getAllCourses,
         getCourseNodes,
@@ -216,7 +239,7 @@ function model() {
         sortCourses,
         processCourses,
         getCourseTypes,
-
+        loadCourses,
         getCourseBins,
         getDegreeCompletion,
     };
