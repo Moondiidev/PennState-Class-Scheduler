@@ -32,7 +32,8 @@ class CourseController extends Controller
             $headerButtonAction = route('courses.create');
             $headerButtonText   = "Create New Course";
 
-            return view('courses.index', compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+            return view('courses.index',
+                compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
         }
 
         return view('courses.index', compact('courses', 'pageName'));
@@ -131,36 +132,13 @@ class CourseController extends Controller
     }
 
     /**
-     * Show the mark course as completed form
-     */
-    public function completedForm()
-    {
-        $pageName = "Mark Completed Courses";
-        $courses = Course::all();
-        $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
-
-        return view('mark-completed', compact('courses', 'pageName', 'currentCompletedCourses'));
-    }
-
-    /**
-     * Mark submitted classes as completed for auth user
-     */
-    public function markAsCompleted(Request $request)
-    {
-        auth()->user()->completedCourses()->sync($request->input('completed'));
-
-        return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
-    }
-
-    /**
      * Display class recommendations page
      */
     public function recommendations()
     {
         $pageName = "Get Course Recommendations";
 
-
-        return view('recommendations', compact('pageName'));
+        return view('recommendations.index', compact('pageName'));
     }
 
     /**
@@ -168,9 +146,105 @@ class CourseController extends Controller
      */
     public function recommendationResults(Request $request)
     {
-        //
+
+        $request->validate([
+            'semester' => 'required|between:1,3|numeric',
+            'number_of_courses' => 'required|numeric|min:1',
+        ]);
+
+        $pageName = "Course Recommendations";
+
+        $semester = $request->input('semester');
+        $requestedNumberOfCourses = $request->input('number_of_courses');
+
+        // courses in the selected semester that the user has not already completed
+        $availableCourses = Course::getCoursesBySemester($semester)->diff($request->user()->completedCourses);
+
+        // find courses to suggest
+        $suggestedCourses = $this->getSuggestedCourses($availableCourses);
+
+        // find and add any available concurrent courses based on suggested courses above
+        $suggestedCourses =
+            $this->addCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+                 ->take($requestedNumberOfCourses);
+
+        $warnings = $this->getConcurrentWarnings($suggestedCourses, $semester);
+
+        if ($requestedNumberOfCourses > $suggestedCourses->count()) {
+           $this->lessThanExpectedCoursesWarning($warnings);
+        }
+
+        return view('recommendations.show',
+            compact('pageName', 'suggestedCourses', 'warnings', 'semester', 'requestedNumberOfCourses'));
+
     }
 
+
+    private function getSuggestedCourses($availableCourses)
+    {
+        return $availableCourses->filter(function ($value) {
+
+            return ($value->prerequisites == null && $value->concurrents == null)
+                   ||
+                   (
+                       ( $value->prerequisites && ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                       &&
+                       ( $value->concurrents && ! array_diff( $value->concurrents, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                   )
+                   ||
+                   (
+                       ( ! $value->prerequisites )
+                       &&
+                       ( $value->concurrents && ! array_diff( $value->concurrents, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                   )
+                   ||
+                   (
+                       ( $value->prerequisites && ! array_diff( $value->prerequisites, auth()->user()->completedCourses()->pluck('course_id')->toArray()) )
+                       &&
+                       ( ! $value->concurrents )
+                   );
+
+        })->sortByDesc('semester_specific')->sortByDesc('prerequisites_for_count');
+    }
+
+    private function addCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+    {
+        // insert concurrent course directly after the course it is concurrent with
+        foreach ($this->findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester) as $course) {
+            $index = $suggestedCourses->search(Course::find($course->concurrents[0]));
+            $suggestedCourses->splice($index, 0, [$course]);
+        }
+
+        return $suggestedCourses;
+    }
+
+    private function findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester)
+    {
+        return Course::getCoursesWithConcurrents($semester)->filter(function ($course)  use ($suggestedCourses) {
+            return  ! array_diff( $course->concurrents, $suggestedCourses->pluck('id')->toArray());
+        });
+    }
+
+    private function getConcurrentWarnings($suggestedCourses, $semester)
+    {
+        $includedConcurrentCourses = $suggestedCourses
+            ->intersect($this->findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester));
+
+        $warnings = [];
+
+        foreach ($includedConcurrentCourses as $key => $course) {
+            $warnings[$key] = $course->abbreviation . " can only be taken as a concurrent if you also take " .
+                              Course::find($course->concurrents[0])->abbreviation . "!";
+        }
+
+        return $warnings;
+    }
+
+    private function lessThanExpectedCoursesWarning(& $warnings)
+    {
+        return array_push($warnings, "We could not find enough available courses to meet
+            the number of courses you requested due to limitation of course offerings and prerequisites.");
+    }
 
 
 }
