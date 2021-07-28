@@ -138,7 +138,6 @@ class CourseController extends Controller
     {
         $pageName = "Get Course Recommendations";
 
-
         return view('recommendations.index', compact('pageName'));
     }
 
@@ -147,6 +146,12 @@ class CourseController extends Controller
      */
     public function recommendationResults(Request $request)
     {
+
+        $request->validate([
+            'semester' => 'required|between:1,3|numeric',
+            'number_of_courses' => 'required|numeric|min:1',
+        ]);
+
         $pageName = "Course Recommendations";
 
         $semester = $request->input('semester');
