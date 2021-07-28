@@ -175,7 +175,7 @@ class CourseController extends Controller
         }
 
         return view('recommendations.show',
-            compact('pageName', 'suggestedCourses', 'warnings'));
+            compact('pageName', 'suggestedCourses', 'warnings', 'semester', 'requestedNumberOfCourses'));
 
     }
 
