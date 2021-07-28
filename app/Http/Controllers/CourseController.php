@@ -132,29 +132,6 @@ class CourseController extends Controller
     }
 
     /**
-     * Show the mark course as completed form
-     */
-    public function completedForm()
-    {
-        $pageName = "Mark Completed Courses";
-        $courses = Course::all();
-        $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
-
-        return view('mark-completed',
-            compact('courses', 'pageName', 'currentCompletedCourses'));
-    }
-
-    /**
-     * Mark submitted classes as completed for auth user
-     */
-    public function markAsCompleted(Request $request)
-    {
-        auth()->user()->completedCourses()->sync($request->input('completed'));
-
-        return redirect(route('completedForm'))->with('status', 'Completed Courses Successfully Updated!');
-    }
-
-    /**
      * Display class recommendations page
      */
     public function recommendations()
@@ -179,7 +156,6 @@ class CourseController extends Controller
         $availableCourses = Course::getCoursesBySemester($semester)->diff($request->user()->completedCourses);
 
         // find courses to suggest
-        $this->getSuggestedCourses($availableCourses);
         $suggestedCourses = $this->getSuggestedCourses($availableCourses);
 
         // find and add any available concurrent courses based on suggested courses above
