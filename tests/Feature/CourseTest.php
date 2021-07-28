@@ -690,5 +690,5 @@ class CourseTest extends TestCase
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
     }
-    
+
 }
