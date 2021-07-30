@@ -54,7 +54,6 @@ function model() {
      * @returns course
      */
     const getCourseById = (id) => {
-        console.log("courses: ", courses);
         for (let index = 0; index < courses.length; index++) {
             if (courses[index].id === id) {
                 return courses[index];
@@ -68,7 +67,6 @@ function model() {
     const processCourses = () => {
         console.log("processCourses", courses);
         courses = courses.map((course) => {
-            console.log("process course: ", course);
             course.childCourses = [];
             course.inFilter = true;
 
@@ -96,8 +94,18 @@ function model() {
             course.concurrents = course.concurrents.map((courseId) => {
                 let concur = getCourseById(courseId);
 
+                if (!concur.childCourses) {
+                    concur.childCourses = [];
+                }
+
+                concur.childCourses.push(course);
+
                 return concur;
             });
+
+            if (course.concurrents.length > 1) {
+                console.log("THIS COURSE HAS MORE THAN 1 CONCURRENTS!!!!!!!!!! ", course)
+            }
 
             return course;
         });
