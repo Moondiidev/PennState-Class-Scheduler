@@ -87,6 +87,23 @@
     padding: 1px;
 }
 
+.course-id-label {
+    position: relative;
+    float: left;
+    width: calc(100% - 20px);
+    height: 20px;
+}
+
+.course-indicator {
+    position: relative;
+    float: left;
+    height: 10px;
+    width: 10px;
+    border-radius: 10px;
+    background:rgb(150, 150, 150);
+    margin-left: 10px;
+}
+
 .course-list-title {
     width: 100%;
     position: relative;
@@ -128,6 +145,26 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     padding-bottom: 10px;
+}
+
+.inspector-selected-label {
+    position: relative;
+    float: left;
+}
+
+.inspector-indicator {
+    position: relative;
+    float: left;
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background:rgb(150, 150, 150);
+    margin-left: 10px;
+    margin-top: 6px;
+}
+
+.completed {
+    background: rgb(35, 56, 118);
 }
 
 .inspector-row {
