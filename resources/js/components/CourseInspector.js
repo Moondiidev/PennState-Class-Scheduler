@@ -1,8 +1,18 @@
 import React, { useEffect } from "react";
 
+/**
+ * 
+ * @param {Props} {selectedCourse}
+ * @returns 
+ */
 function CourseInspector(props) {
     console.log("init CourseInspector", props);
 
+    /**
+     * Builds the jsx for each prereq course list item
+     * @param {Course} props 
+     * @returns 
+     */
     const prereqItems = (props) => {
         console.log("show prereqs");
         if (
@@ -26,6 +36,11 @@ function CourseInspector(props) {
         }
     };
 
+    /**
+     * Builds the jsx for each concurrent course list item
+     * @param {Course} props 
+     * @returns 
+     */
     const concurrentItems = (props) => {
         console.log("show concurrents");
         if (
@@ -49,6 +64,11 @@ function CourseInspector(props) {
         }
     };
 
+    /**
+     * Builds the jsx for each enabled course list item
+     * @param {Course} props 
+     * @returns 
+     */
     const openItems = (props) => {
         console.log("show concurrents");
         if (

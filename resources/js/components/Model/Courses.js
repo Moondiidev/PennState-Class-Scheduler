@@ -1,43 +1,58 @@
-import axios from "axios";
 import * as d3 from "d3";
 
-let courses = require("./data/markTest.json");
+// let courses = require("./data/markTest.json");
 
+/**
+ * Main course model
+ * 
+ * @author Mark Westerlund
+ * @version 1.0
+ * 
+ * @returns 
+ */
 function model() {
-    let useServer = true;
     let courseLevelAscending = true;
 
     let courseTypes = [];
+    let courses = [];
 
+    /**
+     * Loads courses from the server
+     * @param {Function} callback 
+     */
     function loadCourses(callback) {
-        if (useServer) {
-            console.log("using server for course data");
+        console.log("using server for course data");
 
-            axios({
-                method: "get",
-                url: "/api/courses",
+        fetch("/api/courses").then((response) => {
+                console.log("response from courses: ", response.data);
+                // return response.data;
+
+                return response.json();
             })
-                .then((response) => {
-                    console.log("response from courses: ", response.data);
-                    // return response.data;
-
-                    courses = response.data.map((course) => {
-                        course.isCompleted = false;
-                        course.inFilter = true;
-                        return course;
-                    });
-
-                    callback(courses);
-                })
-                .catch(function (error) {
-                    console.log(error.toJSON());
+            .then((results) => {
+                console.log("test test results: ", results)
+                courses = results[0].map((course) => {
+                    // console.log("test ")
+                    course.isCompleted = false;
+                    course.inFilter = true;
+                    return course;
                 });
-        }
 
-        //  this.courses = require("./data/markTest.json");
-        // return this.courses;
+                processCourses();
+                sortCourses();
+
+                callback(courses);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
+    /**
+     * Finds the course in the course array
+     * @param {String} id id of course
+     * @returns course
+     */
     const getCourseById = (id) => {
         console.log("courses: ", courses);
         for (let index = 0; index < courses.length; index++) {
@@ -47,8 +62,13 @@ function model() {
         }
     };
 
+    /**
+     * Processes loaded courses for proper viewing
+     */
     const processCourses = () => {
-        courses.forEach((course) => {
+        console.log("processCourses", courses);
+        courses = courses.map((course) => {
+            console.log("process course: ", course);
             course.childCourses = [];
             course.inFilter = true;
 
@@ -78,27 +98,31 @@ function model() {
 
                 return concur;
             });
-        });
-    };
 
+            return course;
+        });
+    }
+
+    /**
+     * Sorts courses according to a heuristic that higher courses should be taken after lower numbered courses
+     */
     const sortCourses = () => {
         courses.sort((a, b) => {
             let courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
             let courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
-
-            // console.log("abr A", courseLevelA[0], a.abbreviation)
-            // console.log("abr B", courseLevelB[0], b.abbreviation)
 
             if (courseLevelAscending) {
                 return d3.ascending(courseLevelA, courseLevelB);
             } else {
                 return d3.descending(courseLevelA, courseLevelB);
             }
-
-            // return courseLevelA[0] - courseLevelB[0];
         });
     };
 
+    /**
+     * Finds all course types
+     * @returns course types array
+     */
     const getCourseTypes = () => {
         let types = {};
         courses.forEach((course) => {
@@ -118,6 +142,10 @@ function model() {
         return courseTypes;
     };
 
+    /**
+     * Builds bins for course progress
+     * @returns Course bins for progress area
+     */
     const getCourseBins = () => {
         let bins = {};
         courses.forEach((course) => {
@@ -148,6 +176,10 @@ function model() {
         return courseBins;
     };
 
+    /**
+     * Builds object for course completion
+     * @returns degree completion object
+     */
     const getDegreeCompletion = () => {
         let total = 0;
         let completed = 0;
@@ -178,41 +210,21 @@ function model() {
         };
     };
 
+    /**
+     * Getter for course array
+     * @returns Array of Courses
+     */
     const getAllCourses = () => {
         return courses;
     };
 
-    const getCourseNodes = () => {
-        return courses; // may have to change???
-    };
-
-    const getCourseLinks = () => {
-        const links = [];
-
-        courses.forEach((course) => {
-            if (!course.prerequisites) {
-                course.prerequisites = [];
-            }
-
-            course.prerequisites.forEach((preReqId) => {
-                const link = {
-                    source: preReqId,
-                    target: course.id,
-                };
-
-                links.push(link);
-            });
-        });
-
-        return links;
-    };
-
+    /**
+     * Returns methods that should be public, all other methods and fields are private to the model
+     */
     return {
         loadCourses,
         getCourseById,
         getAllCourses,
-        getCourseNodes,
-        getCourseLinks,
         sortCourses,
         processCourses,
         getCourseTypes,
@@ -222,4 +234,4 @@ function model() {
     };
 }
 
-export default model;
+export default model();

@@ -16,6 +16,11 @@ function CourseMap(props) {
     let textYOffset = 5;
     let circleRadius = 35;
 
+    const selectCourse = (id) => {
+        console.log("course item clicked: ", id);
+        props.selectCourse(id);
+    };
+
 
     const initMap = () => {
         console.log("init map", props)
@@ -94,14 +99,11 @@ function CourseMap(props) {
 
             return;
         }
-       
 
         let selectedCourse = props.selectedCourse;
 
-        
-
+        // display 
         if (selectedCourse.prerequisites.length > 0) {
-
             let count = selectedCourse.prerequisites.length;
 
             let prereqs = mapSvg.selectAll(".map-prereq")
@@ -112,7 +114,6 @@ function CourseMap(props) {
 
             prereqs
                 .append("line")
-                .attr("id", "map-selected-course-label")
                 .classed("map-line", 1)
                 .classed("map-course", 1)
                 .classed("map-prereq", 1)
@@ -127,7 +128,9 @@ function CourseMap(props) {
 
             prereqs
                 .append("circle")
-                .attr("id", "map-selected-course-label")
+                .attr("id", (d) => {
+                    return "map-circle-" + d.id;
+                })
                 .classed("map-circle", 1)
                 .classed("map-course", 1)
                 .classed("map-prereq", 1)
@@ -139,9 +142,17 @@ function CourseMap(props) {
                 .style("fill", (d) => {
                     return (d.isCompleted) ? completedColor : incompleteColor
                 })
-                // .on('click', (d) => {
-                //     props.selectCourse(d.id);
-                // })
+                .on('click', (event, d) => {
+                    selectCourse(d.id);
+                })
+                .on("mouseover", (event, d) => {
+                    d3.select(event.target)
+                        .attr("r", circleRadius + 5)
+                })
+                .on("mouseout", (event, d) => {
+                    d3.select(event.target)
+                        .attr("r", circleRadius)
+                })
 
             prereqs
                 .append("text")
@@ -161,13 +172,21 @@ function CourseMap(props) {
                 .text((d) => {
                     return d.abbreviation;
                 })
-                // .on('click', (d) => {
-                //     props.selectCourse(d.id);
-                // })
+                .on('click', (event, d) => {
+                    selectCourse(d.id);
+                })
+                .on("mouseover", (event, d) => {
+                    d3.select("#map-circle-" + d.id)
+                        .attr("r", circleRadius + 5)
+                })
+                .on("mouseout", (event, d) => {
+                    d3.select("#map-circle-" + d.id)
+                        .attr("r", circleRadius + 5)
+                })
 
         }
 
-
+        // display children courses
         if (selectedCourse.childCourses.length > 0) {
 
             let count = selectedCourse.childCourses.length;
@@ -180,7 +199,9 @@ function CourseMap(props) {
 
             children
                 .append("line")
-                .attr("id", "map-selected-course-label")
+                .attr("id", (d) => {
+                    return "map-circle-" + d.id;
+                })
                 .classed("map-line", 1)
                 .classed("map-course", 1)
                 .classed("map-children", 1)
@@ -195,7 +216,9 @@ function CourseMap(props) {
 
             children
                 .append("circle")
-                .attr("id", "map-selected-course-label")
+                .attr("id", (d) => {
+                    return "map-circle-" + d.id;
+                })
                 .classed("map-circle", 1)
                 .classed("map-course", 1)
                 .classed("map-children", 1)
@@ -207,9 +230,17 @@ function CourseMap(props) {
                 .style("fill", (d) => {
                     return (d.isCompleted) ? completedColor : incompleteColor
                 })
-                // .on('click', (d) => {
-                //     props.selectCourse(d.id);
-                // })
+                .on('click', (event, d) => {
+                    selectCourse(d.id);
+                })
+                .on("mouseover", (event, d) => {
+                    d3.select(event.target)
+                        .attr("r", circleRadius + 5)
+                })
+                .on("mouseout", (event, d) => {
+                    d3.select(event.target)
+                        .attr("r", circleRadius)
+                });
 
             children
                 .append("text")
@@ -229,10 +260,17 @@ function CourseMap(props) {
                 .text((d) => {
                     return d.abbreviation;
                 })
-                // .on('click', (d) => {
-                //     props.selectCourse(d.id);
-                // })
-
+                .on('click', (event, d) => {
+                    selectCourse(d.id);
+                })
+                .on("mouseover", (event, d) => {
+                    d3.select("#map-circle-" + d.id)
+                        .attr("r", circleRadius + 5)
+                })
+                .on("mouseout", (event, d) => {
+                    d3.select("#map-circle-" + d.id)
+                        .attr("r", circleRadius + 5)
+                });
         }
 
         mapSvg
@@ -265,7 +303,7 @@ function CourseMap(props) {
 
     useEffect(() => {
         updateMap();
-    }, [props.selectedCourse])
+    }, [props.selectedCourse, props.selectCourse])
 
 
     // loads only after initial render

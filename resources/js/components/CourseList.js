@@ -1,15 +1,30 @@
 import React, { useEffect } from "react";
 
+
+/**
+ * React Component
+ * 
+ * Builds the list of degree courses,
+ * Clicking a row will select the course
+ * 
+ * @author Mark Westerlund
+ * @version 1.0
+ * @param {Object} props {courses, selectedCourse, selectCourse}
+ * @returns 
+ */
 function CourseList(props) {
     console.log("init courseList", props);
 
+    /**
+     * Pass through for selecting course from list
+     * @param {String} id 
+     */
     const selectCourse = (id) => {
         console.log("course item clicked: ", id);
         props.selectCourse(id);
     };
 
     const courseItems = props.courses.map((course) => {
-        // console.log("course: ", course);
         if (props.selectedCourse && course.id === props.selectedCourse.id) {
             console.log("props.selectedCourse: ", props.selectedCourse);
         }

@@ -73,6 +73,10 @@
     cursor: pointer;
 }
 
+.course-list-row:hover {
+    background-color: rgb(235, 235, 235);
+}
+
 .course-list-id {
     width: 100%;
     position: relative;
@@ -177,3 +181,10 @@
     float: left;
 }
 
+.map-course, text {
+    cursor: default;
+}
+
+.map-prereq, .map-children {
+    cursor: pointer;
+}

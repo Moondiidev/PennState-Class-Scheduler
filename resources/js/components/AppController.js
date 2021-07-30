@@ -7,71 +7,69 @@ import CourseMap from "./CourseMap";
 import CourseList from "./CourseList";
 import CourseInspector from "./CourseInspector";
 import CourseControls from "./CourseControls";
-import { mode } from "d3";
 import DegreeProgress from "./DegreeProgress";
 
+
+/**
+ * Main controller for the app
+ * 
+ * @author Mark Westerlund
+ * @version 1.0
+ * @returns 
+ */
 function AppController() {
-    const model = new CourseModel();
 
     const [selectedCourse, setSelectedCourse] = useState(null);
-    const [dataLoaded, setDataLoaded] = useState(false);
     const [courses, setCourses] = useState([]);
     const [courseTypes, setCourseTypes] = useState([]);
 
-
-
-    // useEffect(() => {
-    //     model.loadCourses(() => {
-    //         model.sortCourses();
-
-    //         let loadedCourses = model.getAllCourses();
-
-    //         console.log("loadedCourses in callback: ", loadedCourses);
-
-    //         setCourses(...loadedCourses);
-    //         setCourseTypes(...model.getCourseTypes());
-
-    //         model.setCourses(courses);
-    //     });
-    // }, []);
-
+    /**
+     * runs once when loading, this forces load of courses once the app is initialized
+     */
     useEffect(() => {
-        model.processCourses();
-        model.sortCourses();
-        setCourses(model.getAllCourses());
-        setCourseTypes(model.getCourseTypes());
+        CourseModel.loadCourses(() => {
+            let loadedCourses = CourseModel.getAllCourses();
 
+            // console.log("loaded courses in appcontroller", loadedCourses)
+
+            setCourses(loadedCourses);
+
+        });
     }, []);
 
-
+    /**
+     * Sets the selected course
+     * @param {String} id Id of course
+     */
     const selectCourse = (id) => {
         console.log("set selectedCourse", id);
 
         if (selectedCourse === null) {
-            setSelectedCourse(model.getCourseById(id));
+            setSelectedCourse(CourseModel.getCourseById(id));
         } else {
             if (selectedCourse.id === id) {
                 setSelectedCourse(null);
             } else {
-                setSelectedCourse(model.getCourseById(id));
+                setSelectedCourse(CourseModel.getCourseById(id));
             }
         }
     };
 
+    /**
+     * Sets filter params
+     * TODO: GET WORKING!
+     * @param {Array} params 
+     */
     const setFilter = (params) => {
         console.log("params: ", params);
     };
 
+    /**
+     * returns the app jsx structure
+     */
     return (
         <div className="mark-test-style">
             <div id="course-view-top">
-                {/* <CourseMap
-                    courses={courses}
-                    selectedCourse={selectedCourse}
-                    selectCourse={selectCourse}
-                    courseNodes={model.getCourseNodes()}
-                    courseLinks={model.getCourseLinks()}
-                /> */}
                 <div className="left">
                     <CourseMap 
                         selectedCourse={selectedCourse}
@@ -79,8 +77,8 @@ function AppController() {
                     />
                     <DegreeProgress
                         courses={courses}
-                        courseBins={model.getCourseBins()}
-                        degreeCompletion={model.getDegreeCompletion()}
+                        courseBins={CourseModel.getCourseBins()}
+                        degreeCompletion={CourseModel.getDegreeCompletion()}
                     />
                 </div>
 
@@ -93,7 +91,6 @@ function AppController() {
             <div id="course-view-bottom">
                 <CourseInspector
                     selectedCourse={selectedCourse}
-                    model={model}
                 />
                 <CourseControls courseTypes={courseTypes} />
             </div>
