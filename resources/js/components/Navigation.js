@@ -8,24 +8,27 @@ class Navigation extends React.Component {
         this.nav = {
             'links' : JSON.parse(this.props.nav)
         }
-       // console.log('data from component', this.nav.links);
+
+        this.activeLink = "Home";
+        if (window.location.href.indexOf("completed") !== -1) {this.activeLink = "Completed"; }
+        else if (window.location.href.indexOf("recommendations") !== -1) {this.activeLink = "Recommends";}
+        else if (window.location.href.indexOf("courses") !== -1) {this.activeLink = "Courses";}
+
     };
 
 
     render(){
 
-        console.log(this.nav.links);
-
         const navLinks = this.nav.links.map( (link, x) => {
             return (
                 <li className="mr-6" key={x}>
-                    <a className={` ${link.active ? 'text-gray-500 cursor-text' : 'text-blue-500 hover:text-blue-800'}`} href={`${link.uri}`}>{link.name}</a>
+                    <a className={`${window.location.href.indexOf(link.uri) !== -1 ? 'text-gray-500 cursor-text' : 'text-blue-800 hover:text-blue-600'}`} href={`${link.uri}`}>{link.name}</a>
                 </li>
             )
         });
 
         return (
-            <ul className="flex p-6">
+            <ul className="flex px-6 py-2 border-b-2 mb-4">
                 {navLinks}
             </ul>
         );

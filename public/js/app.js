@@ -2071,7 +2071,16 @@ var Navigation = /*#__PURE__*/function (_React$Component) {
     _this = _super.call(this, props);
     _this.nav = {
       'links': JSON.parse(_this.props.nav)
-    }; // console.log('data from component', this.nav.links);
+    };
+    _this.activeLink = "Home";
+
+    if (window.location.href.indexOf("completed") !== -1) {
+      _this.activeLink = "Completed";
+    } else if (window.location.href.indexOf("recommendations") !== -1) {
+      _this.activeLink = "Recommends";
+    } else if (window.location.href.indexOf("courses") !== -1) {
+      _this.activeLink = "Courses";
+    }
 
     return _this;
   }
@@ -2079,18 +2088,17 @@ var Navigation = /*#__PURE__*/function (_React$Component) {
   _createClass(Navigation, [{
     key: "render",
     value: function render() {
-      console.log(this.nav.links);
       var navLinks = this.nav.links.map(function (link, x) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("li", {
           className: "mr-6",
           key: x
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("a", {
-          className: " ".concat(link.active ? 'text-gray-500 cursor-text' : 'text-blue-500 hover:text-blue-800'),
+          className: "".concat(window.location.href.indexOf(link.uri) !== -1 ? 'text-gray-500 cursor-text' : 'text-blue-800 hover:text-blue-600'),
           href: "".concat(link.uri)
         }, link.name));
       });
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
-        className: "flex p-6"
+        className: "flex px-6 py-2 border-b-2 mb-4"
       }, navLinks);
     }
   }]);

@@ -22,13 +22,6 @@ class HomeController extends Controller
     {
         $pageName = "Dashboard";
 
-        $navItems = json_encode([
-                ['name'=> "Home", 'uri' => "#", 'active' => true],
-                ['name'=> "View Courses", 'uri' => '/courses', 'active' => false],
-                ['name'=> "Mark Courses Completed", 'uri' => '/mark-completed', 'active' => false],
-                ['name'=> "Get Course Recommendations", 'uri' => '/recommendations', 'active' => false]
-        ]);
-
-        return view('home', compact('pageName', 'navItems'));
+        return view('home', compact('pageName'));
     }
 }
