@@ -9,11 +9,6 @@ class Navigation extends React.Component {
             'links' : JSON.parse(this.props.nav)
         }
 
-        this.activeLink = "Home";
-        if (window.location.href.indexOf("completed") !== -1) {this.activeLink = "Completed"; }
-        else if (window.location.href.indexOf("recommendations") !== -1) {this.activeLink = "Recommends";}
-        else if (window.location.href.indexOf("courses") !== -1) {this.activeLink = "Courses";}
-
     };
 
 

@@ -2072,16 +2072,6 @@ var Navigation = /*#__PURE__*/function (_React$Component) {
     _this.nav = {
       'links': JSON.parse(_this.props.nav)
     };
-    _this.activeLink = "Home";
-
-    if (window.location.href.indexOf("completed") !== -1) {
-      _this.activeLink = "Completed";
-    } else if (window.location.href.indexOf("recommendations") !== -1) {
-      _this.activeLink = "Recommends";
-    } else if (window.location.href.indexOf("courses") !== -1) {
-      _this.activeLink = "Courses";
-    }
-
     return _this;
   }
 
