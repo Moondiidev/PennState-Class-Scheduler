@@ -4,6 +4,9 @@
     <main class="sm:max-w-4xl sm:mx-auto sm:mt-10">
         <div class="w-full sm:px-6">
 
+            <div id="navigation" data='{{$navItems}}'>
+            </div>
+
             @if (session('status'))
                 <div class="text-sm border border-t-8 rounded text-green-700 border-green-600 bg-green-100 px-3 py-4 mb-4" role="alert">
                     {{ session('status') }}
