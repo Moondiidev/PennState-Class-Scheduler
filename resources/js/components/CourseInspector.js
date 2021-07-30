@@ -95,9 +95,11 @@ function CourseInspector(props) {
     return (
         <div className="left">
             <div id="inspector-selected-course">
-                {props.selectedCourse
+                <div className="inspector-selected-label">{props.selectedCourse
                     ? props.selectedCourse.abbreviation
                     : "Select Course"}
+                    </div>
+                <div className={props.selectedCourse && props.selectedCourse.isCompleted ? "inspector-indicator completed" : "inspector-indicator"}></div>
             </div>
             <div className="inspector-selected-area grid grid-cols-2 gap-4">
                 <div className="container">

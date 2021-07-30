@@ -268,7 +268,7 @@ function CourseMap(props) {
                 });
         }
 
-        if (selectedCourse.concurrents.length > 0 && selectedCourse.concurrents.length < 1) {
+        if (selectedCourse.concurrents.length > 0 && selectedCourse.concurrents.length <= 1) {
             // I cant think of a better way to do this....
             // just add concurrent 1 and concurrent 2 manually
 
@@ -333,7 +333,7 @@ function CourseMap(props) {
                     d3.select("#map-circle-" + concurrents[0].id)
                         .attr("r", circleRadius + 5)
                 });
-        } else if (selectedCourse.concurrents.length > 0) {
+        } else if (selectedCourse.concurrents.length > 1) {
             console.error("SELECTED COURSE HAS MORE THAN ONE CONCURRENT COURSE!!!! THIS IS NOT IMPLEMENTED", selectedCourse.concurrents)
         }
 
