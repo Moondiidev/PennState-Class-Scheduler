@@ -1,6 +1,17 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
 
+/**
+ * React Component
+ * 
+ * Displays degree completion information by course and required course completion
+ * 
+ * @author Mark Westerlund
+ * @version 1.0
+ * 
+ * @param {Object} props 
+ * @returns 
+ */
 function DegreeProgress(props) {
     let binDimensions = {
         height: 100,
@@ -24,6 +35,9 @@ function DegreeProgress(props) {
     let plotColor = d3.rgb(240, 240, 240);
     let plotLabelColor = d3.rgb(80, 80, 80);
 
+    /**
+     * Initialize the bins display
+     */
     const initCourseBins = () => {
         console.log(props);
 
@@ -106,6 +120,9 @@ function DegreeProgress(props) {
             .text("10");
     };
 
+    /**
+     * Updates course bin display
+     */
     const updateCourseBins = () => {
         let bins = props.courseBins.sort((a, b) => {
             return d3.descending(a.total, b.total);
@@ -227,6 +244,9 @@ function DegreeProgress(props) {
             });
     };
 
+    /**
+     * update degree progress donut chart
+     */
     const updateDegreeProgress = () => {
         let svgWidth = 100;
         let svgHeight = 100;
@@ -294,11 +314,17 @@ function DegreeProgress(props) {
             .attr("width", svgWidth);
     };
 
+    /***
+     * Initialize degree progress display
+     */
     useEffect(() => {
         initCourseBins();
         initDegreeProgress();
     }, []);
 
+    /**
+     * Updates course bins
+     */
     useEffect(() => {
         console.log("degree progress. ", props);
         updateCourseBins();

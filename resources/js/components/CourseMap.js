@@ -1,6 +1,18 @@
 import React, { useEffect } from 'react';
 import * as d3 from "d3";
 
+
+/**
+ * React Component
+ * 
+ * Builds the node/edge structure when a course is selected
+ * 
+ * @author Mark Westerlund
+ * @version 1.0 
+ * 
+ * @param {Object} props 
+ * @returns 
+ */
 function CourseMap(props) {
     let width = 568;
     let height = 380;
@@ -16,12 +28,18 @@ function CourseMap(props) {
     let textYOffset = 5;
     let circleRadius = 35;
 
+    /**
+     * Sets selected course
+     * @param {id} id 
+     */
     const selectCourse = (id) => {
         console.log("course item clicked: ", id);
         props.selectCourse(id);
     };
 
-
+    /**
+     * Initializes the map display on startup
+     */
     const initMap = () => {
         console.log("init map", props)
 
@@ -73,6 +91,10 @@ function CourseMap(props) {
 
     }
 
+    /**
+     * Updates map when selected course changes
+     * @returns 
+     */
     const updateMap = () => {
 
         let centerX = width / 2
@@ -81,8 +103,6 @@ function CourseMap(props) {
         let mapSvg = d3.select("#course-map")
 
         mapSvg.selectAll(".map-course").remove();
-
-        
 
         if (!props.selectedCourse) {
             mapSvg
@@ -182,7 +202,6 @@ function CourseMap(props) {
                     d3.select("#map-circle-" + d.id)
                         .attr("r", circleRadius + 5)
                 })
-
         }
 
         // display children courses
@@ -267,6 +286,7 @@ function CourseMap(props) {
                         .attr("r", circleRadius + 5)
                 });
         }
+
 
         if (selectedCourse.concurrents.length > 0 && selectedCourse.concurrents.length <= 1) {
             // I cant think of a better way to do this....
@@ -358,12 +378,11 @@ function CourseMap(props) {
             .style("fill", (selectedCourse.isCompleted) ? completedTextColor : incompleteTextColor)
             .style("font-size", "11px")
             .text(selectedCourse.abbreviation);
-
     }
 
-
-
-
+    /**
+     * Update map when selected course changes
+     */
     useEffect(() => {
         updateMap();
     }, [props.selectedCourse, props.selectCourse])

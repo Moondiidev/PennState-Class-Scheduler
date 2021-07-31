@@ -72,7 +72,6 @@ function model() {
                 });
             }
 
-
             if (!course.concurrents) {
                 course.concurrents = [];
             } else {
