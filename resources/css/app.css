@@ -225,3 +225,25 @@
 .map-prereq, .map-children {
     cursor: pointer;
 }
+
+/** Controls **/
+.controls-section-label {
+    position: relative;
+    float: left;
+    width: 100%;
+    padding-top: 5px;
+}
+
+.control-setting-row {
+    position: relative;
+    float: left;
+    width: 100%;
+    padding: 5px 3px;
+}
+
+.control-setting-label {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+

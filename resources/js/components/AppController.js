@@ -9,6 +9,8 @@ import CourseInspector from "./CourseInspector";
 import CourseControls from "./CourseControls";
 import DegreeProgress from "./DegreeProgress";
 
+import filter from "./Model/Filter";
+
 
 /**
  * Main controller for the app
@@ -19,9 +21,13 @@ import DegreeProgress from "./DegreeProgress";
  */
 function AppController() {
 
+    console.log("filter: ", filter)
+
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [courses, setCourses] = useState([]);
     const [courseTypes, setCourseTypes] = useState([]);
+    const [filterSettings, setFilterSettings] = useState({});
+    const [updateDisplay, setUpdateDisplay] = useState(0);
 
     /**
      * runs once when loading, this forces load of courses once the app is initialized
@@ -30,7 +36,7 @@ function AppController() {
         CourseModel.loadCourses(() => {
             let loadedCourses = CourseModel.getAllCourses();
 
-            // console.log("loaded courses in appcontroller", loadedCourses)
+            setFilterSettings({...filter.getFilterSettings()});
 
             setCourses(loadedCourses);
 
@@ -56,13 +62,21 @@ function AppController() {
     };
 
     /**
-     * Sets filter params
-     * TODO: GET WORKING!
-     * @param {Array} params 
+     * Sets filters
+     * @param {String} type 
+     * @param {Object} params 
      */
-    const setFilter = (params) => {
-        console.log("params: ", params);
-    };
+    const setFilter = (type, params) => {
+        console.log("SET FILTER: ", type, params);
+
+        filter.setFilter(type, params);
+
+        filter.runFilter(CourseModel.getAllCourses());
+        setCourses(CourseModel.getAllCourses());
+
+        console.log("SET FILTER SETTINGS: ", filter.getFilterSettings(), filterSettings)
+        setFilterSettings({...filter.getFilterSettings()});
+    }
 
     /**
      * returns the app jsx structure
@@ -92,7 +106,11 @@ function AppController() {
                 <CourseInspector
                     selectedCourse={selectedCourse}
                 />
-                <CourseControls courseTypes={courseTypes} />
+                <CourseControls 
+                filterSettings={filterSettings}
+                setFilter={setFilter}
+                courseTypes={courseTypes}
+                 />
             </div>
         </div>
     );

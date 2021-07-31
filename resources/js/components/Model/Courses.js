@@ -59,6 +59,7 @@ function model() {
                 return courses[index];
             }
         }
+        return null // did not find course with id
     };
 
     /**

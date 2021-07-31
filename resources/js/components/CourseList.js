@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
  * @returns
  */
 function CourseList(props) {
-    console.log("init courseList", props);
+    // console.log("init courseList", props);
 
     /**
      * Pass through for selecting course from list
@@ -26,6 +26,10 @@ function CourseList(props) {
     const courseItems = props.courses.map((course) => {
         if (props.selectedCourse && course.id === props.selectedCourse.id) {
             console.log("props.selectedCourse: ", props.selectedCourse);
+        }
+
+        if (!course.inFilter) {
+            return (<></>);
         }
 
         return (
