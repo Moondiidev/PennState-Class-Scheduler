@@ -26,7 +26,7 @@ function AppController(props) {
 
     // set courses in state on initial load
     useEffect(() => {
-        setCourses(CourseModel.loadCourses(JSON.parse(props.courses)));
+        setCourses(CourseModel.loadCourses(JSON.parse(props.courses), JSON.parse(props.completed)));
         const courseTypes = CourseModel.getCourseTypes(courses);
         // set initial filter settings
         setFilterSettings({ ...filter.getFilterSettings() });

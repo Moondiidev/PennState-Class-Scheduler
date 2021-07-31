@@ -16,14 +16,14 @@ function model() {
 
     let courseTypes = [];
 
-    const loadCourses = (courses) => {
-        courses.map((course) => {
-            course.isCompleted = false;
-            course.inFilter = true;
-            return course;
-        });
-
-        processCourses(courses);
+    /**
+     * Load and process courses
+     * @param {Arrat} courses 
+     * @param {Array} completedCourses 
+     * @returns processed and sorted courses
+     */
+    const loadCourses = (courses, completedCourses) => {
+        processCourses(courses, completedCourses);
         sortCourses(courses);
 
         return courses;
@@ -46,12 +46,12 @@ function model() {
     /**
      * Processes loaded courses for proper viewing
      */
-    const processCourses = (courses) => {
+    const processCourses = (courses, completedCourses) => {
         courses.map((course) => {
             course.childCourses = [];
             course.inFilter = true;
 
-            course.isCompleted = Math.random() > 0.5;
+            course.isCompleted = completedCourses.indexOf(course.id) > -1;
 
             course.level = Number(course.abbreviation.match(/\d+/g)[0]);
 
