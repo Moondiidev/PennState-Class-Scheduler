@@ -53,6 +53,8 @@ function model() {
 
             course.isCompleted = Math.random() > 0.5;
 
+            course.level = Number(course.abbreviation.match(/\d+/g)[0]);
+
             if (!course.prerequisites) {
                 course.prerequisites = [];
             } else {
@@ -98,8 +100,8 @@ function model() {
      */
     const sortCourses = (courses) => {
         courses.sort((a, b) => {
-            let courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
-            let courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
+            let courseLevelA = a.level;
+            let courseLevelB = b.level;
 
             if (courseLevelAscending) {
                 return d3.ascending(courseLevelA, courseLevelB);

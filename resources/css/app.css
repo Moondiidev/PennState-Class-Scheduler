@@ -225,3 +225,7 @@
 .map-prereq, .map-children {
     cursor: pointer;
 }
+
+.course-rect, .course-level-marker {
+    cursor: pointer;
+}

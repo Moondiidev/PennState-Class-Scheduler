@@ -26,6 +26,8 @@ function AppController(props) {
     useEffect(() => {
         setCourses(CourseModel.loadCourses(JSON.parse(props.courses)));
         const courseTypes = CourseModel.getCourseTypes(courses);
+        // set initial filter settings
+        setFilterSettings({ ...filter.getFilterSettings() });
     }, [])
 
     /**

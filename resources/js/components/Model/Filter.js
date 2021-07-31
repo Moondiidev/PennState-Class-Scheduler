@@ -14,7 +14,6 @@ const filter = function () {
         return filterSettings;
     }
 
-
     const runFilter = (courses) => {
         console.log("run filter", filterSettings);
         return courses.map((course) => {
@@ -22,6 +21,10 @@ const filter = function () {
 
             if (!filterSettings.completedFilter) {
                 inFilter = !course.isCompleted;
+            }
+
+            if (inFilter && filterSettings.courseLevel > 0) {
+                inFilter = (course.level > filterSettings.courseLevel)
             }
 
             course.inFilter = inFilter;
