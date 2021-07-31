@@ -3,19 +3,19 @@ import * as d3 from "d3";
 
 /**
  * React Component
- * 
+ *
  * Displays degree completion information by course and required course completion
- * 
+ *
  * @author Mark Westerlund
  * @version 1.0
- * 
- * @param {Object} props 
- * @returns 
+ *
+ * @param {Object} props
+ * @returns
  */
 function DegreeProgress(props) {
     let binDimensions = {
         height: 100,
-        width: 450,
+        width: 500,
         padding: {
             top: 5,
             left: 25,
@@ -39,7 +39,6 @@ function DegreeProgress(props) {
      * Initialize the bins display
      */
     const initCourseBins = () => {
-        console.log(props);
 
         let plotHeight =
             binDimensions.height -

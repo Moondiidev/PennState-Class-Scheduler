@@ -23,7 +23,7 @@ function CourseList(props) {
         props.selectCourse(id);
     };
 
-    const courseItems = props.courses.map((course) => {
+    const courseItems = props.courses.map((course, key) => {
         if (props.selectedCourse && course.id === props.selectedCourse.id) {
             console.log("props.selectedCourse: ", props.selectedCourse);
         }
@@ -34,7 +34,7 @@ function CourseList(props) {
 
         return (
             <div
-                key={course.id}
+                key={key}
                 className={
                     props.selectedCourse &&
                     props.selectedCourse.id === course.id

@@ -16,11 +16,11 @@ function CourseInspector(props) {
             Array.isArray(props.selectedCourse.prerequisites) &&
             props.selectedCourse.prerequisites.length > 0
         ) {
-            return props.selectedCourse.prerequisites.map((course) => {
+            return props.selectedCourse.prerequisites.map((course, key) => {
 
                 return (
                     <div
-                        key={course.id}
+                        key={key}
                         className="related-course-row text-gray-700"
                     >
                         {course.abbreviation}
@@ -44,11 +44,11 @@ function CourseInspector(props) {
             Array.isArray(props.selectedCourse.concurrents) &&
             props.selectedCourse.concurrents.length > 0
         ) {
-            return props.selectedCourse.concurrents.map((course) => {
+            return props.selectedCourse.concurrents.map((course, key) => {
 
                 return (
                     <div
-                        key={course.id}
+                        key={key}
                         className="related-course-row text-gray-700"
                     >
                         {course.abbreviation}
@@ -66,17 +66,17 @@ function CourseInspector(props) {
      * @returns
      */
     const openItems = (props) => {
-        console.log("show concurrents");
+        console.log("show opened courses");
         if (
             props.selectedCourse &&
             Array.isArray(props.selectedCourse.childCourses) &&
             props.selectedCourse.childCourses.length > 0
         ) {
-            return props.selectedCourse.childCourses.map((course) => {
+            return props.selectedCourse.childCourses.map((course, key) => {
 
                 return (
                     <div
-                        key={course.id}
+                        key={key}
                         className="related-course-row text-gray-700"
                     >
                         {course.abbreviation}

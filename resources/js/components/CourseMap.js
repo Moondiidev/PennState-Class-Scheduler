@@ -4,14 +4,14 @@ import * as d3 from "d3";
 
 /**
  * React Component
- * 
+ *
  * Builds the node/edge structure when a course is selected
- * 
+ *
  * @author Mark Westerlund
- * @version 1.0 
- * 
- * @param {Object} props 
- * @returns 
+ * @version 1.0
+ *
+ * @param {Object} props
+ * @returns
  */
 function CourseMap(props) {
     let width = 568;
@@ -30,7 +30,7 @@ function CourseMap(props) {
 
     /**
      * Sets selected course
-     * @param {id} id 
+     * @param {id} id
      */
     const selectCourse = (id) => {
         console.log("course item clicked: ", id);
@@ -75,7 +75,7 @@ function CourseMap(props) {
             .attr("text-anchor", "middle")
             .style("fill", plotLabelColor)
             .style("font-size", "11px")
-            .text("Open Courses");
+            .text("Opens Courses");
 
         mapSvg
             .append("text")
@@ -93,7 +93,7 @@ function CourseMap(props) {
 
     /**
      * Updates map when selected course changes
-     * @returns 
+     * @returns
      */
     const updateMap = () => {
 
@@ -122,7 +122,7 @@ function CourseMap(props) {
 
         let selectedCourse = props.selectedCourse;
 
-        // display 
+        // display
         if (selectedCourse.prerequisites.length > 0) {
             let count = selectedCourse.prerequisites.length;
 

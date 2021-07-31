@@ -2495,9 +2495,9 @@ function CourseInspector(props) {
     console.log("show prereqs");
 
     if (props.selectedCourse && Array.isArray(props.selectedCourse.prerequisites) && props.selectedCourse.prerequisites.length > 0) {
-      return props.selectedCourse.prerequisites.map(function (course) {
+      return props.selectedCourse.prerequisites.map(function (course, key) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-          key: course.id,
+          key: key,
           className: "related-course-row text-gray-700"
         }, course.abbreviation);
       });
@@ -2518,9 +2518,9 @@ function CourseInspector(props) {
     console.log("show concurrents");
 
     if (props.selectedCourse && Array.isArray(props.selectedCourse.concurrents) && props.selectedCourse.concurrents.length > 0) {
-      return props.selectedCourse.concurrents.map(function (course) {
+      return props.selectedCourse.concurrents.map(function (course, key) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-          key: course.id,
+          key: key,
           className: "related-course-row text-gray-700"
         }, course.abbreviation);
       });
@@ -2538,12 +2538,12 @@ function CourseInspector(props) {
 
 
   var openItems = function openItems(props) {
-    console.log("show concurrents");
+    console.log("show opened courses");
 
     if (props.selectedCourse && Array.isArray(props.selectedCourse.childCourses) && props.selectedCourse.childCourses.length > 0) {
-      return props.selectedCourse.childCourses.map(function (course) {
+      return props.selectedCourse.childCourses.map(function (course, key) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-          key: course.id,
+          key: key,
           className: "related-course-row text-gray-700"
         }, course.abbreviation);
       });
@@ -2642,7 +2642,7 @@ function CourseList(props) {
     props.selectCourse(id);
   };
 
-  var courseItems = props.courses.map(function (course) {
+  var courseItems = props.courses.map(function (course, key) {
     if (props.selectedCourse && course.id === props.selectedCourse.id) {
       console.log("props.selectedCourse: ", props.selectedCourse);
     }
@@ -2652,7 +2652,7 @@ function CourseList(props) {
     }
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
-      key: course.id,
+      key: key,
       className: props.selectedCourse && props.selectedCourse.id === course.id ? "course-list-row selected-row" : "course-list-row",
       onClick: function onClick() {
         return selectCourse(course.id);
@@ -2697,14 +2697,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * React Component
- * 
+ *
  * Builds the node/edge structure when a course is selected
- * 
+ *
  * @author Mark Westerlund
- * @version 1.0 
- * 
- * @param {Object} props 
- * @returns 
+ * @version 1.0
+ *
+ * @param {Object} props
+ * @returns
  */
 
 function CourseMap(props) {
@@ -2720,7 +2720,7 @@ function CourseMap(props) {
   var circleRadius = 35;
   /**
    * Sets selected course
-   * @param {id} id 
+   * @param {id} id
    */
 
   var selectCourse = function selectCourse(id) {
@@ -2737,12 +2737,12 @@ function CourseMap(props) {
     var mapSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#course-map").attr("height", height).attr("width", width);
     mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Prerequisites");
     mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 3 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Concurrent");
-    mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 5 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Open Courses");
+    mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 5 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Opens Courses");
     mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", height / 2 + textYOffset).attr("x", 3 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Select A Course");
   };
   /**
    * Updates map when selected course changes
-   * @returns 
+   * @returns
    */
 
 
@@ -2757,7 +2757,7 @@ function CourseMap(props) {
       return;
     }
 
-    var selectedCourse = props.selectedCourse; // display 
+    var selectedCourse = props.selectedCourse; // display
 
     if (selectedCourse.prerequisites.length > 0) {
       var count = selectedCourse.prerequisites.length;
@@ -2898,20 +2898,20 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * React Component
- * 
+ *
  * Displays degree completion information by course and required course completion
- * 
+ *
  * @author Mark Westerlund
  * @version 1.0
- * 
- * @param {Object} props 
- * @returns 
+ *
+ * @param {Object} props
+ * @returns
  */
 
 function DegreeProgress(props) {
   var binDimensions = {
     height: 100,
-    width: 450,
+    width: 500,
     padding: {
       top: 5,
       left: 25,
@@ -2932,7 +2932,6 @@ function DegreeProgress(props) {
    */
 
   var initCourseBins = function initCourseBins() {
-    console.log(props);
     var plotHeight = binDimensions.height - binDimensions.padding.top - binDimensions.padding.bottom;
     var plotWidth = binDimensions.width - binDimensions.padding.left - binDimensions.padding.right;
     binXScale = d3__WEBPACK_IMPORTED_MODULE_1__.scaleLinear().domain([0, 11]).range([binDimensions.padding.left + binPadding, binDimensions.width - binDimensions.padding.right - binPadding]);
