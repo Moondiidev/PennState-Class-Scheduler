@@ -22,6 +22,8 @@ function AppController(props) {
     const [filterSettings, setFilterSettings] = useState({});
     const [courses, setCourses] = useState([]);
 
+    console.log("completed courses: " + props.completed);
+
     // set courses in state on initial load
     useEffect(() => {
         setCourses(CourseModel.loadCourses(JSON.parse(props.courses)));
@@ -110,10 +112,11 @@ export default AppController;
 
 if (document.getElementById("myTest")) {
     const courses = document.getElementById("myTest").getAttribute("data");
+    const completed = document.getElementById("myTest").getAttribute("data-courses");
 
     ReactDOM.render(
         <React.StrictMode>
-            <AppController courses={courses} />
+            <AppController courses={courses} completed={completed}/>
         </React.StrictMode>,
         document.getElementById("myTest")
     );
