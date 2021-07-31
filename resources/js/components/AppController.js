@@ -8,6 +8,7 @@ import CourseInspector from "./CourseInspector";
 import CourseControls from "./CourseControls";
 import DegreeProgress from "./DegreeProgress";
 
+import filter from "./Model/Filter";
 
 /**
  * Main controller for the app
@@ -17,10 +18,15 @@ import DegreeProgress from "./DegreeProgress";
  * @returns
  */
 function AppController(props) {
-
     const [selectedCourse, setSelectedCourse] = useState(null);
-    const courses = CourseModel.loadCourses(JSON.parse(props.courses));
-    const courseTypes = CourseModel.getCourseTypes(courses);
+    const [filterSettings, setFilterSettings] = useState({});
+    const [courses, setCourses] = useState([]);
+
+    // set courses in state on initial load
+    useEffect(() => {
+        setCourses(CourseModel.loadCourses(JSON.parse(props.courses)));
+        const courseTypes = CourseModel.getCourseTypes(courses);
+    }, [])
 
     /**
      * Sets the selected course
@@ -40,12 +46,25 @@ function AppController(props) {
     };
 
     /**
-     * Sets filter params
-     * TODO: GET WORKING!
-     * @param {Array} params
+     * Sets filters
+     * @param {String} type
+     * @param {Object} params
      */
-    const setFilter = (params) => {
-        //console.log("params: ", params);
+    const setFilter = (type, params) => {
+        console.log("SET FILTER: ", type, params);
+
+        filter.setFilter(type, params);
+
+        const filteredCourses = filter.runFilter(courses);
+
+        setCourses(filteredCourses)
+
+        console.log(
+            "SET FILTER SETTINGS: ",
+            filter.getFilterSettings(),
+            filterSettings
+        );
+        setFilterSettings({ ...filter.getFilterSettings() });
     };
 
     /**
@@ -62,7 +81,9 @@ function AppController(props) {
                     <DegreeProgress
                         courses={courses}
                         courseBins={CourseModel.getCourseBins(courses)}
-                        degreeCompletion={CourseModel.getDegreeCompletion(courses)}
+                        degreeCompletion={CourseModel.getDegreeCompletion(
+                            courses
+                        )}
                     />
                 </div>
 
@@ -73,10 +94,12 @@ function AppController(props) {
                 />
             </div>
             <div id="course-view-bottom">
-                <CourseInspector
-                    selectedCourse={selectedCourse}
+                <CourseInspector selectedCourse={selectedCourse} />
+                <CourseControls
+                    filterSettings={filterSettings}
+                    setFilter={setFilter}
+                    // courseTypes={courseTypes}
                 />
-                <CourseControls courseTypes={courseTypes} />
             </div>
         </div>
     );
@@ -84,12 +107,11 @@ function AppController(props) {
 export default AppController;
 
 if (document.getElementById("myTest")) {
-
-    const courses = document.getElementById("myTest").getAttribute('data');
+    const courses = document.getElementById("myTest").getAttribute("data");
 
     ReactDOM.render(
         <React.StrictMode>
-            <AppController courses={courses}/>
+            <AppController courses={courses} />
         </React.StrictMode>,
         document.getElementById("myTest")
     );

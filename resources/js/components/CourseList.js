@@ -28,6 +28,10 @@ function CourseList(props) {
             console.log("props.selectedCourse: ", props.selectedCourse);
         }
 
+        if (!course.inFilter) {
+            return (<></>);
+        }
+
         return (
             <div
                 key={course.id}
