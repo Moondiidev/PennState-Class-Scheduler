@@ -1983,7 +1983,7 @@ function AppController(props) {
   console.log("completed courses: " + props.completed); // set courses in state on initial load
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    setCourses(_Model_Courses__WEBPACK_IMPORTED_MODULE_1__.default.loadCourses(JSON.parse(props.courses)));
+    setCourses(_Model_Courses__WEBPACK_IMPORTED_MODULE_1__.default.loadCourses(JSON.parse(props.courses), JSON.parse(props.completed)));
     var courseTypes = _Model_Courses__WEBPACK_IMPORTED_MODULE_1__.default.getCourseTypes(courses); // set initial filter settings
 
     setFilterSettings(_objectSpread({}, _Model_Filter__WEBPACK_IMPORTED_MODULE_8__.default.getFilterSettings()));
@@ -2695,6 +2695,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
 
 
+/**
+ * React Component
+ * 
+ * Builds the node/edge structure when a course is selected
+ * 
+ * @author Mark Westerlund
+ * @version 1.0 
+ * 
+ * @param {Object} props 
+ * @returns 
+ */
 
 function CourseMap(props) {
   var width = 568;
@@ -2707,11 +2718,19 @@ function CourseMap(props) {
   var incompleteTextColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(50, 50, 50);
   var textYOffset = 5;
   var circleRadius = 35;
+  /**
+   * Sets selected course
+   * @param {id} id 
+   */
 
   var selectCourse = function selectCourse(id) {
     console.log("course item clicked: ", id);
     props.selectCourse(id);
   };
+  /**
+   * Initializes the map display on startup
+   */
+
 
   var initMap = function initMap() {
     console.log("init map", props);
@@ -2721,6 +2740,11 @@ function CourseMap(props) {
     mapSvg.append("text").classed("map-label", 1).attr("y", 10).attr("x", 5 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Open Courses");
     mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", height / 2 + textYOffset).attr("x", 3 * width / 6).attr("text-anchor", "middle").style("fill", plotLabelColor).style("font-size", "11px").text("Select A Course");
   };
+  /**
+   * Updates map when selected course changes
+   * @returns 
+   */
+
 
   var updateMap = function updateMap() {
     var centerX = width / 2;
@@ -2834,6 +2858,10 @@ function CourseMap(props) {
     mapSvg.append("circle").attr("id", "map-selected-course-label").classed("map-circle", 1).classed("map-course", 1).attr("cy", centerY).attr("cx", centerX).attr("r", circleRadius).style("fill", selectedCourse.isCompleted ? completedColor : incompleteColor);
     mapSvg.append("text").attr("id", "map-selected-course-label").classed("map-label", 1).classed("map-course", 1).attr("y", centerY + textYOffset).attr("x", centerX).attr("text-anchor", "middle").style("fill", selectedCourse.isCompleted ? completedTextColor : incompleteTextColor).style("font-size", "11px").text(selectedCourse.abbreviation);
   };
+  /**
+   * Update map when selected course changes
+   */
+
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     updateMap();
@@ -2868,6 +2896,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var d3__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! d3 */ "./node_modules/d3/src/index.js");
 
 
+/**
+ * React Component
+ * 
+ * Displays degree completion information by course and required course completion
+ * 
+ * @author Mark Westerlund
+ * @version 1.0
+ * 
+ * @param {Object} props 
+ * @returns 
+ */
 
 function DegreeProgress(props) {
   var binDimensions = {
@@ -2888,6 +2927,9 @@ function DegreeProgress(props) {
   var incompleteColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(150, 150, 150);
   var plotColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(240, 240, 240);
   var plotLabelColor = d3__WEBPACK_IMPORTED_MODULE_1__.rgb(80, 80, 80);
+  /**
+   * Initialize the bins display
+   */
 
   var initCourseBins = function initCourseBins() {
     console.log(props);
@@ -2903,6 +2945,10 @@ function DegreeProgress(props) {
     barChartSvg.append("text").attr("text-anchor", "end").attr("x", binDimensions.padding.left).attr("y", binYScale(0) - 2).style("fill", plotLabelColor).style("font-size", "11px").text("0");
     barChartSvg.append("text").attr("text-anchor", "end").attr("x", binDimensions.padding.left).attr("y", binYScale(10) + 10).style("fill", plotLabelColor).style("font-size", "11px").text("10");
   };
+  /**
+   * Updates course bin display
+   */
+
 
   var updateCourseBins = function updateCourseBins() {
     var bins = props.courseBins.sort(function (a, b) {
@@ -2949,6 +2995,10 @@ function DegreeProgress(props) {
       return d.type + " total: " + d.total + " (complete | incomplete): (" + d.completed + " | " + d.incomplete + ")";
     });
   };
+  /**
+   * update degree progress donut chart
+   */
+
 
   var updateDegreeProgress = function updateDegreeProgress() {
     var svgWidth = 100;
@@ -2979,11 +3029,19 @@ function DegreeProgress(props) {
     var svgHeight = 100;
     var progressSvg = d3__WEBPACK_IMPORTED_MODULE_1__.select("#degree-progress").attr("height", svgHeight).attr("width", svgWidth);
   };
+  /***
+   * Initialize degree progress display
+   */
+
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     initCourseBins();
     initDegreeProgress();
   }, []);
+  /**
+   * Updates course bins
+   */
+
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     console.log("degree progress. ", props);
     updateCourseBins();
@@ -3070,14 +3128,15 @@ __webpack_require__.r(__webpack_exports__);
 function model() {
   var courseLevelAscending = true;
   var courseTypes = [];
+  /**
+   * Load and process courses
+   * @param {Arrat} courses 
+   * @param {Array} completedCourses 
+   * @returns processed and sorted courses
+   */
 
-  var loadCourses = function loadCourses(courses) {
-    courses.map(function (course) {
-      course.isCompleted = false;
-      course.inFilter = true;
-      return course;
-    });
-    processCourses(courses);
+  var loadCourses = function loadCourses(courses, completedCourses) {
+    processCourses(courses, completedCourses);
     sortCourses(courses);
     return courses;
   };
@@ -3101,11 +3160,11 @@ function model() {
    */
 
 
-  var processCourses = function processCourses(courses) {
+  var processCourses = function processCourses(courses, completedCourses) {
     courses.map(function (course) {
       course.childCourses = [];
       course.inFilter = true;
-      course.isCompleted = Math.random() > 0.5;
+      course.isCompleted = completedCourses.indexOf(course.id) > -1;
       course.level = Number(course.abbreviation.match(/\d+/g)[0]);
 
       if (!course.prerequisites) {

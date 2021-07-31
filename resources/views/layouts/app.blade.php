@@ -27,7 +27,7 @@
                         </a>
                     @endguest
                     @auth
-                        <a href="{{ url('/home') }}" class="text-lg font-semibold text-gray-100 no-underline">
+                        <a href="{{ url('/courses') }}" class="text-lg font-semibold text-gray-100 no-underline">
                             {{ config('app.name') }}
                         </a>
                     @endauth

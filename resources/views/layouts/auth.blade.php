@@ -35,6 +35,7 @@
                 <div class="w-full p-6">
 
                     @yield('mainContent')
+
                 </div>
 
             </section>
