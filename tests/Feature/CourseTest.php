@@ -11,6 +11,9 @@ use Tests\TestCase;
 class CourseTest extends TestCase
 {
 
+    protected $seed = true;
+    protected $seeder = SemesterSeeder::class;
+
     use RefreshDatabase;
 
     private $devUser;
@@ -22,7 +25,6 @@ class CourseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(SemesterSeeder::class);
         $this->devUser = User::factory()->create(['name' => 'Ava Dev', 'email' => 'ava@psu.edu']);
         $this->regularUser = User::factory()->create(['name' => 'Eli User', 'email' => 'eli@psu.edu']);
         $this->courseOne = Course::factory()->create(
@@ -143,14 +145,44 @@ class CourseTest extends TestCase
 
         $response->assertRedirect(route('courses.index'));
         $this->assertDatabaseHas('courses', ["title" => "Test Course", "abbreviation" => "Test 442",
-                                             "description" => "Some random description", "credits" => 2,
-            "prerequisites" => json_encode([(string) $this->courseOne->id])]);
+                                             "description" => "Some random description", "credits" => 2]);
+
+        $this->assertTrue(in_array($this->courseOne->id, $newCourse->prerequisites));
+        $this->assertFalse(in_array($this->courseTwo->id, $newCourse->prerequisites));
+        $this->assertFalse(in_array($this->courseThree->id, $newCourse->prerequisites));
+
+        $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 1]);
+        $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 2]);
+    }
+
+
+    /**  @test */
+    public function dev_auth_user_can_create_a_course_with_concurrents()
+    {
+        $data = [
+            "title" => "Test Course", "abbreviation" => "Test 442", "description" => "Some random description",
+            "credits" => 2, "semester" => [1,2], "concurrents" => [$this->courseOne->id]
+        ];
+
+        $response = $this->actingAs($this->devUser)->post(route('courses.store', $data));
+
+        $newCourse = Course::where('abbreviation', 'Test 442')->first();
+
+        $response->assertRedirect(route('courses.index'));
+        $this->assertDatabaseHas('courses', ["title" => "Test Course", "abbreviation" => "Test 442",
+                                             "description" => "Some random description", "credits" => 2]);
+
+        $this->assertTrue(in_array($this->courseOne->id, $newCourse->concurrents));
+        $this->assertFalse(in_array($this->courseTwo->id, $newCourse->concurrents));
+        $this->assertFalse(in_array($this->courseThree->id, $newCourse->concurrents));
+
+
         $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 1]);
         $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 2]);
     }
 
     /**  @test */
-    public function dev_auth_user_can_create_a_course_with_concurrents()
+    public function dev_auth_user_can_create_a_course_with_prerequisites_and_concurrents()
     {
 
         $data = [
@@ -165,35 +197,18 @@ class CourseTest extends TestCase
 
         $response->assertRedirect(route('courses.index'));
         $this->assertDatabaseHas('courses', ["title" => "Test Course", "abbreviation" => "Test 442",
-                                             "description" => "Some random description", "credits" => 2,
-                                             "concurrents" => json_encode([(string) $this->courseOne->id]),
-         "prerequisites" => json_encode([(string) $this->courseTwo->id, (string) $this->courseThree->id])
-        ]);
+                                             "description" => "Some random description", "credits" => 2]);
+
+        $this->assertTrue(in_array($this->courseOne->id, $newCourse->concurrents));
+        $this->assertTrue(in_array($this->courseTwo->id, $newCourse->prerequisites));
+        $this->assertTrue(in_array($this->courseThree->id, $newCourse->prerequisites));
+        $this->assertFalse(in_array($this->courseTwo->id, $newCourse->concurrents));
+        $this->assertFalse(in_array($this->courseOne->id, $newCourse->prerequisites));
 
         $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 1]);
         $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 2]);
     }
 
-    /**  @test */
-    public function dev_auth_user_can_create_a_course_with_prerequisites_and_concurrents()
-    {
-
-        $data = [
-            "title" => "Test Course", "abbreviation" => "Test 442", "description" => "Some random description",
-            "credits" => 2, "semester" => [1,2], "concurrents" => [$this->courseOne->id]
-        ];
-
-        $response = $this->actingAs($this->devUser)->post(route('courses.store', $data));
-
-        $newCourse = Course::where('abbreviation', 'Test 442')->first();
-
-        $response->assertRedirect(route('courses.index'));
-        $this->assertDatabaseHas('courses', ["title" => "Test Course", "abbreviation" => "Test 442",
-                                             "description" => "Some random description", "credits" => 2,
-                                             "concurrents" => json_encode([(string) $this->courseOne->id])]);
-        $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 1]);
-        $this->assertDatabaseHas('course_semester', ['course_id' => $newCourse->id, 'semester_id' => 2]);
-    }
 
     /**  @test */
     public function dev_auth_user_can_not_create_a_course_with_a_course_title_already_taken()
@@ -403,14 +418,19 @@ class CourseTest extends TestCase
         $response->assertRedirect(route('courses.edit', [$this->courseTwo->id]));
         $this->assertDatabaseHas('courses', ["id" => $this->courseTwo->id,
                                              "title" => "Test Course", "abbreviation" => "Test 442",
-                                             "description" => "Some random description", "credits" => 2,
-                                             "prerequisites" => json_encode([(string) $this->courseOne->id])]);
+                                             "description" => "Some random description", "credits" => 2]);
+
+        $this->courseTwo->refresh();
+
+        $this->assertTrue(in_array($this->courseOne->id, $this->courseTwo->prerequisites));
+        $this->assertFalse(in_array($this->courseThree->id, $this->courseTwo->prerequisites));
+
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseTwo->id, 'semester_id' => 1]);
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseTwo->id, 'semester_id' => 2]);
     }
 
     /**  @test */
-    public function dev_auth_user_can_update_a_course_with_concurrents()
+    public function dev_auth_user_can_update_a_course_with_concurrents_and_prerequisites()
     {
 
         $data = [
@@ -424,11 +444,14 @@ class CourseTest extends TestCase
 
 
         $response->assertRedirect(route('courses.edit', [$this->courseOne->id]));
+
         $this->assertDatabaseHas('courses', ["title" => "Test Course", "abbreviation" => "Test 442",
-                                             "description" => "Some random description", "credits" => 2,
-                                             "concurrents" => json_encode([(string) $this->courseTwo->id]),
-                                             "prerequisites" => json_encode([(string) $this->courseThree->id])
-        ]);
+                                             "description" => "Some random description", "credits" => 2]);
+
+        $this->courseOne->refresh();
+
+        $this->assertTrue(in_array($this->courseTwo->id, $this->courseOne->concurrents));
+        $this->assertTrue(in_array($this->courseThree->id, $this->courseOne->prerequisites));
 
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
     }
@@ -613,7 +636,7 @@ class CourseTest extends TestCase
                                                  "description" => "Some random description", "credits" => 2,]);
     }
 
-    /** @TODO JSON Contains feature is not supported by the SQLite databases, so need to test differently  */
+    /**  @test */
     public function dev_auth_user_can_delete_a_course()
     {
 
@@ -626,7 +649,7 @@ class CourseTest extends TestCase
         $this->assertDatabaseMissing('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
     }
 
-    /** @TODO JSON Contains feature is not supported by the SQLite databases, so need to test differently */
+    /**  @test */
     public function when_dev_auth_user_deletes_a_course_it_is_removed_as_a_prerequisite_from_other_courses()
     {
 
@@ -634,8 +657,6 @@ class CourseTest extends TestCase
 
         $response = $this->actingAs($this->devUser)
                          ->delete(route('courses.destroy', [$this->courseOne->id]));
-
-        dd($response);
 
         $response->assertRedirect(route('courses.index'));
         $this->assertDatabaseMissing('courses', ["id" => $this->courseOne->id]);
@@ -669,7 +690,5 @@ class CourseTest extends TestCase
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 1]);
         $this->assertDatabaseHas('course_semester', ['course_id' => $this->courseOne->id, 'semester_id' => 2]);
     }
-
-
 
 }

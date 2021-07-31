@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Course extends Model
 {
@@ -14,7 +15,8 @@ class Course extends Model
      *
      * @var array
      */
-    protected $fillable = ["title", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents'];
+    protected $fillable = ["title", "description", "credits", "type", "abbreviation", 'prerequisites', 'concurrents',
+                            'prerequisites_for_count', 'semester_specific'];
 
 
     /**
@@ -48,6 +50,20 @@ class Course extends Model
     public static function getCourseIDs()
     {
         return Course::all()->pluck('id')->toArray();
+    }
+
+    public static function getCoursesBySemester($semester)
+    {
+        return Course::whereHas('semesters', function (Builder $query) use ($semester) {
+            $query->where('semester_id', 'like', $semester);
+        })->get();
+    }
+
+    public static function getCoursesWithConcurrents($semester)
+    {
+        return Course::whereNotNull('concurrents')->whereHas('semesters', function (Builder $query) use ($semester) {
+            $query->where('semester_id', 'like', $semester);
+        })->get();
     }
 
     public static function removeDeletedCourseFromPrerequisites($course_id)
