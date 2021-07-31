@@ -27,8 +27,7 @@ function AppController(props) {
      * @param {Array} courses courses
      * @param {String} id Id of course
      */
-    const selectCourse = (courses, id) => {
-
+    const selectCourse = (id) => {
         if (selectedCourse === null) {
             setSelectedCourse(CourseModel.getCourseById(courses, id));
         } else {
