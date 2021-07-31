@@ -45,9 +45,9 @@ Route::middleware(['verified', 'auth'])->group(function () {
     Route::resource('courses', \App\Http\Controllers\CourseController::class);
 
     Route::get('/mark-completed',
-        [\App\Http\Controllers\CourseController::class, 'completedForm'])->name('completedForm');
+        [\App\Http\Controllers\UserController::class, 'completedForm'])->name('completedForm');
     Route::post('/mark-completed',
-        [\App\Http\Controllers\CourseController::class, 'markAsCompleted'])->name('markAsCompleted');
+        [\App\Http\Controllers\UserController::class, 'markAsCompleted'])->name('markAsCompleted');
 
     Route::get('/recommendations',
         [\App\Http\Controllers\CourseController::class, 'recommendations'])->name('recommendations');

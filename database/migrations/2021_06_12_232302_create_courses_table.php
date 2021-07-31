@@ -22,6 +22,8 @@ class CreateCoursesTable extends Migration
             $table->text('type');
             $table->json('prerequisites')->nullable();
             $table->json('concurrents')->nullable();
+            $table->integer('prerequisites_for_count')->default(0);
+            $table->boolean('semester_specific')->default(false);
             $table->timestamps();
         });
     }
