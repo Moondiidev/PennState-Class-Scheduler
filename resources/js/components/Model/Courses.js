@@ -4,58 +4,40 @@ import * as d3 from "d3";
 
 /**
  * Main course model
- * 
+ *
  * @author Mark Westerlund
  * @version 1.0
- * 
- * @returns 
+ *
+ * @returns
  */
 function model() {
+
     let courseLevelAscending = true;
 
     let courseTypes = [];
-    let courses = [];
 
-    /**
-     * Loads courses from the server
-     * @param {Function} callback 
-     */
-    function loadCourses(callback) {
-        console.log("using server for course data");
+    const loadCourses = (courses) => {
+        courses.map((course) => {
+            course.isCompleted = false;
+            course.inFilter = true;
+            return course;
+        });
 
-        fetch("/api/courses").then((response) => {
-                console.log("response from courses: ", response.data);
-                // return response.data;
+        processCourses(courses);
+        sortCourses(courses);
 
-                return response.json();
-            })
-            .then((results) => {
-                console.log("test test results: ", results)
-                courses = results[0].map((course) => {
-                    // console.log("test ")
-                    course.isCompleted = false;
-                    course.inFilter = true;
-                    return course;
-                });
-
-                processCourses();
-                sortCourses();
-
-                callback(courses);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }
+        return courses;
+    };
 
     /**
      * Finds the course in the course array
+     * @param {Array} courses courses
      * @param {String} id id of course
      * @returns course
      */
-    const getCourseById = (id) => {
+    const getCourseById = (courses, id) => {
         for (let index = 0; index < courses.length; index++) {
-            if (courses[index].id === id) {
+            if (courses[index].id == id) {
                 return courses[index];
             }
         }
@@ -64,9 +46,8 @@ function model() {
     /**
      * Processes loaded courses for proper viewing
      */
-    const processCourses = () => {
-        console.log("processCourses", courses);
-        courses = courses.map((course) => {
+    const processCourses = (courses) => {
+        courses.map((course) => {
             course.childCourses = [];
             course.inFilter = true;
 
@@ -74,38 +55,39 @@ function model() {
 
             if (!course.prerequisites) {
                 course.prerequisites = [];
+            } else {
+
+                course.prerequisites = course.prerequisites.map((courseId) => {
+                    let prereq = getCourseById(courses, courseId);
+
+                    if (!prereq.childCourses) {
+                        prereq.childCourses = [];
+                    }
+
+                    prereq.childCourses.push(course);
+
+                    return prereq;
+                });
             }
-            course.prerequisites = course.prerequisites.map((courseId) => {
-                let prereq = getCourseById(courseId);
 
-                if (!prereq.childCourses) {
-                    prereq.childCourses = [];
-                }
-
-                prereq.childCourses.push(course);
-
-                return prereq;
-            });
 
             if (!course.concurrents) {
                 course.concurrents = [];
+            } else {
+
+                course.concurrents = course.concurrents.map((courseId) => {
+                    let concur = getCourseById(courses, courseId);
+
+                    if (!concur.childCourses) {
+                        concur.childCourses = [];
+                    }
+
+                    concur.childCourses.push(course);
+
+                    return concur;
+                });
             }
 
-            course.concurrents = course.concurrents.map((courseId) => {
-                let concur = getCourseById(courseId);
-
-                if (!concur.childCourses) {
-                    concur.childCourses = [];
-                }
-
-                concur.childCourses.push(course);
-
-                return concur;
-            });
-
-            if (course.concurrents.length > 1) {
-                console.log("THIS COURSE HAS MORE THAN 1 CONCURRENTS!!!!!!!!!! ", course)
-            }
 
             return course;
         });
@@ -114,7 +96,7 @@ function model() {
     /**
      * Sorts courses according to a heuristic that higher courses should be taken after lower numbered courses
      */
-    const sortCourses = () => {
+    const sortCourses = (courses) => {
         courses.sort((a, b) => {
             let courseLevelA = Number(a.abbreviation.match(/\d+/g)[0]);
             let courseLevelB = Number(b.abbreviation.match(/\d+/g)[0]);
@@ -131,7 +113,7 @@ function model() {
      * Finds all course types
      * @returns course types array
      */
-    const getCourseTypes = () => {
+    const getCourseTypes = (courses) => {
         let types = {};
         courses.forEach((course) => {
             if (!types[course.type]) {
@@ -139,8 +121,6 @@ function model() {
             }
             types[course.type]++;
         });
-
-        console.log("courseTypes counts: ", types);
 
         courseTypes = [];
         for (let type in types) {
@@ -154,7 +134,7 @@ function model() {
      * Builds bins for course progress
      * @returns Course bins for progress area
      */
-    const getCourseBins = () => {
+    const getCourseBins = (courses) => {
         let bins = {};
         courses.forEach((course) => {
             if (!bins[course.type]) {
@@ -174,7 +154,7 @@ function model() {
             bins[course.type].total++;
         });
 
-        console.log("courseTypes counts: ", bins);
+        //console.log("courseTypes counts: ", bins);
 
         let courseBins = [];
         for (let type in bins) {
@@ -188,7 +168,7 @@ function model() {
      * Builds object for course completion
      * @returns degree completion object
      */
-    const getDegreeCompletion = () => {
+    const getDegreeCompletion = (courses) => {
         let total = 0;
         let completed = 0;
 
@@ -219,27 +199,18 @@ function model() {
     };
 
     /**
-     * Getter for course array
-     * @returns Array of Courses
-     */
-    const getAllCourses = () => {
-        return courses;
-    };
-
-    /**
      * Returns methods that should be public, all other methods and fields are private to the model
      */
     return {
         loadCourses,
         getCourseById,
-        getAllCourses,
         sortCourses,
         processCourses,
         getCourseTypes,
-
         getCourseBins,
         getDegreeCompletion,
     };
 }
 
 export default model();
+

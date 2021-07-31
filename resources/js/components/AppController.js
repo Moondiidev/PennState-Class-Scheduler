@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import BarChart from "./BarChart";
 import CourseModel from "./Model/Courses";
 import ReactDOM from "react-dom";
 
@@ -12,45 +11,31 @@ import DegreeProgress from "./DegreeProgress";
 
 /**
  * Main controller for the app
- * 
+ *
  * @author Mark Westerlund
  * @version 1.0
- * @returns 
+ * @returns
  */
-function AppController() {
+function AppController(props) {
 
     const [selectedCourse, setSelectedCourse] = useState(null);
-    const [courses, setCourses] = useState([]);
-    const [courseTypes, setCourseTypes] = useState([]);
-
-    /**
-     * runs once when loading, this forces load of courses once the app is initialized
-     */
-    useEffect(() => {
-        CourseModel.loadCourses(() => {
-            let loadedCourses = CourseModel.getAllCourses();
-
-            // console.log("loaded courses in appcontroller", loadedCourses)
-
-            setCourses(loadedCourses);
-
-        });
-    }, []);
+    const courses = CourseModel.loadCourses(JSON.parse(props.courses));
+    const courseTypes = CourseModel.getCourseTypes(courses);
 
     /**
      * Sets the selected course
+     * @param {Array} courses courses
      * @param {String} id Id of course
      */
-    const selectCourse = (id) => {
-        console.log("set selectedCourse", id);
+    const selectCourse = (courses, id) => {
 
         if (selectedCourse === null) {
-            setSelectedCourse(CourseModel.getCourseById(id));
+            setSelectedCourse(CourseModel.getCourseById(courses, id));
         } else {
             if (selectedCourse.id === id) {
                 setSelectedCourse(null);
             } else {
-                setSelectedCourse(CourseModel.getCourseById(id));
+                setSelectedCourse(CourseModel.getCourseById(courses, id));
             }
         }
     };
@@ -58,10 +43,10 @@ function AppController() {
     /**
      * Sets filter params
      * TODO: GET WORKING!
-     * @param {Array} params 
+     * @param {Array} params
      */
     const setFilter = (params) => {
-        console.log("params: ", params);
+        //console.log("params: ", params);
     };
 
     /**
@@ -71,14 +56,14 @@ function AppController() {
         <div className="mark-test-style">
             <div id="course-view-top">
                 <div className="left">
-                    <CourseMap 
+                    <CourseMap
                         selectedCourse={selectedCourse}
                         selectCourse={selectCourse}
                     />
                     <DegreeProgress
                         courses={courses}
-                        courseBins={CourseModel.getCourseBins()}
-                        degreeCompletion={CourseModel.getDegreeCompletion()}
+                        courseBins={CourseModel.getCourseBins(courses)}
+                        degreeCompletion={CourseModel.getDegreeCompletion(courses)}
                     />
                 </div>
 
@@ -100,9 +85,12 @@ function AppController() {
 export default AppController;
 
 if (document.getElementById("myTest")) {
+
+    const courses = document.getElementById("myTest").getAttribute('data');
+
     ReactDOM.render(
         <React.StrictMode>
-            <AppController />
+            <AppController courses={courses}/>
         </React.StrictMode>,
         document.getElementById("myTest")
     );

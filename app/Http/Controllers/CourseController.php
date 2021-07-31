@@ -26,7 +26,7 @@ class CourseController extends Controller
     public function index()
     {
         $pageName = "Courses";
-        $courses = Course::all();
+        $courses = Course::all()->toJson();
 
         if ( auth()->user()->isDevUser()  ) {
             $headerButtonAction = route('courses.create');
