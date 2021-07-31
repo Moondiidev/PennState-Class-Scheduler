@@ -27,16 +27,17 @@ class CourseController extends Controller
     {
         $pageName = "Courses";
         $courses = Course::all()->toJson();
+        $completedCourses = auth()->user()->completedCourses()->pluck('course_id')->toJson();
 
         if ( auth()->user()->isDevUser()  ) {
             $headerButtonAction = route('courses.create');
             $headerButtonText   = "Create New Course";
 
             return view('courses.index',
-                compact('courses', 'pageName', 'headerButtonAction', 'headerButtonText'));
+                compact('courses', 'completedCourses', 'pageName', 'headerButtonAction', 'headerButtonText'));
         }
 
-        return view('courses.index', compact('courses', 'pageName'));
+        return view('courses.index', compact('courses', 'completedCourses', 'pageName'));
 
     }
 
