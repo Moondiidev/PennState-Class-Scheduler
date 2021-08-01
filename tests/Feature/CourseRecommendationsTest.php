@@ -79,6 +79,19 @@ class CourseRecommendationsTest extends TestCase
     }
 
     /**  @test */
+    public function correct_courses_are_not_recommended_without_entering_the_number_of_courses()
+    {
+
+        $data = ["semester" => 1, 'number_of_courses' => null];
+
+        $response = $this->actingAs($this->user)->from(route('recommendations'))->post(route('recommendationResults', $data));
+
+        $response->assertRedirect(route('recommendations'));
+        $response->assertSessionHasErrorsIn('number_of_courses');
+
+    }
+
+    /**  @test */
     public function correct_courses_are_recommended_1()
     {
         // no completed courses
