@@ -32,9 +32,14 @@
 
                     </div>
                 </header>
-                <div class="w-full p-6">
+                @if(\Illuminate\Support\Facades\Route::current()->getName() == 'courses.index')
+                    <div class="w-full px-0 py-6">
+                @else
+                    <div class="w-full p-6">
+                @endif
 
                     @yield('mainContent')
+
                 </div>
 
             </section>

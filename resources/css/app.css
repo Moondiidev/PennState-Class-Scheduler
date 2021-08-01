@@ -3,3 +3,234 @@
 @import "tailwindcss/components";
 
 @import "tailwindcss/utilities";
+
+.mark-test-style {
+    width: 100%;
+    /* height: 500px; */
+    position: relative;
+    float: left;
+}
+
+/** OLD STYLES>>> WILL CHANGE **/
+#course-view-top {
+    width: 100%;
+    height: 500px;
+    position: relative;
+    float: left;
+}
+
+#course-view-bottom {
+    width: 100%;
+    height: 500px;
+    position: relative;
+    float: left;
+    margin-top: 2%;
+    padding-top:2%;
+    border-top: 1px solid rgb(50, 50, 50);
+}
+
+.left {
+    position: relative;
+    float: left;
+    width: calc(100% - 200px);
+    height: 100%;
+    /* background: rgb(0, 255, 255); */
+}
+
+.right {
+    position: relative;
+    float: right;
+    width: 200px;
+    height: 100%;
+    margin-right: -1%;
+    /* border-left: 1px solid rgb(120, 120, 120); */
+    /* background: rgb(255, 255, 0); */
+}
+
+/** course **/
+#course-list-header {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: 30px;
+    color: rgb(220, 220, 220);
+    background: rgb(120, 120, 120);
+}
+
+#course-list {
+    position: relative;
+    float: left;
+    width: 100%;
+    height: calc(100% - 85px);
+    overflow-y: auto;
+}
+
+.course-list-row {
+    position: relative;
+    float: left;
+    width: 100%;
+    padding: 3px 10px;
+    /* height: 30px; */
+    /* color: rgb(220, 220, 220); */
+    border-bottom: 1px solid rgb(120, 120, 120);
+    cursor: pointer;
+}
+
+.course-list-row:hover {
+    background-color: rgb(235, 235, 235);
+}
+
+.course-list-id {
+    width: 100%;
+    position: relative;
+    float: left;
+    font-size: 14px;
+    color: rgb(50, 50, 50);
+    letter-spacing: 1px;
+    padding: 1px;
+}
+
+.course-id-label {
+    position: relative;
+    float: left;
+    width: calc(100% - 20px);
+    height: 20px;
+}
+
+.course-indicator {
+    position: relative;
+    float: left;
+    height: 10px;
+    width: 10px;
+    border-radius: 10px;
+    background:rgb(150, 150, 150);
+    margin-left: 10px;
+}
+
+.course-list-title {
+    width: 100%;
+    position: relative;
+    float: left;
+    font-size: 10px;
+    color: rgb(100, 100, 100);
+    padding: 1px;
+}
+
+.selected {
+    color: rgb(35, 56, 118);
+}
+
+.selected-row {
+    background-color: rgb(235, 235, 235);
+}
+
+#course-map {
+    position: relative;
+    float: left;
+    margin-left: -2%;
+    height: 100%;
+    width: 100%;
+}
+
+/*** INSPECTOR ****/
+.inspector-selected-area {
+    width: 100%;
+    position: relative;
+    float: left;
+}
+
+#inspector-selected-course {
+    width: 100%;
+    position: relative;
+    float: left;
+
+    font-size: 24px;
+    color: rgb(50, 50, 50);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+}
+
+.inspector-selected-label {
+    position: relative;
+    float: left;
+}
+
+.inspector-indicator {
+    position: relative;
+    float: left;
+    height: 15px;
+    width: 15px;
+    border-radius: 15px;
+    background:rgb(150, 150, 150);
+    margin-left: 10px;
+    margin-top: 6px;
+}
+
+.completed {
+    background: rgb(35, 56, 118);
+}
+
+.inspector-row {
+    width: 100%;
+    position: relative;
+    float: left;
+    padding-bottom: 10px;
+}
+
+.related-course-wrapper {
+    width: 100%;
+    position: relative;
+    float: left;
+    padding-bottom: 15px;
+}
+
+
+.related-course-row {
+    width: 100%;
+    position: relative;
+    float: left;
+    font-size: 14px;
+    padding-bottom: 2px;
+}
+
+
+/**** DEGREE STUFF ****/
+
+.map-top {
+    width: 100%;
+    height: 380px;
+    position: relative;
+    float: left;
+}
+
+.map-bottom {
+    width: 100%;
+    height: 120px;
+    position: relative;
+    float: left;
+}
+
+#degree-bar-chart {
+    position: relative;
+    float: left;
+    margin-left: -2%;
+}
+
+#degree-progress {
+    position: relative;
+    float: left;
+    margin-left:3%;
+}
+
+.map-course, text {
+    cursor: default;
+}
+
+.map-prereq, .map-children {
+    cursor: pointer;
+}
+
+.course-rect, .course-level-marker {
+    cursor: pointer;
+}
