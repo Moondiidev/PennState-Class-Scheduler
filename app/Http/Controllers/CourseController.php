@@ -16,7 +16,8 @@ class CourseController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('dev.users.only')->except(['index', 'completedForm', 'markAsCompleted']);
+        $this->middleware('dev.users.only')
+             ->except(['index', 'recommendations', 'recommendationResults']);
     }
 
     /**
