@@ -19,7 +19,7 @@ class RegisterTest extends TestCase
 
         $response = $this->post('register', $data);
 
-        $response->assertRedirect(route('home'));
+        $response->assertRedirect(route('courses.index'));
 
         $this->assertDatabaseHas('users', ["name" => "Jennifer Student", "email" => "jnr332@psu.edu"]);
     }

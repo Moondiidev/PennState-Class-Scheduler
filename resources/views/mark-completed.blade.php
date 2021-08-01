@@ -7,7 +7,7 @@
         <form action="{{route('markAsCompleted')}}" method="post">
             @csrf
 
-            <div class="grid grid-cols-3 gap-4 ">
+            <div class="grid grid-cols-4 gap-2">
 
             @foreach($courses as $course)
 

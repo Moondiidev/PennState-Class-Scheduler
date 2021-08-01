@@ -16,7 +16,8 @@ class CourseController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('dev.users.only')->except(['index', 'completedForm', 'markAsCompleted']);
+        $this->middleware('dev.users.only')
+             ->except(['index', 'recommendations', 'recommendationResults']);
     }
 
     /**
@@ -214,7 +215,7 @@ class CourseController extends Controller
         // insert concurrent course directly after the course it is concurrent with
         foreach ($this->findCoursesThatCanBeRecommendedAsConcurrent($suggestedCourses, $semester) as $course) {
             $index = $suggestedCourses->search(Course::find($course->concurrents[0]));
-            $suggestedCourses->splice($index, 0, [$course]);
+            $suggestedCourses->splice($index + 1, 0, [$course]);
         }
 
         return $suggestedCourses;

@@ -17,7 +17,10 @@ class Navigation extends React.Component {
         const navLinks = this.nav.links.map( (link, x) => {
             return (
                 <li className="mr-6" key={x}>
-                    <a className={`${window.location.href.indexOf(link.uri) !== -1 ? 'text-gray-500 cursor-text' : 'text-blue-800 hover:text-blue-600'}`} href={`${link.uri}`}>{link.name}</a>
+                    <a className={`${window.location.href.indexOf(link.uri) === -1 || window.location.href.indexOf("/courses/") !== -1
+                        ? 'text-gray-500 hover:text-blue-800' : 'text-blue-800 font-medium cursor-text'}`}
+                       href={`${window.location.href.indexOf(link.uri) === -1 || window.location.href.indexOf("/courses/") !== -1
+                           ? `${link.uri}` : '#'}`}>{link.name}</a>
                 </li>
             )
         });

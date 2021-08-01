@@ -3176,7 +3176,10 @@ function model() {
             prereq.childCourses = [];
           }
 
-          prereq.childCourses.push(course);
+          if (!course.concurrents || course.concurrents.indexOf(courseId) < 0) {
+            prereq.childCourses.push(course);
+          }
+
           return prereq;
         });
       }
@@ -3478,8 +3481,8 @@ var Navigation = /*#__PURE__*/function (_React$Component) {
           className: "mr-6",
           key: x
         }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("a", {
-          className: "".concat(window.location.href.indexOf(link.uri) !== -1 ? 'text-gray-500 cursor-text' : 'text-blue-800 hover:text-blue-600'),
-          href: "".concat(link.uri)
+          className: "".concat(window.location.href.indexOf(link.uri) === -1 || window.location.href.indexOf("/courses/") !== -1 ? 'text-gray-500 hover:text-blue-800' : 'text-blue-800 font-medium cursor-text'),
+          href: "".concat(window.location.href.indexOf(link.uri) === -1 || window.location.href.indexOf("/courses/") !== -1 ? "".concat(link.uri) : '#')
         }, link.name));
       });
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("ul", {
