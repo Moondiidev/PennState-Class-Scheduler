@@ -13,7 +13,7 @@ class UserController extends Controller
     public function completedForm()
     {
         $pageName = "Mark Completed Courses";
-        $courses = Course::all();
+        $courses = Course::orderBy('abbreviation')->get()->all();
         $currentCompletedCourses = auth()->user()->completedCourses()->pluck('course_id')->toArray();
 
         return view('mark-completed',
