@@ -66,7 +66,9 @@ function model() {
                         prereq.childCourses = [];
                     }
 
-                    prereq.childCourses.push(course);
+                    if (!course.concurrents || course.concurrents.indexOf(courseId) < 0) {
+                        prereq.childCourses.push(course);
+                    }
 
                     return prereq;
                 });
