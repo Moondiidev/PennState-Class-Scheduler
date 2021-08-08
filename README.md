@@ -1,5 +1,5 @@
 # PennState-Class-Scheduler
-SWENG 411 group project repository
+Penn State Software Enginnering Bachelor's Degree Course Recomendation Tool
 
 ## Getting the project installed and running locally:
 
